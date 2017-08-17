@@ -1,0 +1,10 @@
+name: EpicSellChest
+author: BadBones69
+main: me.badbones69.epicsellchest.Main
+version: 1.0
+softdepend: [Vault, DakataAntiCheat, NoCheatPlus, Spartan]
+description: This allows users to sell all the items in a chest.
+commands:
+  sellchest:
+    description: Sell all items in a chest.
+    aliases: [sc]

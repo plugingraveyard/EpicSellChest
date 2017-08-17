@@ -1,1 +1,4 @@
-EpicSellChest
+# EpicSellChest
+
+### Description:
+This looks like a simple plugin that all you do is look at a chest and sell the stuff in it right? Wrong! This has many more options than that. You can sell the chest your standing on, make a sign to sell items to, or even all the chest in a selected region/chunk. This plugin allows you to control what price each item goes for and even add extra money if the item has enchantments on it. You don't want a player to sell a specific item or an item with an enchantment on it? Well, don't worry because you can just black list the item or enchantment and now the players can no longer sell the items. 

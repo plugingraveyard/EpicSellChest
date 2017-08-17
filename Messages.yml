@@ -1,0 +1,42 @@
+#Placeholders can be used in the Sold messages.
+# Placeholders:
+# - %xp_level%
+# - %xp_total%
+# - %<Custom Currency Name>%
+Messages:
+  No-Permission: '&cYou do not have permission to use this command.'
+  Not-A-Number: '&cThat is not a number.'
+  Not-Online: '&cThat player is not currently online.'
+  Reloaded: '&7You have just reloaded the config and message files.'
+  Player-Only: '&cYou must be a player to use this command.'
+  No-Sellable-Items: '&cThat chest has no sellable items.'
+  Cant-Sell-Chest: '&cYou can''t sell that chest because it doesn''t belong to you.'
+  Not-A-Chest: '&cYou are not looking at or standing on a chest.'
+  Sold-Chest: '&7You have just sold the contents of that chest for &a$%vault%&7.'
+  Sold-Chunk-Chests: '&7You have sold the contents of all chests in your chunk for &a$%vault%&7.'
+  Sold-Region-Chests: '&7You have sold the contents of all the chests in your region for &a$%vault%&7.'
+  Loading-Region-Chests: '&aLoading chests from the region.'
+  Still-Loading-Chests: '&a.....'
+  Region-To-Big: '&cThe region you have selected is too big.'
+  Missing-Position: '&cYou are missing your 1st and(or) 2nd position.'
+  No-Chests-In-Region: '&cThere are no chests that can be sold in your region.'
+  Position-1: '&7You have set your 1st position.'
+  Position-2: '&7You have set your 2nd position.'
+  Loading-Chunk-Chests: '&aLoading chests from the chunk.'
+  No-Chests-In-Chunk: '&cThere are no chests that can be sold in your chunk.'
+  Two-Factor-Auth: '&7Please type the command again to confirm the sell.'
+  Wand-Give: '&7You have just given &6%player% %amount% &7Epic Sell Wand(s).'
+  Wand-Two-Factor-Auth: '&7Please click the block again to confirm the sell.'
+  Help:
+    - '&6/sc &7- Sells the chest you are currently looking at or standing on.'
+    - '&6/sc Reload &7- Reloads the config and messages files.'
+    - '&6/sc Wand [Amount] [Player] &7- Give a player a Chest Selling Wand.'
+    - '&6/sc [ID:MD] [ID:MD].... &7- Allows you to sell specific items in a chest you are looking at or standing on.'
+    - '&6/sc Chunk &7- Sell all items in all the chests in your current chunk.'
+    - '&6/sc Chunk [ID:MD] [ID:MD].... &7- Sell only specific items in all the chests in your chunk.'
+    - '&6/sc Pos1/Pos2 &7- Set the area of selling for the /SellChest All command.'
+    - '&6/sc All &7- Sell all items in all chests that are in your area.'
+    - '&6/sc All [ID:MD] [ID:MD].... &7- Sell only specific items in all chests in your area.'
+    - '&6/sc GUI &7- Opens a GUI for you to throw your items you want to sell into.'
+    - ''
+    - '&6Information: &7[] - optional, [ID:MD] [ID:MD].... - multiple items you can sell.'

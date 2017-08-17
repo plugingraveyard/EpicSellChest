@@ -1,0 +1,11 @@
+Current Progress:
+
+Current Name: `EpicSellChest`
+Started: `3/28/17 11:00 PM`
+Spigot Plugin Type: `Premium`
+Cost: `Error - 404`
+Last Updated: `5/31/17 12:56 AM`
+
+Description:
+This looks like a simple plugin that all you do is look at a chest and sell the stuff in it right? Wrong!
+This has many more options than that. You can sell the chest your standing on, add a sign on a chest to auto sell it, or even all the chest in a selected region. You can control what price each item goes for, the extra money an enchantment adds, and even blacklist items and enchantments from being sold.
