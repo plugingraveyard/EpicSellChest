@@ -1,6 +1,5 @@
 package me.badbones69.epicsellchest;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
@@ -27,7 +26,7 @@ import me.badbones69.epicsellchest.api.SellType;
 import me.badbones69.epicsellchest.api.currency.Currency;
 import me.badbones69.epicsellchest.api.currency.CustomCurrency;
 import me.badbones69.epicsellchest.api.event.SellChestEvent;
-import me.badbones69.epicsellchest.controlers.MCUpdate;
+import me.badbones69.epicsellchest.controlers.Metrics;
 import me.badbones69.epicsellchest.controlers.SellChestGUI;
 import me.badbones69.epicsellchest.controlers.SignControl;
 import me.badbones69.epicsellchest.controlers.WandControl;
@@ -37,7 +36,6 @@ import me.badbones69.epicsellchest.multisupport.SpartanSupport;
 import me.badbones69.epicsellchest.multisupport.Support;
 
 public class Main extends JavaPlugin {
-	private MCUpdate mcupdate;
 	public EpicSellChest sc = EpicSellChest.getInstance();
 	private HashMap<UUID, Location> pos1 = new HashMap<UUID, Location>();
 	private HashMap<UUID, Location> pos2 = new HashMap<UUID, Location>();
@@ -55,10 +53,7 @@ public class Main extends JavaPlugin {
 			pm.registerEvents(new DakataAntiCheatSupport(), this);
 		}
 		if(sc.useMetrics()) {
-			try {
-				mcupdate = new MCUpdate(this);
-				mcupdate.checkUpdate(sc.checkForUpdates());
-			}catch(IOException e) {}
+			new Metrics(this);
 		}
 	}
 	

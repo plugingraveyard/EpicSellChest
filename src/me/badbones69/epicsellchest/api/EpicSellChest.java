@@ -33,6 +33,7 @@ public class EpicSellChest {
 	private Currency baseCurrency;
 	private ItemStack chestSellingItem;
 	private static EpicSellChest instance;
+	private CustomCurrency baseCustomCurrency;
 	private ArrayList<UUID> twoFactorAuth = new ArrayList<>();
 	private ArrayList<Material> blackListItems = new ArrayList<>();
 	private ArrayList<SellableItem> sellableItems = new ArrayList<>();
@@ -61,10 +62,13 @@ public class EpicSellChest {
 		basePrice = config.getInt("Settings.Base-Price");
 		useMetrics = config.getBoolean("Settings.Metrics");
 		checkUpdates = config.getBoolean("Settings.Check-For-Updates");
-		baseCurrency = Currency.getCurrency(config.getString("Settings.Base-Currency"));
 		chestSellingItem = Methods.addGlowing(Methods.makeItem(config.getString("Settings.Chest-Selling-Item.Item"), 1, config.getString("Settings.Chest-Selling-Item.Name"), config.getStringList("Settings.Chest-Selling-Item.Lore")), config.getBoolean("Settings.Chest-Selling-Item.Glowing"));
 		for(String currency : config.getConfigurationSection("Settings.Custom-Currencies").getKeys(false)) {
 			customCurrencies.add(new CustomCurrency(currency, config.getString("Settings.Custom-Currencies." + currency + ".Command")));
+		}
+		baseCurrency = Currency.getCurrency(config.getString("Settings.Base-Currency"));
+		if(baseCurrency == Currency.CUSTOM) {
+			baseCustomCurrency = getCustomCurrency(config.getString("Settings.Base-Currency"));
 		}
 		for(String id : config.getStringList("Settings.Black-List-Items")) {
 			int md = 0;
@@ -264,7 +268,7 @@ public class EpicSellChest {
 									int price = 0;
 									String command = "";
 									Currency currency = getBaseCurrency();
-									CustomCurrency custom = null;
+									CustomCurrency custom = getBaseCustomCurrency();
 									Boolean found = false;
 									for(SellableItem sellItem : getSellableItems()) {
 										if(sellItem.getItem().getType() == item.getType()
@@ -401,6 +405,10 @@ public class EpicSellChest {
 	
 	public Currency getBaseCurrency() {
 		return this.baseCurrency;
+	}
+	
+	public CustomCurrency getBaseCustomCurrency() {
+		return this.baseCustomCurrency;
 	}
 	
 	public boolean isRadiusAcceptable(Location pos1, Location pos2) {
