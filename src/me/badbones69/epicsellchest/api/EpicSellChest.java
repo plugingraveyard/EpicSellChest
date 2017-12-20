@@ -211,14 +211,14 @@ public class EpicSellChest {
 					int price = 0;
 					String command = "";
 					Currency currency = getBaseCurrency();
-					CustomCurrency custom = null;
+					CustomCurrency customCurrency = baseCustomCurrency;
 					Boolean found = false;
 					for(SellableItem sellItem : getSellableItems()) {
 						if(sellItem.getItem().getType() == item.getType()
 						&& sellItem.getItem().getDurability() == item.getDurability()) {
 							command = sellItem.getCommand();
 							currency = sellItem.getCurrency();
-							custom = sellItem.getCustomCurrency();
+							customCurrency = sellItem.getCustomCurrency();
 							price = sellItem.getPrice() * item.getAmount();
 							if(item.hasItemMeta()) {
 								if(item.getItemMeta().hasEnchants()) {
@@ -249,7 +249,7 @@ public class EpicSellChest {
 							}
 						}
 					}
-					items.add(new SellItem(item, price, currency, custom, command));
+					items.add(new SellItem(item, price, currency, customCurrency, command));
 				}
 			}
 		}
