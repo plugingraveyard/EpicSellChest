@@ -1,8 +1,6 @@
 package me.badbones69.epicsellchest;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import me.badbones69.epicsellchest.api.Version;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -13,7 +11,8 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import me.badbones69.epicsellchest.api.Version;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Methods {
 	
@@ -34,8 +33,7 @@ public class Methods {
 				ty = Integer.parseInt(b[1]);
 			}
 			Material m = Material.matchMaterial(type);
-			ItemStack item = new ItemStack(m, 1, (short) ty);
-			return item;
+			return new ItemStack(m, 1, (short) ty);
 		}catch(Exception e) {
 			return null;
 		}
@@ -57,7 +55,7 @@ public class Methods {
 	}
 	
 	public static ItemStack makeItem(String type, int amount, String name, List<String> lore) {
-		ArrayList<String> l = new ArrayList<String>();
+		ArrayList<String> l = new ArrayList<>();
 		int ty = 0;
 		if(type.contains(":")) {
 			String[] b = type.split(":");
@@ -78,17 +76,15 @@ public class Methods {
 	public static ItemStack addGlowing(ItemStack item) {
 		ItemStack it = item.clone();
 		try {
-			if(item != null) {
-				if(item.hasItemMeta()) {
-					if(item.getItemMeta().hasEnchants()) {
-						return item;
-					}
+			if(item.hasItemMeta()) {
+				if(item.getItemMeta().hasEnchants()) {
+					return item;
 				}
-				item.addUnsafeEnchantment(Enchantment.LUCK, 1);
-				ItemMeta meta = item.getItemMeta();
-				meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-				item.setItemMeta(meta);
 			}
+			item.addUnsafeEnchantment(Enchantment.LUCK, 1);
+			ItemMeta meta = item.getItemMeta();
+			meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+			item.setItemMeta(meta);
 			return item;
 		}catch(NoClassDefFoundError e) {
 			return it;
@@ -99,17 +95,15 @@ public class Methods {
 		ItemStack it = item.clone();
 		if(glowing) {
 			try {
-				if(item != null) {
-					if(item.hasItemMeta()) {
-						if(item.getItemMeta().hasEnchants()) {
-							return item;
-						}
+				if(item.hasItemMeta()) {
+					if(item.getItemMeta().hasEnchants()) {
+						return item;
 					}
-					item.addUnsafeEnchantment(Enchantment.LUCK, 1);
-					ItemMeta meta = item.getItemMeta();
-					meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-					item.setItemMeta(meta);
 				}
+				item.addUnsafeEnchantment(Enchantment.LUCK, 1);
+				ItemMeta meta = item.getItemMeta();
+				meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+				item.setItemMeta(meta);
 				return item;
 			}catch(NoClassDefFoundError e) {
 				return it;
@@ -132,10 +126,7 @@ public class Methods {
 	}
 	
 	public static boolean isInvFull(Player player) {
-		if(player.getInventory().firstEmpty() == -1) {
-			return true;
-		}
-		return false;
+		return player.getInventory().firstEmpty() == -1;
 	}
 	
 	public static boolean isInvEmpty(Inventory inv) {

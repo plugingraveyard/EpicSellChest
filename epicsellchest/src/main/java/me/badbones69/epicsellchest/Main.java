@@ -1,24 +1,5 @@
 package me.badbones69.epicsellchest;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Set;
-import java.util.UUID;
-
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.block.Chest;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.PluginManager;
-import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitRunnable;
-
 import me.badbones69.epicsellchest.api.EpicSellChest;
 import me.badbones69.epicsellchest.api.Messages;
 import me.badbones69.epicsellchest.api.SellItem;
@@ -34,11 +15,29 @@ import me.badbones69.epicsellchest.multisupport.DakataAntiCheatSupport;
 import me.badbones69.epicsellchest.multisupport.NoCheatPlusSupport;
 import me.badbones69.epicsellchest.multisupport.SpartanSupport;
 import me.badbones69.epicsellchest.multisupport.Support;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.block.Chest;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.PluginManager;
+import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.UUID;
 
 public class Main extends JavaPlugin {
+	
 	public EpicSellChest sc = EpicSellChest.getInstance();
-	private HashMap<UUID, Location> pos1 = new HashMap<UUID, Location>();
-	private HashMap<UUID, Location> pos2 = new HashMap<UUID, Location>();
+	private HashMap<UUID, Location> pos1 = new HashMap<>();
+	private HashMap<UUID, Location> pos2 = new HashMap<>();
 	public static SettingsManager settings = SettingsManager.getInstance();
 	
 	@Override
@@ -65,7 +64,7 @@ public class Main extends JavaPlugin {
 						Player player = (Player) sender;
 						UUID uuid = player.getUniqueId();
 						//Gets the block they are looking at.
-						Block block = player.getTargetBlock((Set<Material>) null, 5);
+						Block block = player.getTargetBlock(null, 5);
 						//Checks to see if the block is a chest or trap chest.
 						if(block.getType() != Material.CHEST && block.getType() != Material.TRAPPED_CHEST) {
 							//If it isn't then it will set the block as the block they are standing on.
@@ -220,7 +219,7 @@ public class Main extends JavaPlugin {
 											if(Support.hasNoCheatPlus()) {
 												NoCheatPlusSupport.exemptPlayer(player);
 											}
-											if(Support.hasNoCheatPlus()) {
+											if(Support.hasSpartan()) {
 												SpartanSupport.cancelBlockChecker(player);
 											}
 											HashMap<String, Integer> placeholders = new HashMap<>();
@@ -228,7 +227,7 @@ public class Main extends JavaPlugin {
 												BlockBreakEvent check = new BlockBreakEvent(chest.getBlock(), player);
 												Bukkit.getPluginManager().callEvent(check);
 												if(!check.isCancelled()) {
-													ArrayList<SellItem> items = new ArrayList<>();
+													ArrayList<SellItem> items;
 													if(args.length >= 2) {
 														ArrayList<ItemStack> selling = new ArrayList<>();
 														for(int i = 1; i < args.length; i++) {
@@ -315,7 +314,7 @@ public class Main extends JavaPlugin {
 													if(Support.hasNoCheatPlus()) {
 														NoCheatPlusSupport.exemptPlayer(player);
 													}
-													if(Support.hasNoCheatPlus()) {
+													if(Support.hasSpartan()) {
 														SpartanSupport.cancelBlockChecker(player);
 													}
 													HashMap<String, Integer> placeholders = new HashMap<>();
@@ -323,7 +322,7 @@ public class Main extends JavaPlugin {
 														BlockBreakEvent check = new BlockBreakEvent(chest.getBlock(), player);
 														Bukkit.getPluginManager().callEvent(check);
 														if(!check.isCancelled()) {
-															ArrayList<SellItem> items = new ArrayList<>();
+															ArrayList<SellItem> items;
 															if(args.length >= 2) {
 																ArrayList<ItemStack> selling = new ArrayList<>();
 																for(int i = 1; i < args.length; i++) {
@@ -432,7 +431,7 @@ public class Main extends JavaPlugin {
 							Player player = (Player) sender;
 							UUID uuid = player.getUniqueId();
 							//Gets the block they are looking at.
-							Block block = player.getTargetBlock((Set<Material>) null, 5);
+							Block block = player.getTargetBlock(null, 5);
 							//Checks to see if the block is a chest or trap chest.
 							if(block.getType() != Material.CHEST && block.getType() != Material.TRAPPED_CHEST) {
 								//If it isn't then it will set the block as the block they are standing on.

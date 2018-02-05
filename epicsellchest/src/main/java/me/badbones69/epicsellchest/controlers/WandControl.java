@@ -1,9 +1,15 @@
 package me.badbones69.epicsellchest.controlers;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.UUID;
-
+import me.badbones69.epicsellchest.Methods;
+import me.badbones69.epicsellchest.api.EpicSellChest;
+import me.badbones69.epicsellchest.api.Messages;
+import me.badbones69.epicsellchest.api.SellItem;
+import me.badbones69.epicsellchest.api.SellType;
+import me.badbones69.epicsellchest.api.currency.Currency;
+import me.badbones69.epicsellchest.api.currency.CustomCurrency;
+import me.badbones69.epicsellchest.api.event.SellChestEvent;
+import me.badbones69.epicsellchest.multisupport.NoCheatPlusSupport;
+import me.badbones69.epicsellchest.multisupport.Support;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -16,14 +22,9 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
-import me.badbones69.epicsellchest.Methods;
-import me.badbones69.epicsellchest.api.EpicSellChest;
-import me.badbones69.epicsellchest.api.Messages;
-import me.badbones69.epicsellchest.api.SellItem;
-import me.badbones69.epicsellchest.api.SellType;
-import me.badbones69.epicsellchest.api.currency.Currency;
-import me.badbones69.epicsellchest.api.currency.CustomCurrency;
-import me.badbones69.epicsellchest.api.event.SellChestEvent;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.UUID;
 
 public class WandControl implements Listener {
 	
@@ -41,6 +42,9 @@ public class WandControl implements Listener {
 					if(block != null) {
 						if(block.getType() == Material.CHEST || block.getType() == Material.TRAPPED_CHEST) {
 							e.setCancelled(true);
+							if(Support.hasNoCheatPlus()) {
+								NoCheatPlusSupport.exemptPlayer(player);
+							}
 							BlockBreakEvent check = new BlockBreakEvent(block, player);
 							Bukkit.getPluginManager().callEvent(check);
 							if(!check.isCancelled()) {
@@ -67,24 +71,19 @@ public class WandControl implements Listener {
 													chest.getInventory().remove(item.getItem());
 												}
 												player.sendMessage(Messages.SOLD_CHEST.getMessageInt(placeholders));
-												return;
 											}
 										}else {
 											player.sendMessage(Messages.NO_SELLABLE_ITEMS.getMessage());
-											return;
 										}
 									}else {
 										sc.addTwoFactorAuth(uuid);
 										player.sendMessage(Messages.WAND_TWO_FACTOR_AUTH.getMessage());
-										return;
 									}
 								}else {
 									player.sendMessage(Messages.NO_SELLABLE_ITEMS.getMessage());
-									return;
 								}
 							}else {
 								player.sendMessage(Messages.CANT_SELL_CHEST.getMessage());
-								return;
 							}
 						}
 					}
