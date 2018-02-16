@@ -1,9 +1,9 @@
 package me.badbones69.epicsellchest.api;
 
-import java.util.HashMap;
-
 import me.badbones69.epicsellchest.Main;
 import me.badbones69.epicsellchest.Methods;
+
+import java.util.HashMap;
 
 public enum Messages {
 	

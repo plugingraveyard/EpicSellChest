@@ -1,9 +1,8 @@
 package me.badbones69.epicsellchest.api.currency;
 
+import me.badbones69.epicsellchest.api.Version;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-
-import me.badbones69.epicsellchest.api.Version;
 
 public class CurrencyAPI {
 	
@@ -35,7 +34,7 @@ public class CurrencyAPI {
 			player.setTotalExperience(total);
 			player.setLevel(0);
 			player.setExp(0);
-			for(; total > player.getExpToLevel();) {
+			for(; total > player.getExpToLevel(); ) {
 				total -= player.getExpToLevel();
 				player.setLevel(player.getLevel() + 1);
 			}
@@ -48,7 +47,7 @@ public class CurrencyAPI {
 	
 	private static int getTotalExperience(Player player) {
 		// https://www.spigotmc.org/threads/72804
-		int experience = 0;
+		int experience;
 		int level = player.getLevel();
 		if(level >= 0 && level <= 15) {
 			experience = (int) Math.ceil(Math.pow(level, 2) + (6 * level));

@@ -6,7 +6,7 @@
 
     <groupId>me.badbones69</groupId>
     <artifactId>EpicSellChest</artifactId>
-    <version>1.1</version>
+    <version>1.1.1</version>
 
     <dependencies>
         <dependency>

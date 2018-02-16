@@ -1,5 +1,9 @@
 package me.badbones69.epicsellchest.controlers;
 
+import me.badbones69.epicsellchest.Main;
+import me.badbones69.epicsellchest.Methods;
+import me.badbones69.epicsellchest.api.EpicSellChest;
+import me.badbones69.epicsellchest.api.Messages;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -9,11 +13,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-
-import me.badbones69.epicsellchest.Main;
-import me.badbones69.epicsellchest.Methods;
-import me.badbones69.epicsellchest.api.EpicSellChest;
-import me.badbones69.epicsellchest.api.Messages;
 
 public class SignControl implements Listener {
 	

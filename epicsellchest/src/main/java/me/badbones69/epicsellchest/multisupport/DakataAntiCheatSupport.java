@@ -1,12 +1,11 @@
 package me.badbones69.epicsellchest.multisupport;
 
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-
 import DAKATA.CheatType;
 import DAKATA.PlayerCheatEvent;
 import me.badbones69.epicsellchest.api.EpicSellChest;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 
 public class DakataAntiCheatSupport implements Listener {
 	

@@ -1,9 +1,11 @@
 package me.badbones69.epicsellchest.api;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.UUID;
-
+import me.badbones69.epicsellchest.Main;
+import me.badbones69.epicsellchest.Methods;
+import me.badbones69.epicsellchest.SettingsManager;
+import me.badbones69.epicsellchest.api.currency.Currency;
+import me.badbones69.epicsellchest.api.currency.CurrencyAPI;
+import me.badbones69.epicsellchest.api.currency.CustomCurrency;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -18,12 +20,9 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
-import me.badbones69.epicsellchest.Main;
-import me.badbones69.epicsellchest.Methods;
-import me.badbones69.epicsellchest.SettingsManager;
-import me.badbones69.epicsellchest.api.currency.Currency;
-import me.badbones69.epicsellchest.api.currency.CurrencyAPI;
-import me.badbones69.epicsellchest.api.currency.CustomCurrency;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.UUID;
 
 public class EpicSellChest {
 	
@@ -135,7 +134,7 @@ public class EpicSellChest {
 		for(String name : config.getConfigurationSection("Settings.Enchantment-Cost").getKeys(false)) {
 			Enchantment enchant = Enchantment.getByName(name);
 			if(enchant != null) {
-				HashMap<Integer, Integer> levels = new HashMap<Integer, Integer>();
+				HashMap<Integer, Integer> levels = new HashMap<>();
 				for(String line : config.getStringList("Settings.Enchantment-Cost." + name)) {
 					int cost = 0;
 					int level = 0;
@@ -204,7 +203,7 @@ public class EpicSellChest {
 	}
 	
 	public ArrayList<SellItem> getSellableItems(Inventory inv) {
-		ArrayList<SellItem> items = new ArrayList<SellItem>();
+		ArrayList<SellItem> items = new ArrayList<>();
 		for(ItemStack item : inv.getContents()) {
 			if(item != null) {
 				if(canSellItem(item)) {
@@ -257,7 +256,7 @@ public class EpicSellChest {
 	}
 	
 	public ArrayList<SellItem> getSellableItems(Inventory inv, ArrayList<ItemStack> selling) {
-		ArrayList<SellItem> items = new ArrayList<SellItem>();
+		ArrayList<SellItem> items = new ArrayList<>();
 		for(ItemStack item : inv.getContents()) {
 			if(item != null) {
 				for(ItemStack sell : selling) {
@@ -376,9 +375,7 @@ public class EpicSellChest {
 					break;
 				}
 			}
-			if(!found) {
-				return false;
-			}
+			return found;
 		}
 		return true;
 	}
@@ -448,7 +445,7 @@ public class EpicSellChest {
 		new BukkitRunnable() {
 			@Override
 			public void run() {
-				ArrayList<Chest> chests = new ArrayList<Chest>();
+				ArrayList<Chest> chests = new ArrayList<>();
 				int maxChestSell = Main.settings.getConfig().getInt("Settings.Region-Options.Max-Chest-Sell");
 				boolean maxChestToggle = Main.settings.getConfig().getBoolean("Settings.Region-Options.Chest-Sell-Toggle");
 				Location min = getMinimumPoint(pos1, pos2).toLocation(pos1.getWorld());
@@ -486,10 +483,7 @@ public class EpicSellChest {
 	}
 	
 	public Boolean needsTwoFactorAuth(UUID uuid) {
-		if(useTwoFactorAuth()) {
-			return !twoFactorAuth.contains(uuid);
-		}
-		return false;
+		return useTwoFactorAuth() && !twoFactorAuth.contains(uuid);
 	}
 	
 	public void addTwoFactorAuth(UUID uuid) {
@@ -521,7 +515,7 @@ public class EpicSellChest {
 	}
 	
 	private ArrayList<Material> getDamageableItems() {
-		ArrayList<Material> ma = new ArrayList<Material>();
+		ArrayList<Material> ma = new ArrayList<>();
 		ma.add(Material.DIAMOND_HELMET);
 		ma.add(Material.DIAMOND_CHESTPLATE);
 		ma.add(Material.DIAMOND_LEGGINGS);

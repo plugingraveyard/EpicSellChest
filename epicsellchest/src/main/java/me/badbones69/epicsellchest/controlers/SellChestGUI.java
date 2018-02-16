@@ -1,9 +1,14 @@
 package me.badbones69.epicsellchest.controlers;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.UUID;
-
+import me.badbones69.epicsellchest.Main;
+import me.badbones69.epicsellchest.Methods;
+import me.badbones69.epicsellchest.api.EpicSellChest;
+import me.badbones69.epicsellchest.api.Messages;
+import me.badbones69.epicsellchest.api.SellItem;
+import me.badbones69.epicsellchest.api.SellType;
+import me.badbones69.epicsellchest.api.currency.Currency;
+import me.badbones69.epicsellchest.api.currency.CustomCurrency;
+import me.badbones69.epicsellchest.api.event.SellChestEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -15,21 +20,15 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import me.badbones69.epicsellchest.Main;
-import me.badbones69.epicsellchest.Methods;
-import me.badbones69.epicsellchest.api.EpicSellChest;
-import me.badbones69.epicsellchest.api.Messages;
-import me.badbones69.epicsellchest.api.SellItem;
-import me.badbones69.epicsellchest.api.SellType;
-import me.badbones69.epicsellchest.api.currency.Currency;
-import me.badbones69.epicsellchest.api.currency.CustomCurrency;
-import me.badbones69.epicsellchest.api.event.SellChestEvent;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.UUID;
 
 public class SellChestGUI implements Listener {
 	
 	private static EpicSellChest sc = EpicSellChest.getInstance();
-	private HashMap<UUID, ArrayList<SellItem>> sellables = new HashMap<UUID, ArrayList<SellItem>>();
-	private HashMap<UUID, ArrayList<ItemStack>> nonsellables = new HashMap<UUID, ArrayList<ItemStack>>();
+	private HashMap<UUID, ArrayList<SellItem>> sellables = new HashMap<>();
+	private HashMap<UUID, ArrayList<ItemStack>> nonsellables = new HashMap<>();
 	
 	public static void openSellChestGUI(Player player) {
 		sc.openSellChestGUI(player);
@@ -85,7 +84,7 @@ public class SellChestGUI implements Listener {
 						for(SellItem item : items) {
 							inv.remove(item.getItem());
 						}
-						ArrayList<ItemStack> others = new ArrayList<ItemStack>();
+						ArrayList<ItemStack> others = new ArrayList<>();
 						for(ItemStack item : inv.getContents()) {
 							if(item != null) {
 								others.add(item);

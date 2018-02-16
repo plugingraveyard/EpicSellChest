@@ -1,9 +1,8 @@
 package me.badbones69.epicsellchest.api;
 
-import org.bukkit.inventory.ItemStack;
-
 import me.badbones69.epicsellchest.api.currency.Currency;
 import me.badbones69.epicsellchest.api.currency.CustomCurrency;
+import org.bukkit.inventory.ItemStack;
 
 public class SellItem {
 	

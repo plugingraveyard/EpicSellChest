@@ -5,7 +5,7 @@ import org.bukkit.Bukkit;
 public enum Version {
 	
 	TOO_OLD(-1),
-	v1_7_R1(171), v1_7_R2(172), v1_7_R3(173), v1_7_R4(174), 
+	v1_7_R1(171), v1_7_R2(172), v1_7_R3(173), v1_7_R4(174),
 	v1_8_R1(181), v1_8_R2(182), v1_8_R3(183),
 	v1_9_R1(191), v1_9_R2(192),
 	v1_10_R1(1101),
@@ -22,7 +22,7 @@ public enum Version {
 	}
 	
 	/**
-	 * 
+	 *
 	 * @return Get the server's Minecraft version.
 	 */
 	public static Version getVersion() {
@@ -46,7 +46,7 @@ public enum Version {
 	}
 	
 	/**
-	 * 
+	 *
 	 * @return The server's minecraft version as an integer.
 	 */
 	public Integer getVersionInteger() {

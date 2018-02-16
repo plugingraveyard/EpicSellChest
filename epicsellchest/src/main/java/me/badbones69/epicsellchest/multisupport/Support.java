@@ -5,31 +5,19 @@ import org.bukkit.Bukkit;
 public class Support {
 	
 	public static boolean hasVault() {
-		if(Bukkit.getServer().getPluginManager().getPlugin("Vault") != null) {
-			return true;
-		}
-		return false;
+		return Bukkit.getServer().getPluginManager().getPlugin("Vault") != null;
 	}
 	
 	public static boolean hasDakata() {
-		if(Bukkit.getServer().getPluginManager().getPlugin("DakataAntiCheat") != null) {
-			return true;
-		}
-		return false;
+		return Bukkit.getServer().getPluginManager().getPlugin("DakataAntiCheat") != null;
 	}
 	
 	public static boolean hasNoCheatPlus() {
-		if(Bukkit.getServer().getPluginManager().getPlugin("NoCheatPlus") != null) {
-			return true;
-		}
-		return false;
+		return Bukkit.getServer().getPluginManager().getPlugin("NoCheatPlus") != null;
 	}
 	
 	public static boolean hasSpartan() {
-		if(Bukkit.getServer().getPluginManager().getPlugin("Spartan") != null) {
-			return true;
-		}
-		return false;
+		return Bukkit.getServer().getPluginManager().getPlugin("Spartan") != null;
 	}
 	
 }
