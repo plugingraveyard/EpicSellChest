@@ -1,6 +1,6 @@
 package me.badbones69.epicsellchest.api.currency;
 
-import me.badbones69.epicsellchest.api.Version;
+import me.badbones69.epicsellchest.api.enums.Version;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -28,7 +28,7 @@ public class CurrencyAPI {
 	}
 	
 	private static void giveTotalXP(Player player, int amount) {
-		if(Version.getVersion().getVersionInteger() >= 181) {
+		if(Version.getCurrentVersion().getVersionInteger() >= 181) {
 			int total = getTotalExperience(player) + amount;
 			player.setTotalExperience(0);
 			player.setTotalExperience(total);

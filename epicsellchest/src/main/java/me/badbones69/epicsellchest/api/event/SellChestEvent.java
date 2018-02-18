@@ -1,7 +1,7 @@
 package me.badbones69.epicsellchest.api.event;
 
-import me.badbones69.epicsellchest.api.SellItem;
-import me.badbones69.epicsellchest.api.SellType;
+import me.badbones69.epicsellchest.api.objects.SellItem;
+import me.badbones69.epicsellchest.api.enums.SellType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;

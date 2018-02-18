@@ -2,14 +2,14 @@ package me.badbones69.epicsellchest.controlers;
 
 import me.badbones69.epicsellchest.Methods;
 import me.badbones69.epicsellchest.api.EpicSellChest;
-import me.badbones69.epicsellchest.api.Messages;
-import me.badbones69.epicsellchest.api.SellItem;
-import me.badbones69.epicsellchest.api.SellType;
+import me.badbones69.epicsellchest.api.enums.Messages;
+import me.badbones69.epicsellchest.api.objects.SellItem;
+import me.badbones69.epicsellchest.api.enums.SellType;
 import me.badbones69.epicsellchest.api.currency.Currency;
 import me.badbones69.epicsellchest.api.currency.CustomCurrency;
 import me.badbones69.epicsellchest.api.event.SellChestEvent;
 import me.badbones69.epicsellchest.multisupport.NoCheatPlusSupport;
-import me.badbones69.epicsellchest.multisupport.Support;
+import me.badbones69.epicsellchest.api.enums.Support;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -42,7 +42,7 @@ public class WandControl implements Listener {
 					if(block != null) {
 						if(block.getType() == Material.CHEST || block.getType() == Material.TRAPPED_CHEST) {
 							e.setCancelled(true);
-							if(Support.hasNoCheatPlus()) {
+							if(Support.NO_CHEAT_PLUS.isEnabled()) {
 								NoCheatPlusSupport.exemptPlayer(player);
 							}
 							BlockBreakEvent check = new BlockBreakEvent(block, player);

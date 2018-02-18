@@ -1,4 +1,4 @@
-package me.badbones69.epicsellchest.api;
+package me.badbones69.epicsellchest.api.objects;
 
 import me.badbones69.epicsellchest.api.currency.Currency;
 import me.badbones69.epicsellchest.api.currency.CustomCurrency;
@@ -10,14 +10,16 @@ public class SellableItem {
 	private ItemStack item;
 	private String command;
 	private Currency currency;
-	private CustomCurrency custom;
+	private CustomCurrency customCurrency;
+	private Boolean checkAmount;
 	
-	public SellableItem(ItemStack item, int price, Currency currency, CustomCurrency custom, String command) {
+	public SellableItem(ItemStack item, int price, Currency currency, CustomCurrency customCurrency, String command, Boolean checkAmount) {
 		this.item = item;
 		this.price = price;
-		this.custom = custom;
+		this.customCurrency = customCurrency;
 		this.command = command;
 		this.currency = currency;
+		this.checkAmount = checkAmount;
 	}
 	
 	public ItemStack getItem() {
@@ -33,11 +35,19 @@ public class SellableItem {
 	}
 	
 	public CustomCurrency getCustomCurrency() {
-		return custom;
+		return customCurrency;
 	}
 	
 	public String getCommand() {
 		return command;
+	}
+	
+	public Boolean usesCheckAmount() {
+		return checkAmount;
+	}
+	
+	public int getCheckAmount() {
+		return item.getAmount();
 	}
 	
 }

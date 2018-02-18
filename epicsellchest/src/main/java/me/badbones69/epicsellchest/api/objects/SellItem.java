@@ -1,4 +1,4 @@
-package me.badbones69.epicsellchest.api;
+package me.badbones69.epicsellchest.api.objects;
 
 import me.badbones69.epicsellchest.api.currency.Currency;
 import me.badbones69.epicsellchest.api.currency.CustomCurrency;

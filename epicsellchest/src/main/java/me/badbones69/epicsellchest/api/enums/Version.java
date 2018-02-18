@@ -1,4 +1,4 @@
-package me.badbones69.epicsellchest.api;
+package me.badbones69.epicsellchest.api.enums;
 
 import org.bukkit.Bukkit;
 
@@ -25,7 +25,7 @@ public enum Version {
 	 *
 	 * @return Get the server's Minecraft version.
 	 */
-	public static Version getVersion() {
+	public static Version getCurrentVersion() {
 		if(currentVersion == null) {
 			String ver = Bukkit.getServer().getClass().getPackage().getName();
 			int v = Integer.parseInt(ver.substring(ver.lastIndexOf('.') + 1).replaceAll("_", "").replaceAll("R", "").replaceAll("v", ""));
@@ -88,6 +88,45 @@ public enum Version {
 			resault = -1;
 		}
 		return resault;
+	}
+	
+	/**
+	 * Checks to see if the current version is newer then the checked version.
+	 * @param version The version you are checking.
+	 * @return True if newer then the checked version and false if the same or older.
+	 */
+	public Boolean isNewer(Version version) {
+		if(this.versionInteger > version.versionInteger || this.versionInteger == -2) {
+			return true;
+		}else {
+			return false;
+		}
+	}
+	
+	/**
+	 * Checks to see if the current version is the same as the checked version.
+	 * @param version The version you are checking.
+	 * @return True if both the current and checked version is the same and false if otherwise.
+	 */
+	public Boolean isSame(Version version) {
+		if(this.versionInteger == version.versionInteger) {
+			return true;
+		}else {
+			return false;
+		}
+	}
+	
+	/**
+	 * Checks to see if the current version is older then the checked version.
+	 * @param version The version you are checking.
+	 * @return True if older then the checked version and false if the same or newer.
+	 */
+	public Boolean isOlder(Version version) {
+		if(this.versionInteger < version.versionInteger || this.versionInteger == -1) {
+			return true;
+		}else {
+			return false;
+		}
 	}
 	
 }

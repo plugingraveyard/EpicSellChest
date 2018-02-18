@@ -8,3 +8,9 @@
 epicsellchest/target/
 
 epicsellchest/src/main/lib/
+
+epicsellchest/src/main/resources/Data\.yml
+
+epicsellchest/src/main/\.DS_Store
+
+\.DS_Store
