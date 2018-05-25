@@ -228,7 +228,7 @@ public class EpicSellChest {
 		for(ItemStack item : inv.getContents()) {
 			if(item != null) {
 				if(canSellItem(item)) {
-					int price = 0;
+					int price = 0, sellingAmount = 0, sellingMinimum = 0;
 					String command = "";
 					Currency currency = getBaseCurrency();
 					CustomCurrency customCurrency = baseCustomCurrency;
@@ -238,7 +238,17 @@ public class EpicSellChest {
 							command = sellItem.getCommand();
 							currency = sellItem.getCurrency();
 							customCurrency = sellItem.getCustomCurrency();
-							price = sellItem.getPrice() * item.getAmount();
+							if(sellItem.usesCheckAmount()) {
+								int amount = item.getAmount();
+								sellingMinimum = sellItem.getCheckAmount();
+								while(amount >= sellItem.getCheckAmount()) {
+									amount -= sellItem.getCheckAmount();
+									sellingAmount++;
+								}
+								price = sellItem.getPrice() * sellingAmount;
+							}else {
+								price = sellItem.getPrice() * item.getAmount();
+							}
 							if(item.hasItemMeta()) {
 								if(item.getItemMeta().hasEnchants()) {
 									for(UpgradeableEnchantment enchantment : getUpgradeableEnchantment()) {
@@ -268,7 +278,7 @@ public class EpicSellChest {
 							}
 						}
 					}
-					items.add(new SellItem(item, price, currency, customCurrency, command));
+					items.add(new SellItem(item, sellingAmount, sellingMinimum, price, currency, customCurrency, command));
 				}
 			}
 		}
@@ -284,7 +294,7 @@ public class EpicSellChest {
 						if(item.getType() == sell.getType()) {
 							if(item.getDurability() == sell.getDurability()) {
 								if(canSellItem(item)) {
-									int price = 0;
+									int price = 0, sellingAmount = 0, sellingMinimum = 0;
 									String command = "";
 									Currency currency = getBaseCurrency();
 									CustomCurrency custom = getBaseCustomCurrency();
@@ -294,7 +304,17 @@ public class EpicSellChest {
 											command = sellItem.getCommand();
 											currency = sellItem.getCurrency();
 											custom = sellItem.getCustomCurrency();
-											price = sellItem.getPrice() * item.getAmount();
+											if(sellItem.usesCheckAmount()) {
+												int amount = item.getAmount();
+												sellingMinimum = sellItem.getCheckAmount();
+												while(amount >= sellItem.getCheckAmount()) {
+													amount -= sellItem.getCheckAmount();
+													sellingAmount++;
+												}
+												price = sellItem.getPrice() * sellingAmount;
+											}else {
+												price = sellItem.getPrice() * item.getAmount();
+											}
 											if(item.hasItemMeta()) {
 												if(item.getItemMeta().hasEnchants()) {
 													for(UpgradeableEnchantment enchantment : getUpgradeableEnchantment()) {
@@ -324,7 +344,7 @@ public class EpicSellChest {
 											}
 										}
 									}
-									items.add(new SellItem(item, price, currency, custom, command));
+									items.add(new SellItem(item, sellingAmount, sellingMinimum, price, currency, custom, command));
 								}
 							}
 						}
@@ -394,7 +414,7 @@ public class EpicSellChest {
 				}
 				if(canSell) {
 					if(sellable.usesCheckAmount()) {
-						canSell = item.getAmount() == sellable.getCheckAmount();
+						canSell = item.getAmount() >= sellable.getCheckAmount();
 					}
 				}
 				break;

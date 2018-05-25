@@ -97,7 +97,11 @@ public class Main extends JavaPlugin {
 												}
 												sc.sellSellableItems(player, items);
 												for(SellItem item : items) {
-													chest.getInventory().remove(item.getItem());
+													if(item.usesSellingAmount()) {
+														item.getItem().setAmount(item.getItem().getAmount() - (item.getSellingAmount() * item.getSellingMinimum()));
+													}else {
+														chest.getInventory().remove(item.getItem());
+													}
 												}
 												player.sendMessage(Messages.SOLD_CHEST.getMessageInt(placeholders));
 												return true;

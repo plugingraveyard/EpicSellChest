@@ -32,30 +32,32 @@ public class ShopGUIPlus {
 				String path = "shops." + shop;
 				for(String item : shops.getConfigurationSection(path + ".items").getKeys(false)) {
 					path += ".items." + item;
-					if(shops.getString(path + ".type").equalsIgnoreCase("item")) {
-						if(shops.getInt(path + ".sellPrice") >= 0) {
-							ItemBuilder builder = new ItemBuilder()
-							.setMaterial(shops.getString(path + "item.material"))
-							.setMetaData(shops.getInt(path + "item.damage"))
-							.setAmount(shops.getInt(path + "item.quantity"))
-							.setName(shops.getString(path + ".item.name"))
-							.setLore(shops.getStringList(path + "item.lore"));
-							for(String i : shops.getStringList(path + ".item.enchantments")) {
-								for(Enchantment enc : Enchantment.values()) {
-									if(enc.getName() != null) {
-										if(i.toLowerCase().startsWith(enc.getName().toLowerCase() + ":") || i.toLowerCase().startsWith(Methods.getEnchantmentName(enc).toLowerCase() + ":")) {
-											String[] breakdown = i.split(":");
-											int lvl = Integer.parseInt(breakdown[1]);
-											builder.addEnchantments(enc, lvl);
+					if(shops.contains(path + ".type")) {
+						if(shops.getString(path + ".type").equalsIgnoreCase("item")) {
+							if(shops.getInt(path + ".sellPrice") >= 0) {
+								ItemBuilder builder = new ItemBuilder()
+								.setMaterial(shops.getString(path + ".item.material"))
+								.setMetaData(shops.getInt(path + ".item.damage"))
+								.setAmount(shops.getInt(path + ".item.quantity"))
+								.setName(shops.getString(path + ".item.name"))
+								.setLore(shops.getStringList(path + ".item.lore"));
+								for(String i : shops.getStringList(path + ".item.enchantments")) {
+									for(Enchantment enc : Enchantment.values()) {
+										if(enc.getName() != null) {
+											if(i.toLowerCase().startsWith(enc.getName().toLowerCase() + ":") || i.toLowerCase().startsWith(Methods.getEnchantmentName(enc).toLowerCase() + ":")) {
+												String[] breakdown = i.split(":");
+												int lvl = Integer.parseInt(breakdown[1]);
+												builder.addEnchantments(enc, lvl);
+											}
 										}
 									}
 								}
+								items.add(new SellableItem(builder.build(), shops.getInt(path + ".sellPrice"),
+								currency,
+								customCurrency,
+								customCurrency.getCommand(),
+								builder.getAmount() > 1));
 							}
-							items.add(new SellableItem(builder.build(), shops.getInt(path + ".sellPrice"),
-							currency,
-							customCurrency,
-							customCurrency.getCommand(),
-							builder.getAmount() > 1));
 						}
 					}
 				}

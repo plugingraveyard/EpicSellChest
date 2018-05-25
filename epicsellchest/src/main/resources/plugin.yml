@@ -2,7 +2,7 @@ name: ${project.artifactId}
 author: BadBones69
 main: me.badbones69.epicsellchest.Main
 version: ${project.version}
-softdepend: [Vault, DakataAntiCheat, NoCheatPlus, Spartan]
+softdepend: [Vault, DakataAntiCheat, NoCheatPlus, Spartan, ShopGUIPlus]
 description: This allows users to sell all the items in a chest.
 commands:
   sellchest:
