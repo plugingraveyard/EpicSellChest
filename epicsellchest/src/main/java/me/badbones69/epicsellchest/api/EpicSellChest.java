@@ -1,11 +1,16 @@
 package me.badbones69.epicsellchest.api;
 
-import me.badbones69.epicsellchest.Main;
 import me.badbones69.epicsellchest.Methods;
-import me.badbones69.epicsellchest.SettingsManager;
 import me.badbones69.epicsellchest.api.currency.Currency;
 import me.badbones69.epicsellchest.api.currency.CurrencyAPI;
 import me.badbones69.epicsellchest.api.currency.CustomCurrency;
+import me.badbones69.epicsellchest.api.enums.Support;
+import me.badbones69.epicsellchest.api.objects.FileManager;
+import me.badbones69.epicsellchest.api.objects.FileManager.Files;
+import me.badbones69.epicsellchest.api.objects.SellItem;
+import me.badbones69.epicsellchest.api.objects.SellableItem;
+import me.badbones69.epicsellchest.api.objects.UpgradeableEnchantment;
+import me.badbones69.epicsellchest.multisupport.ShopGUIPlus;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -26,7 +31,7 @@ import java.util.UUID;
 
 public class EpicSellChest {
 	
-	private Integer basePrice;
+	private Double basePrice;
 	private Boolean useMetrics;
 	private Boolean checkUpdates;
 	private Currency baseCurrency;
@@ -57,8 +62,8 @@ public class EpicSellChest {
 		customCurrencies.clear();
 		blackListEnchantments.clear();
 		upgradeableEnchantments.clear();
-		FileConfiguration config = Main.settings.getConfig();
-		basePrice = config.getInt("Settings.Base-Price");
+		FileConfiguration config = Files.CONFIG.getFile();
+		basePrice = config.getDouble("Settings.Base-Price");
 		useMetrics = config.getBoolean("Settings.Metrics");
 		checkUpdates = config.getBoolean("Settings.Check-For-Updates");
 		chestSellingItem = Methods.addGlowing(Methods.makeItem(config.getString("Settings.Chest-Selling-Item.Item"), 1, config.getString("Settings.Chest-Selling-Item.Name"), config.getStringList("Settings.Chest-Selling-Item.Lore")), config.getBoolean("Settings.Chest-Selling-Item.Glowing"));
@@ -87,10 +92,11 @@ public class EpicSellChest {
 			}
 		}
 		for(String line : config.getStringList("Settings.Item-Cost")) {
-			int cost = 0;
+			Double cost = 0.0;
 			ItemStack item = null;
 			Material m = null;
 			String command = "";
+			Boolean checkAmount = false;
 			Currency currency = null;
 			CustomCurrency custom = null;
 			for(String i : line.split(", ")) {
@@ -107,8 +113,11 @@ public class EpicSellChest {
 					item = new ItemStack(m, 1, (short) md);
 				}else if(i.startsWith("cost:")) {
 					i = i.replaceAll("cost:", "");
-					if(Methods.isInt(i)) {
-						cost = Integer.parseInt(i);
+					if(Methods.isDouble(i)) {
+						cost = Double.parseDouble(i);
+						if(line.toLowerCase().contains("torch")) {
+							System.out.println(line + ": " + cost);
+						}
 					}
 				}else if(i.startsWith("currency:")) {
 					i = i.replaceAll("currency:", "");
@@ -125,11 +134,26 @@ public class EpicSellChest {
 							}
 						}
 					}
+				}else if(i.startsWith("amount:")) {
+					i = i.replaceAll("amount:", "");
+					try {
+						int amount = Integer.parseInt(i);
+						if(amount > 1) {
+							if(item != null) {
+								item.setAmount(amount);
+							}
+							checkAmount = true;
+						}
+					}catch(Exception e) {
+					}
 				}
 			}
 			if(m != null && currency != null) {
-				sellableItems.add(new SellableItem(item, cost, currency, custom, command));
+				sellableItems.add(new SellableItem(item, cost, currency, custom, command, checkAmount));
 			}
+		}
+		if(Support.SHOP_GUI_PLUS.isEnabled()) {
+			sellableItems.addAll(ShopGUIPlus.getSellableItems());
 		}
 		for(String name : config.getConfigurationSection("Settings.Enchantment-Cost").getKeys(false)) {
 			Enchantment enchant = Enchantment.getByName(name);
@@ -159,16 +183,16 @@ public class EpicSellChest {
 		}
 	}
 	
-	public SettingsManager getSettingsManager() {
-		return Main.settings;
+	public FileManager getFileManager() {
+		return FileManager.getInstance();
 	}
 	
 	public FileConfiguration getConfig() {
-		return getSettingsManager().getConfig();
+		return Files.CONFIG.getFile();
 	}
 	
 	public FileConfiguration getMessages() {
-		return getSettingsManager().getMessages();
+		return Files.MESSAGES.getFile();
 	}
 	
 	public Boolean useMetrics() {
@@ -207,18 +231,28 @@ public class EpicSellChest {
 		for(ItemStack item : inv.getContents()) {
 			if(item != null) {
 				if(canSellItem(item)) {
-					int price = 0;
+					Double price = 0.0;
+					int sellingMinimum = 0, sellingAmount = 0;
 					String command = "";
 					Currency currency = getBaseCurrency();
 					CustomCurrency customCurrency = baseCustomCurrency;
 					Boolean found = false;
 					for(SellableItem sellItem : getSellableItems()) {
-						if(sellItem.getItem().getType() == item.getType()
-						&& sellItem.getItem().getDurability() == item.getDurability()) {
+						if(Methods.isSimilar(sellItem.getItem(), item)) {
 							command = sellItem.getCommand();
 							currency = sellItem.getCurrency();
 							customCurrency = sellItem.getCustomCurrency();
-							price = sellItem.getPrice() * item.getAmount();
+							if(sellItem.usesCheckAmount()) {
+								int amount = item.getAmount();
+								sellingMinimum = sellItem.getCheckAmount();
+								while(amount >= sellItem.getCheckAmount()) {
+									amount -= sellItem.getCheckAmount();
+									sellingAmount++;
+								}
+								price = sellItem.getPrice() * sellingAmount;
+							}else {
+								price = sellItem.getPrice() * item.getAmount();
+							}
 							if(item.hasItemMeta()) {
 								if(item.getItemMeta().hasEnchants()) {
 									for(UpgradeableEnchantment enchantment : getUpgradeableEnchantment()) {
@@ -248,7 +282,7 @@ public class EpicSellChest {
 							}
 						}
 					}
-					items.add(new SellItem(item, price, currency, customCurrency, command));
+					items.add(new SellItem(item, sellingAmount, sellingMinimum, price, currency, customCurrency, command));
 				}
 			}
 		}
@@ -264,18 +298,28 @@ public class EpicSellChest {
 						if(item.getType() == sell.getType()) {
 							if(item.getDurability() == sell.getDurability()) {
 								if(canSellItem(item)) {
-									int price = 0;
+									Double price = 0.0;
+									int sellingMinimum = 0, sellingAmount = 0;
 									String command = "";
 									Currency currency = getBaseCurrency();
 									CustomCurrency custom = getBaseCustomCurrency();
 									Boolean found = false;
 									for(SellableItem sellItem : getSellableItems()) {
-										if(sellItem.getItem().getType() == item.getType()
-										&& sellItem.getItem().getDurability() == item.getDurability()) {
+										if(Methods.isSimilar(sellItem.getItem(), item)) {
 											command = sellItem.getCommand();
 											currency = sellItem.getCurrency();
 											custom = sellItem.getCustomCurrency();
-											price = sellItem.getPrice() * item.getAmount();
+											if(sellItem.usesCheckAmount()) {
+												int amount = item.getAmount();
+												sellingMinimum = sellItem.getCheckAmount();
+												while(amount >= sellItem.getCheckAmount()) {
+													amount -= sellItem.getCheckAmount();
+													sellingAmount++;
+												}
+												price = sellItem.getPrice() * sellingAmount;
+											}else {
+												price = sellItem.getPrice() * item.getAmount();
+											}
 											if(item.hasItemMeta()) {
 												if(item.getItemMeta().hasEnchants()) {
 													for(UpgradeableEnchantment enchantment : getUpgradeableEnchantment()) {
@@ -305,7 +349,7 @@ public class EpicSellChest {
 											}
 										}
 									}
-									items.add(new SellItem(item, price, currency, custom, command));
+									items.add(new SellItem(item, sellingAmount, sellingMinimum, price, currency, custom, command));
 								}
 							}
 						}
@@ -322,8 +366,8 @@ public class EpicSellChest {
 		}
 	}
 	
-	public Integer getFullCost(Player player, ArrayList<SellItem> items, Currency currency) {
-		int cost = 0;
+	public Double getFullCost(Player player, ArrayList<SellItem> items, Currency currency) {
+		Double cost = 0.0;
 		for(SellItem item : items) {
 			if(item.getCurrency() == currency) {
 				cost += item.getPrice();
@@ -332,8 +376,8 @@ public class EpicSellChest {
 		return cost;
 	}
 	
-	public Integer getFullCost(Player player, ArrayList<SellItem> items, CustomCurrency currency) {
-		int cost = 0;
+	public Double getFullCost(Player player, ArrayList<SellItem> items, CustomCurrency currency) {
+		Double cost = 0.0;
 		for(SellItem item : items) {
 			if(item.getCurrency() == Currency.CUSTOM) {
 				if(currency.getName().equalsIgnoreCase(item.getCustomCurrency().getName())) {
@@ -359,25 +403,29 @@ public class EpicSellChest {
 				}
 			}
 		}
-		if(!Main.settings.getConfig().getBoolean("Settings.Allow-Damaged-Items")) {
+		if(!Files.CONFIG.getFile().getBoolean("Settings.Allow-Damaged-Items")) {
 			if(getDamageableItems().contains(item.getType())) {
 				if(item.getDurability() > 0) {
 					return false;
 				}
 			}
 		}
-		if(Main.settings.getConfig().getBoolean("Settings.Selling-Options.Price-Selling-Only")) {
-			Boolean found = false;
-			for(SellableItem sellable : getSellableItems()) {
-				if(sellable.getItem().getType() == item.getType()
-				&& sellable.getItem().getDurability() == item.getDurability()) {
-					found = true;
-					break;
+		Boolean pricesOnly = Files.CONFIG.getFile().getBoolean("Settings.Selling-Options.Price-Selling-Only");
+		Boolean canSell = !pricesOnly;
+		for(SellableItem sellable : getSellableItems()) {
+			if(Methods.isSimilar(sellable.getItem(), item)) {
+				if(pricesOnly) {
+					canSell = true;
 				}
+				if(canSell) {
+					if(sellable.usesCheckAmount()) {
+						canSell = item.getAmount() >= sellable.getCheckAmount();
+					}
+				}
+				break;
 			}
-			return found;
 		}
-		return true;
+		return canSell;
 	}
 	
 	public ArrayList<SellableItem> getSellableItems() {
@@ -396,7 +444,7 @@ public class EpicSellChest {
 		return upgradeableEnchantments;
 	}
 	
-	public int getBasePrice() {
+	public Double getBasePrice() {
 		return this.basePrice;
 	}
 	
@@ -410,7 +458,7 @@ public class EpicSellChest {
 	
 	public boolean isRadiusAcceptable(Location pos1, Location pos2) {
 		int blocks = 0;
-		int maxBlocks = Main.settings.getConfig().getInt("Settings.Region-Options.Max-Block-Area");
+		int maxBlocks = Files.CONFIG.getFile().getInt("Settings.Region-Options.Max-Block-Area");
 		Location min = getMinimumPoint(pos1, pos2).toLocation(pos1.getWorld());
 		Location max = getMaximumPoint(pos1, pos2).toLocation(pos1.getWorld());
 		for(int x = min.getBlockX(); x <= max.getBlockX(); x++) {
@@ -435,9 +483,7 @@ public class EpicSellChest {
 	}
 	
 	public void removeChestQuery(UUID uuid) {
-		if(queryChests.containsKey(uuid)) {
-			queryChests.remove(uuid);
-		}
+		queryChests.remove(uuid);
 	}
 	
 	public void queryChests(final Player player, final Location pos1, final Location pos2) {
@@ -446,8 +492,8 @@ public class EpicSellChest {
 			@Override
 			public void run() {
 				ArrayList<Chest> chests = new ArrayList<>();
-				int maxChestSell = Main.settings.getConfig().getInt("Settings.Region-Options.Max-Chest-Sell");
-				boolean maxChestToggle = Main.settings.getConfig().getBoolean("Settings.Region-Options.Chest-Sell-Toggle");
+				int maxChestSell = Files.CONFIG.getFile().getInt("Settings.Region-Options.Max-Chest-Sell");
+				boolean maxChestToggle = Files.CONFIG.getFile().getBoolean("Settings.Region-Options.Chest-Sell-Toggle");
 				Location min = getMinimumPoint(pos1, pos2).toLocation(pos1.getWorld());
 				Location max = getMaximumPoint(pos1, pos2).toLocation(pos1.getWorld());
 				for(int x = min.getBlockX(); x <= max.getBlockX(); x++) {
@@ -479,7 +525,7 @@ public class EpicSellChest {
 	}
 	
 	public Boolean useTwoFactorAuth() {
-		return Main.settings.getConfig().getBoolean("Settings.Use-Two-Factor-Auth");
+		return Files.CONFIG.getFile().getBoolean("Settings.Use-Two-Factor-Auth");
 	}
 	
 	public Boolean needsTwoFactorAuth(UUID uuid) {
@@ -491,9 +537,7 @@ public class EpicSellChest {
 	}
 	
 	public void removeTwoFactorAuth(UUID uuid) {
-		if(twoFactorAuth.contains(uuid)) {
-			twoFactorAuth.remove(uuid);
-		}
+		twoFactorAuth.remove(uuid);
 	}
 	
 	public void openSellChestGUI(Player player) {
@@ -532,33 +576,34 @@ public class EpicSellChest {
 		ma.add(Material.IRON_CHESTPLATE);
 		ma.add(Material.IRON_LEGGINGS);
 		ma.add(Material.IRON_BOOTS);
-		ma.add(Material.DIAMOND_HELMET);
-		ma.add(Material.DIAMOND_CHESTPLATE);
-		ma.add(Material.DIAMOND_LEGGINGS);
-		ma.add(Material.DIAMOND_BOOTS);
+		ma.add(Material.LEATHER_HELMET);
+		ma.add(Material.LEATHER_CHESTPLATE);
+		ma.add(Material.LEATHER_LEGGINGS);
+		ma.add(Material.LEATHER_BOOTS);
 		ma.add(Material.BOW);
 		ma.add(Material.WOOD_SWORD);
 		ma.add(Material.STONE_SWORD);
+		ma.add(Material.GOLD_SWORD);
 		ma.add(Material.IRON_SWORD);
 		ma.add(Material.DIAMOND_SWORD);
-		ma.add(Material.WOOD_AXE);
-		ma.add(Material.STONE_AXE);
-		ma.add(Material.IRON_AXE);
-		ma.add(Material.DIAMOND_AXE);
 		ma.add(Material.WOOD_PICKAXE);
 		ma.add(Material.STONE_PICKAXE);
+		ma.add(Material.GOLD_PICKAXE);
 		ma.add(Material.IRON_PICKAXE);
 		ma.add(Material.DIAMOND_PICKAXE);
 		ma.add(Material.WOOD_AXE);
 		ma.add(Material.STONE_AXE);
+		ma.add(Material.GOLD_AXE);
 		ma.add(Material.IRON_AXE);
 		ma.add(Material.DIAMOND_AXE);
 		ma.add(Material.WOOD_SPADE);
 		ma.add(Material.STONE_SPADE);
+		ma.add(Material.GOLD_SPADE);
 		ma.add(Material.IRON_SPADE);
 		ma.add(Material.DIAMOND_SPADE);
 		ma.add(Material.WOOD_HOE);
 		ma.add(Material.STONE_HOE);
+		ma.add(Material.GOLD_HOE);
 		ma.add(Material.IRON_HOE);
 		ma.add(Material.DIAMOND_HOE);
 		ma.add(Material.FLINT_AND_STEEL);

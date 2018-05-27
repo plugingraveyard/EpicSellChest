@@ -2,14 +2,14 @@ package me.badbones69.epicsellchest.controlers;
 
 import me.badbones69.epicsellchest.Methods;
 import me.badbones69.epicsellchest.api.EpicSellChest;
-import me.badbones69.epicsellchest.api.Messages;
-import me.badbones69.epicsellchest.api.SellItem;
-import me.badbones69.epicsellchest.api.SellType;
+import me.badbones69.epicsellchest.api.enums.Messages;
+import me.badbones69.epicsellchest.api.objects.SellItem;
+import me.badbones69.epicsellchest.api.enums.SellType;
 import me.badbones69.epicsellchest.api.currency.Currency;
 import me.badbones69.epicsellchest.api.currency.CustomCurrency;
 import me.badbones69.epicsellchest.api.event.SellChestEvent;
 import me.badbones69.epicsellchest.multisupport.NoCheatPlusSupport;
-import me.badbones69.epicsellchest.multisupport.Support;
+import me.badbones69.epicsellchest.api.enums.Support;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -42,7 +42,7 @@ public class WandControl implements Listener {
 					if(block != null) {
 						if(block.getType() == Material.CHEST || block.getType() == Material.TRAPPED_CHEST) {
 							e.setCancelled(true);
-							if(Support.hasNoCheatPlus()) {
+							if(Support.NO_CHEAT_PLUS.isEnabled()) {
 								NoCheatPlusSupport.exemptPlayer(player);
 							}
 							BlockBreakEvent check = new BlockBreakEvent(block, player);
@@ -57,7 +57,7 @@ public class WandControl implements Listener {
 											SellChestEvent event = new SellChestEvent(player, items, SellType.SINGLE);
 											Bukkit.getPluginManager().callEvent(event);
 											if(!event.isCancelled()) {
-												HashMap<String, Integer> placeholders = new HashMap<>();
+												HashMap<String, Double> placeholders = new HashMap<>();
 												for(Currency currency : Currency.values()) {
 													placeholders.put("%" + currency.getName().toLowerCase() + "%", sc.getFullCost(player, items, currency));
 													placeholders.put("%" + currency.getName() + "%", sc.getFullCost(player, items, currency));
@@ -68,9 +68,12 @@ public class WandControl implements Listener {
 												}
 												sc.sellSellableItems(player, items);
 												for(SellItem item : items) {
-													chest.getInventory().remove(item.getItem());
-												}
-												player.sendMessage(Messages.SOLD_CHEST.getMessageInt(placeholders));
+													if(item.usesSellingAmount()) {
+														item.getItem().setAmount(item.getItem().getAmount() - (item.getSellingAmount() * item.getSellingMinimum()));
+													}else {
+														chest.getInventory().remove(item.getItem());
+													}												}
+												player.sendMessage(Messages.SOLD_CHEST.getMessageDouble(placeholders));
 											}
 										}else {
 											player.sendMessage(Messages.NO_SELLABLE_ITEMS.getMessage());

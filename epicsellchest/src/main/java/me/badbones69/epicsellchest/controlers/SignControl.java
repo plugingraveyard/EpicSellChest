@@ -1,9 +1,9 @@
 package me.badbones69.epicsellchest.controlers;
 
-import me.badbones69.epicsellchest.Main;
+import me.badbones69.epicsellchest.api.objects.FileManager.Files;
 import me.badbones69.epicsellchest.Methods;
 import me.badbones69.epicsellchest.api.EpicSellChest;
-import me.badbones69.epicsellchest.api.Messages;
+import me.badbones69.epicsellchest.api.enums.Messages;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -21,7 +21,7 @@ public class SignControl implements Listener {
 	@EventHandler
 	public void onSignMake(SignChangeEvent e) {
 		Player player = e.getPlayer();
-		FileConfiguration config = Main.settings.getConfig();
+		FileConfiguration config = Files.CONFIG.getFile();
 		if(e.getLine(0).equalsIgnoreCase(config.getString("Settings.Sign-Options.Sign-Maker"))) {
 			if(player.hasPermission("epicsellchest.sign.make") || player.hasPermission("epicsellchest.admin")) {
 				e.setLine(0, Methods.color(config.getString("Settings.Sign-Options.Lines.1")));
@@ -38,7 +38,7 @@ public class SignControl implements Listener {
 	public void onSignClick(PlayerInteractEvent e) {
 		Player player = e.getPlayer();
 		Block block = e.getClickedBlock();
-		FileConfiguration config = Main.settings.getConfig();
+		FileConfiguration config = Files.CONFIG.getFile();
 		if(e.getAction() == Action.RIGHT_CLICK_BLOCK) {
 			if(block != null) {
 				if(block.getState() instanceof Sign) {

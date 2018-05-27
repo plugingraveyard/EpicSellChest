@@ -1,12 +1,15 @@
 package me.badbones69.epicsellchest;
 
 import me.badbones69.epicsellchest.api.EpicSellChest;
-import me.badbones69.epicsellchest.api.Messages;
-import me.badbones69.epicsellchest.api.SellItem;
-import me.badbones69.epicsellchest.api.SellType;
 import me.badbones69.epicsellchest.api.currency.Currency;
 import me.badbones69.epicsellchest.api.currency.CustomCurrency;
+import me.badbones69.epicsellchest.api.enums.Messages;
+import me.badbones69.epicsellchest.api.enums.SellType;
+import me.badbones69.epicsellchest.api.enums.Support;
 import me.badbones69.epicsellchest.api.event.SellChestEvent;
+import me.badbones69.epicsellchest.api.objects.FileManager;
+import me.badbones69.epicsellchest.api.objects.FileManager.Files;
+import me.badbones69.epicsellchest.api.objects.SellItem;
 import me.badbones69.epicsellchest.controlers.Metrics;
 import me.badbones69.epicsellchest.controlers.SellChestGUI;
 import me.badbones69.epicsellchest.controlers.SignControl;
@@ -14,7 +17,6 @@ import me.badbones69.epicsellchest.controlers.WandControl;
 import me.badbones69.epicsellchest.multisupport.DakataAntiCheatSupport;
 import me.badbones69.epicsellchest.multisupport.NoCheatPlusSupport;
 import me.badbones69.epicsellchest.multisupport.SpartanSupport;
-import me.badbones69.epicsellchest.multisupport.Support;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -38,17 +40,17 @@ public class Main extends JavaPlugin {
 	public EpicSellChest sc = EpicSellChest.getInstance();
 	private HashMap<UUID, Location> pos1 = new HashMap<>();
 	private HashMap<UUID, Location> pos2 = new HashMap<>();
-	public static SettingsManager settings = SettingsManager.getInstance();
+	public static FileManager fileManager = FileManager.getInstance();
 	
 	@Override
 	public void onEnable() {
-		settings.setup(this);
+		fileManager.logInfo(true).setup(this);
 		sc.loadEpicSellChest();
 		PluginManager pm = Bukkit.getPluginManager();
 		pm.registerEvents(new WandControl(), this);
 		pm.registerEvents(new SignControl(), this);
 		pm.registerEvents(new SellChestGUI(), this);
-		if(Support.hasDakata()) {
+		if(Support.DAKATA_ANTI_CHEAT.isEnabled()) {
 			pm.registerEvents(new DakataAntiCheatSupport(), this);
 		}
 		if(sc.useMetrics()) {
@@ -84,7 +86,7 @@ public class Main extends JavaPlugin {
 											SellChestEvent event = new SellChestEvent(player, items, SellType.SINGLE);
 											Bukkit.getPluginManager().callEvent(event);
 											if(!event.isCancelled()) {
-												HashMap<String, Integer> placeholders = new HashMap<>();
+												HashMap<String, Double> placeholders = new HashMap<>();
 												for(Currency currency : Currency.values()) {
 													placeholders.put("%" + currency.getName().toLowerCase() + "%", sc.getFullCost(player, items, currency));
 													placeholders.put("%" + currency.getName() + "%", sc.getFullCost(player, items, currency));
@@ -95,9 +97,13 @@ public class Main extends JavaPlugin {
 												}
 												sc.sellSellableItems(player, items);
 												for(SellItem item : items) {
-													chest.getInventory().remove(item.getItem());
+													if(item.usesSellingAmount()) {
+														item.getItem().setAmount(item.getItem().getAmount() - (item.getSellingAmount() * item.getSellingMinimum()));
+													}else {
+														chest.getInventory().remove(item.getItem());
+													}
 												}
-												player.sendMessage(Messages.SOLD_CHEST.getMessageInt(placeholders));
+												player.sendMessage(Messages.SOLD_CHEST.getMessageDouble(placeholders));
 												return true;
 											}
 										}else {
@@ -132,7 +138,7 @@ public class Main extends JavaPlugin {
 			}else {
 				if(args[0].equalsIgnoreCase("help")) {
 					if(sender.hasPermission("epicsellchest.help") || sender.hasPermission("epicsellchest.admin")) {
-						for(String msg : settings.getMessages().getStringList("Messages.Help")) {
+						for(String msg : Files.MESSAGES.getFile().getStringList("Messages.Help")) {
 							sender.sendMessage(Methods.color(msg));
 						}
 						return true;
@@ -140,11 +146,25 @@ public class Main extends JavaPlugin {
 						sender.sendMessage(Messages.NO_PERMISSION.getMessage());
 						return true;
 					}
+					//==== This is just for simple coverting for when needed ====//
+					//}else if(args[0].equalsIgnoreCase("convert")) {
+					//	FileConfiguration data = Files.DATA.getFile();
+					//	data.set("Item-Cost", null);
+					//	List<String> items = new ArrayList<>();
+					//	for(SellableItem item : sc.getSellableItems()) {
+					//		items.add("Item:" + item.getItem().getType().name() + ":" + item.getItem().getDurability()
+					//		+ ", Cost:" + item.getPrice()
+					//		+ ", Currency:" + (item.getCurrency() == Currency.CUSTOM ? item.getCustomCurrency().getName() : item.getCurrency().getName())
+					//		+ ", Amount:0");
+					//	}
+					//	data.set("Item-Cost", items);
+					//	Files.DATA.saveFile();
+					//	return true;
 				}else if(args[0].equalsIgnoreCase("reload")) {
 					if(sender.hasPermission("epicsellchest.reload") || sender.hasPermission("epicsellchest.admin")) {
-						settings.reloadConfig();
-						settings.reloadMessages();
-						settings.setup(this);
+						Files.CONFIG.relaodFile();
+						Files.MESSAGES.relaodFile();
+						fileManager.setup(this);
 						sc.loadEpicSellChest();
 						sender.sendMessage(Messages.RELOADED.getMessage());
 						return true;
@@ -160,7 +180,7 @@ public class Main extends JavaPlugin {
 								return true;
 							}
 						}
-						Player player = (Player) sender;
+						Player player;
 						int amount = 1;
 						if(args.length >= 2) {
 							if(Methods.isInt(args[1])) {
@@ -177,6 +197,8 @@ public class Main extends JavaPlugin {
 								sender.sendMessage(Messages.NOT_ONLINE.getMessage());
 								return true;
 							}
+						}else {
+							player = (Player) sender;
 						}
 						player.getInventory().addItem(sc.getChestSellingItem(amount));
 						player.updateInventory();
@@ -207,7 +229,7 @@ public class Main extends JavaPlugin {
 						if(!sc.needsTwoFactorAuth(uuid)) {
 							sc.removeTwoFactorAuth(uuid);
 							Location p1 = player.getLocation().getChunk().getBlock(0, 0, 0).getLocation();
-							Location p2 = player.getLocation().getChunk().getBlock(15,  player.getWorld().getMaxHeight(), 15).getLocation();
+							Location p2 = player.getLocation().getChunk().getBlock(15, player.getWorld().getMaxHeight(), 15).getLocation();
 							sc.queryChests(player, p1, p2);
 							player.sendMessage(Messages.LOADING_CHUNK_CHESTS.getMessage());
 							new BukkitRunnable() {
@@ -216,13 +238,13 @@ public class Main extends JavaPlugin {
 									ArrayList<Chest> chests = sc.getChestQuery(player.getUniqueId());
 									if(chests != null) {
 										if(!chests.isEmpty()) {
-											if(Support.hasNoCheatPlus()) {
+											if(Support.NO_CHEAT_PLUS.isEnabled()) {
 												NoCheatPlusSupport.exemptPlayer(player);
 											}
-											if(Support.hasSpartan()) {
+											if(Support.SPARTAN.isEnabled()) {
 												SpartanSupport.cancelBlockChecker(player);
 											}
-											HashMap<String, Integer> placeholders = new HashMap<>();
+											HashMap<String, Double> placeholders = new HashMap<>();
 											for(Chest chest : chests) {
 												BlockBreakEvent check = new BlockBreakEvent(chest.getBlock(), player);
 												Bukkit.getPluginManager().callEvent(check);
@@ -267,13 +289,13 @@ public class Main extends JavaPlugin {
 													}
 												}
 											}
-											if(Support.hasNoCheatPlus()) {
+											if(Support.NO_CHEAT_PLUS.isEnabled()) {
 												NoCheatPlusSupport.unexemptPlayer(player);
 											}
 											if(placeholders.size() == 0) {
 												player.sendMessage(Messages.NO_CHESTS_IN_CHUNK.getMessage());
 											}else {
-												player.sendMessage(Messages.SOLD_CHUNK_CHESTS.getMessageInt(placeholders));
+												player.sendMessage(Messages.SOLD_CHUNK_CHESTS.getMessageDouble(placeholders));
 											}
 										}else {
 											player.sendMessage(Messages.NO_CHESTS_IN_CHUNK.getMessage());
@@ -311,13 +333,13 @@ public class Main extends JavaPlugin {
 											ArrayList<Chest> chests = sc.getChestQuery(player.getUniqueId());
 											if(chests != null) {
 												if(!chests.isEmpty()) {
-													if(Support.hasNoCheatPlus()) {
+													if(Support.NO_CHEAT_PLUS.isEnabled()) {
 														NoCheatPlusSupport.exemptPlayer(player);
 													}
-													if(Support.hasSpartan()) {
+													if(Support.SPARTAN.isEnabled()) {
 														SpartanSupport.cancelBlockChecker(player);
 													}
-													HashMap<String, Integer> placeholders = new HashMap<>();
+													HashMap<String, Double> placeholders = new HashMap<>();
 													for(Chest chest : chests) {
 														BlockBreakEvent check = new BlockBreakEvent(chest.getBlock(), player);
 														Bukkit.getPluginManager().callEvent(check);
@@ -362,13 +384,13 @@ public class Main extends JavaPlugin {
 															}
 														}
 													}
-													if(Support.hasNoCheatPlus()) {
+													if(Support.NO_CHEAT_PLUS.isEnabled()) {
 														NoCheatPlusSupport.unexemptPlayer(player);
 													}
 													if(placeholders.size() == 0) {
 														player.sendMessage(Messages.NO_CHESTS_IN_CHUNK.getMessage());
 													}else {
-														player.sendMessage(Messages.SOLD_CHUNK_CHESTS.getMessageInt(placeholders));
+														player.sendMessage(Messages.SOLD_CHUNK_CHESTS.getMessageDouble(placeholders));
 													}
 												}else {
 													player.sendMessage(Messages.NO_CHESTS_IN_REGION.getMessage());
@@ -457,7 +479,7 @@ public class Main extends JavaPlugin {
 												SellChestEvent event = new SellChestEvent(player, items, SellType.SINGLE);
 												Bukkit.getPluginManager().callEvent(event);
 												if(!event.isCancelled()) {
-													HashMap<String, Integer> placeholders = new HashMap<>();
+													HashMap<String, Double> placeholders = new HashMap<>();
 													for(Currency currency : Currency.values()) {
 														placeholders.put("%" + currency.getName().toLowerCase() + "%", sc.getFullCost(player, items, currency));
 														placeholders.put("%" + currency.getName() + "%", sc.getFullCost(player, items, currency));
@@ -470,7 +492,7 @@ public class Main extends JavaPlugin {
 													for(SellItem item : items) {
 														chest.getInventory().remove(item.getItem());
 													}
-													player.sendMessage(Messages.SOLD_CHEST.getMessageInt(placeholders));
+													player.sendMessage(Messages.SOLD_CHEST.getMessageDouble(placeholders));
 													return true;
 												}
 											}else {

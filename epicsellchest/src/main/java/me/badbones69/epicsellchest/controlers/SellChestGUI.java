@@ -1,14 +1,14 @@
 package me.badbones69.epicsellchest.controlers;
 
-import me.badbones69.epicsellchest.Main;
+import me.badbones69.epicsellchest.api.objects.FileManager.Files;
 import me.badbones69.epicsellchest.Methods;
 import me.badbones69.epicsellchest.api.EpicSellChest;
-import me.badbones69.epicsellchest.api.Messages;
-import me.badbones69.epicsellchest.api.SellItem;
-import me.badbones69.epicsellchest.api.SellType;
 import me.badbones69.epicsellchest.api.currency.Currency;
 import me.badbones69.epicsellchest.api.currency.CustomCurrency;
+import me.badbones69.epicsellchest.api.enums.Messages;
+import me.badbones69.epicsellchest.api.enums.SellType;
 import me.badbones69.epicsellchest.api.event.SellChestEvent;
+import me.badbones69.epicsellchest.api.objects.SellItem;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -39,7 +39,7 @@ public class SellChestGUI implements Listener {
 		Inventory inv = e.getInventory();
 		Player player = (Player) e.getPlayer();
 		UUID uuid = player.getUniqueId();
-		FileConfiguration config = Main.settings.getConfig();
+		FileConfiguration config = Files.CONFIG.getFile();
 		if(inv != null) {
 			if(inv.getName().equalsIgnoreCase(Methods.color(config.getString("Settings.Sign-Options.Inventory-Name")))) {
 				if(!Methods.isInvEmpty(inv)) {
@@ -49,7 +49,7 @@ public class SellChestGUI implements Listener {
 							SellChestEvent event = new SellChestEvent(player, items, SellType.GUI);
 							Bukkit.getPluginManager().callEvent(event);
 							if(!event.isCancelled()) {
-								HashMap<String, Integer> placeholders = new HashMap<>();
+								HashMap<String, Double> placeholders = new HashMap<>();
 								for(Currency currency : Currency.values()) {
 									placeholders.put("%" + currency.getName().toLowerCase() + "%", sc.getFullCost(player, items, currency));
 									placeholders.put("%" + currency.getName() + "%", sc.getFullCost(player, items, currency));
@@ -60,10 +60,14 @@ public class SellChestGUI implements Listener {
 								}
 								sc.sellSellableItems(player, items);
 								for(SellItem item : items) {
-									inv.remove(item.getItem());
+									if(item.usesSellingAmount()) {
+										item.getItem().setAmount(item.getItem().getAmount() - (item.getSellingAmount() * item.getSellingMinimum()));
+									}else {
+										inv.remove(item.getItem());
+									}
 								}
 								sc.removeTwoFactorAuth(uuid);
-								player.sendMessage(Messages.SOLD_CHEST.getMessageInt(placeholders));
+								player.sendMessage(Messages.SOLD_CHEST.getMessageDouble(placeholders));
 							}
 						}else {
 							player.sendMessage(Messages.NO_SELLABLE_ITEMS.getMessage());
@@ -82,7 +86,11 @@ public class SellChestGUI implements Listener {
 						ArrayList<SellItem> items = sc.getSellableItems(inv);
 						sellables.put(uuid, items);
 						for(SellItem item : items) {
-							inv.remove(item.getItem());
+							if(item.usesSellingAmount()) {
+								item.getItem().setAmount(item.getItem().getAmount() - (item.getSellingAmount() * item.getSellingMinimum()));
+							}else {
+								inv.remove(item.getItem());
+							}
 						}
 						ArrayList<ItemStack> others = new ArrayList<>();
 						for(ItemStack item : inv.getContents()) {
@@ -100,14 +108,14 @@ public class SellChestGUI implements Listener {
 						}.runTaskLater(sc.getPlugin(), 0);
 					}
 				}
-			}else if(inv.getName().equalsIgnoreCase(Methods.color(Main.settings.getConfig().getString("Settings.Sign-Options.Two-Factor-Auth-Options.Inventory-Name")))) {
+			}else if(inv.getName().equalsIgnoreCase(Methods.color(Files.CONFIG.getFile().getString("Settings.Sign-Options.Two-Factor-Auth-Options.Inventory-Name")))) {
 				if(sellables.containsKey(uuid) && nonsellables.containsKey(uuid)) {
 					ArrayList<SellItem> items = sellables.get(uuid);
 					if(items.size() > 0) {
 						SellChestEvent event = new SellChestEvent(player, items, SellType.GUI);
 						Bukkit.getPluginManager().callEvent(event);
 						if(!event.isCancelled()) {
-							HashMap<String, Integer> placeholders = new HashMap<>();
+							HashMap<String, Double> placeholders = new HashMap<>();
 							for(Currency currency : Currency.values()) {
 								placeholders.put("%" + currency.getName().toLowerCase() + "%", sc.getFullCost(player, items, currency));
 								placeholders.put("%" + currency.getName() + "%", sc.getFullCost(player, items, currency));
@@ -117,7 +125,7 @@ public class SellChestGUI implements Listener {
 								placeholders.put("%" + currency.getName() + "%", sc.getFullCost(player, items, currency));
 							}
 							sc.sellSellableItems(player, items);
-							player.sendMessage(Messages.SOLD_CHEST.getMessageInt(placeholders));
+							player.sendMessage(Messages.SOLD_CHEST.getMessageDouble(placeholders));
 						}
 					}else {
 						player.sendMessage(Messages.NO_SELLABLE_ITEMS.getMessage());
@@ -145,7 +153,7 @@ public class SellChestGUI implements Listener {
 		UUID uuid = player.getUniqueId();
 		Inventory inv = e.getInventory();
 		if(inv != null) {
-			if(inv.getName().equalsIgnoreCase(Methods.color(Main.settings.getConfig().getString("Settings.Sign-Options.Two-Factor-Auth-Options.Inventory-Name")))) {
+			if(inv.getName().equalsIgnoreCase(Methods.color(Files.CONFIG.getFile().getString("Settings.Sign-Options.Two-Factor-Auth-Options.Inventory-Name")))) {
 				e.setCancelled(true);
 				if(sellables.containsKey(uuid) && nonsellables.containsKey(uuid)) {
 					ItemStack check = e.getCurrentItem();
@@ -156,7 +164,7 @@ public class SellChestGUI implements Listener {
 								SellChestEvent event = new SellChestEvent(player, items, SellType.GUI);
 								Bukkit.getPluginManager().callEvent(event);
 								if(!event.isCancelled()) {
-									HashMap<String, Integer> placeholders = new HashMap<>();
+									HashMap<String, Double> placeholders = new HashMap<>();
 									for(Currency currency : Currency.values()) {
 										placeholders.put("%" + currency.getName().toLowerCase() + "%", sc.getFullCost(player, items, currency));
 										placeholders.put("%" + currency.getName() + "%", sc.getFullCost(player, items, currency));
@@ -166,7 +174,7 @@ public class SellChestGUI implements Listener {
 										placeholders.put("%" + currency.getName() + "%", sc.getFullCost(player, items, currency));
 									}
 									sc.sellSellableItems(player, items);
-									player.sendMessage(Messages.SOLD_CHEST.getMessageInt(placeholders));
+									player.sendMessage(Messages.SOLD_CHEST.getMessageDouble(placeholders));
 								}
 							}else {
 								player.sendMessage(Messages.NO_SELLABLE_ITEMS.getMessage());
@@ -215,7 +223,7 @@ public class SellChestGUI implements Listener {
 	}
 	
 	private void openTwoFactorAuth(Player player) {
-		Inventory inv = Bukkit.createInventory(null, 9, Methods.color(Main.settings.getConfig().getString("Settings.Sign-Options.Two-Factor-Auth-Options.Inventory-Name")));
+		Inventory inv = Bukkit.createInventory(null, 9, Methods.color(Files.CONFIG.getFile().getString("Settings.Sign-Options.Two-Factor-Auth-Options.Inventory-Name")));
 		ItemStack accept = getAcceptItem();
 		ItemStack deny = getDenyItem();
 		inv.setItem(0, accept.clone());
@@ -232,17 +240,17 @@ public class SellChestGUI implements Listener {
 	
 	private ItemStack getAcceptItem() {
 		String path = "Settings.Sign-Options.Two-Factor-Auth-Options";
-		return Methods.makeItem(Main.settings.getConfig().getString(path + ".Accept.Item"), 1, Main.settings.getConfig().getString(path + ".Accept.Name"), Main.settings.getConfig().getStringList(path + ".Accept.Lore"));
+		return Methods.makeItem(Files.CONFIG.getFile().getString(path + ".Accept.Item"), 1, Files.CONFIG.getFile().getString(path + ".Accept.Name"), Files.CONFIG.getFile().getStringList(path + ".Accept.Lore"));
 	}
 	
 	private ItemStack getInfoItem() {
 		String path = "Settings.Sign-Options.Two-Factor-Auth-Options";
-		return Methods.makeItem(Main.settings.getConfig().getString(path + ".Info.Item"), 1, Main.settings.getConfig().getString(path + ".Info.Name"), Main.settings.getConfig().getStringList(path + ".Info.Lore"));
+		return Methods.makeItem(Files.CONFIG.getFile().getString(path + ".Info.Item"), 1, Files.CONFIG.getFile().getString(path + ".Info.Name"), Files.CONFIG.getFile().getStringList(path + ".Info.Lore"));
 	}
 	
 	private ItemStack getDenyItem() {
 		String path = "Settings.Sign-Options.Two-Factor-Auth-Options";
-		return Methods.makeItem(Main.settings.getConfig().getString(path + ".Deny.Item"), 1, Main.settings.getConfig().getString(path + ".Deny.Name"), Main.settings.getConfig().getStringList(path + ".Deny.Lore"));
+		return Methods.makeItem(Files.CONFIG.getFile().getString(path + ".Deny.Item"), 1, Files.CONFIG.getFile().getString(path + ".Deny.Name"), Files.CONFIG.getFile().getStringList(path + ".Deny.Lore"));
 	}
 	
 }

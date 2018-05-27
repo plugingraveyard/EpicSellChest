@@ -1,6 +1,6 @@
-package me.badbones69.epicsellchest.api;
+package me.badbones69.epicsellchest.api.enums;
 
-import me.badbones69.epicsellchest.Main;
+import me.badbones69.epicsellchest.api.objects.FileManager.Files;
 import me.badbones69.epicsellchest.Methods;
 
 import java.util.HashMap;
@@ -38,11 +38,11 @@ public enum Messages {
 	}
 	
 	public String getMessage() {
-		return Methods.prefix(Main.settings.getMessages().getString("Messages." + path));
+		return Methods.prefix(Files.MESSAGES.getFile().getString("Messages." + path));
 	}
 	
 	public String getMessage(HashMap<String, String> placeholders) {
-		String msg = Methods.prefix(Main.settings.getMessages().getString("Messages." + path));
+		String msg = Methods.prefix(Files.MESSAGES.getFile().getString("Messages." + path));
 		for(String placeholder : placeholders.keySet()) {
 			msg = msg.replaceAll(placeholder, placeholders.get(placeholder));
 		}
@@ -50,7 +50,15 @@ public enum Messages {
 	}
 	
 	public String getMessageInt(HashMap<String, Integer> placeholders) {
-		String msg = Methods.prefix(Main.settings.getMessages().getString("Messages." + path));
+		String msg = Methods.prefix(Files.MESSAGES.getFile().getString("Messages." + path));
+		for(String placeholder : placeholders.keySet()) {
+			msg = msg.replaceAll(placeholder, placeholders.get(placeholder) + "");
+		}
+		return msg;
+	}
+	
+	public String getMessageDouble(HashMap<String, Double> placeholders) {
+		String msg = Methods.prefix(Files.MESSAGES.getFile().getString("Messages." + path));
 		for(String placeholder : placeholders.keySet()) {
 			msg = msg.replaceAll(placeholder, placeholders.get(placeholder) + "");
 		}

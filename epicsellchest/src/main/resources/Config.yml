@@ -12,7 +12,7 @@ Settings:
     Gold_Ingot:
       Command: 'give %player% goldingot %cost%'
   Chest-Selling-Item:
-    Item: '406' #The item the chest selling item will be.
+    Item: 'QUARTZ' #The item the chest selling item will be.
     Name: '&5&lEpic Selling Wand' #The name of the item.
     Lore: #The lore of the item.
       - '&7The Epic Selling Wand sells the'
@@ -33,13 +33,13 @@ Settings:
     Two-Factor-Auth-Options: #The options for the signs if the two factor auth option is on.
       Inventory-Name: '&7&l>&8&l> &8Two Factor Authentication' #The name of the inventory that opens.
       Accept: #The item for the accept button.
-        Item: '160:5'
+        Item: 'STAINED_GLASS_PANE:5'
         Name: '&a&lAccept'
         Lore:
           - '&7Click this option to sell all items.'
           - '&7&l(&c&l!&7&l) &cClosing this inventory will auto sell.'
       Info: #The item for the Info button.
-        Item: '160:7'
+        Item: 'STAINED_GLASS_PANE:7'
         Name: '&6&lInformation'
         Lore:
           - ''
@@ -48,7 +48,7 @@ Settings:
           - ''
           - '&7&l(&c&l!&7&l) &cClosing this inventory will auto sell.'
       Deny: #The item for the deny button.
-        Item: '160:14'
+        Item: 'STAINED_GLASS_PANE:14'
         Name: '&c&lDeny'
         Lore:
           - '&7Click this option to get your items back.'
@@ -59,10 +59,10 @@ Settings:
       3: 'your items you'
       4: 'don''t want.'
   Black-List-Items: #Black listed items that can't be sold.
-    - '7' #BedRock
-    - '19' #Sponge
+    - 'BEDROCK' #BedRock
+    - 'SPONGE' #Sponge
   Black-List-Enchantments: {} #Use like the normal Black-List option if using it this.
-  Enchantment-Cost: #The extra "Currency" each enchantment level gives to an item. 
+  Enchantment-Cost: #The extra "Currency" each enchantment level gives to an item.
   #If you wish not to give extra make it like this "Enchantment-Cost: {}" and remove all enchantments.
     KNOCKBACK: #The enchantment which gives more "Currency"
       - 'Level:1, Cost:50' #The Level the enchantment is and the cost that level gives.
@@ -73,169 +73,171 @@ Settings:
   # Cost:<Number> - The amount of currency the player will get for selling it.
   # Currency:<XP_Level/XP_Total/<Custom Currency Name>> - The currency the player gets for selling it.
   # Example: - 'Item:311, Cost:4, Currency:Vault'
+  #
+  # Item Names can be found here: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html
   #######################
-  Item-Cost: #The cost of items.
-    - 'Item:17:0, Cost:2, Currency:Vault' #LOG
-    - 'Item:35:0, Cost:0, Currency:Vault' #WOOL
-    - 'Item:18:0, Cost:1, Currency:Vault' #LEAVES
-    - 'Item:6:0, Cost:0, Currency:Vault' #SAPLING
-    - 'Item:77:0, Cost:6, Currency:Vault' #STONE_BUTTON
-    - 'Item:5:0, Cost:0, Currency:Vault' #WOOD
-    - 'Item:262:0, Cost:3, Currency:Vault' #ARROW
-    - 'Item:278:0, Cost:650, Currency:Vault' #DIAMOND_PICKAXE
-    - 'Item:349:0, Cost:5, Currency:Vault' #RAW_FISH
-    - 'Item:328:0, Cost:23, Currency:Vault' #MINECART
-    - 'Item:299:0, Cost:85, Currency:Vault' #LEATHER_CHESTPLATE
-    - 'Item:342:0, Cost:30, Currency:Vault' #STORAGE_MINECART
-    - 'Item:288:0, Cost:3, Currency:Vault' #FEATHER
-    - 'Item:315:0, Cost:6, Currency:Vault' #GOLD_CHESTPLATE
-    - 'Item:282:0, Cost:4, Currency:Vault' #MUSHROOM_SOUP
-    - 'Item:297:0, Cost:30, Currency:Vault' #BREAD
-    - 'Item:9:0, Cost:1, Currency:Vault' #STATIONARY_WATER
-    - 'Item:58:0, Cost:2, Currency:Vault' #WORKBENCH
-    - 'Item:291:0, Cost:2, Currency:Vault' #STONE_HOE
-    - 'Item:39:0, Cost:2, Currency:Vault' #BROWN_MUSHROOM
-    - 'Item:293:0, Cost:400, Currency:Vault' #DIAMOND_HOE
-    - 'Item:268:0, Cost:1, Currency:Vault' #WOOD_SWORD
-    - 'Item:50:0, Cost:4, Currency:Vault' #TORCH
-    - 'Item:2:0, Cost:1, Currency:Vault' #GRASS
-    - 'Item:343:0, Cost:32, Currency:Vault' #POWERED_MINECART
-    - 'Item:332:0, Cost:1, Currency:Vault' #SNOW_BALL
-    - 'Item:322:0, Cost:100, Currency:Vault' #GOLDEN_APPLE
-    - 'Item:300:0, Cost:75, Currency:Vault' #LEATHER_LEGGINGS
-    - 'Item:279:0, Cost:650, Currency:Vault' #DIAMOND_AXE
-    - 'Item:341:0, Cost:50, Currency:Vault' #SLIME_BALL
-    - 'Item:85:0, Cost:1, Currency:Vault' #FENCE
-    - 'Item:273:0, Cost:1, Currency:Vault' #STONE_SPADE
-    - 'Item:336:0, Cost:5, Currency:Vault' #CLAY_BRICK
-    - 'Item:25:0, Cost:36, Currency:Vault' #NOTE_BLOCK
-    - 'Item:258:0, Cost:22, Currency:Vault' #IRON_AXE
-    - 'Item:16:0, Cost:15, Currency:Vault' #COAL_ORE
-    - 'Item:337:0, Cost:3, Currency:Vault' #CLAY_BALL
-    - 'Item:346:0, Cost:10, Currency:Vault' #FISHING_ROD
-    - 'Item:292:0, Cost:22, Currency:Vault' #IRON_HOE
-    - 'Item:2256:0, Cost:100, Currency:Vault' #GOLD_RECORD
-    - 'Item:257:0, Cost:22, Currency:Vault' #IRON_PICKAXE
-    - 'Item:330:0, Cost:22, Currency:Vault' #IRON_DOOR
-    - 'Item:325:0, Cost:22, Currency:Vault' #BUCKET
-    - 'Item:38:0, Cost:2, Currency:Vault' #RED_ROSE
-    - 'Item:320:0, Cost:7, Currency:Vault' #GRILLED_PORK
-    - 'Item:13:0, Cost:1, Currency:Vault' #GRAVEL
-    - 'Item:324:0, Cost:3, Currency:Vault' #WOOD_DOOR
-    - 'Item:302:0, Cost:40, Currency:Vault' #CHAINMAIL_HELMET
-    - 'Item:307:0, Cost:22, Currency:Vault' #IRON_CHESTPLATE
-    - 'Item:57:0, Cost:2000, Currency:Vault' #DIAMOND_BLOCK
-    - 'Item:310:0, Cost:1000, Currency:Vault' #DIAMOND_HELMET
-    - 'Item:314:0, Cost:6, Currency:Vault' #GOLD_HELMET
-    - 'Item:76:0, Cost:32, Currency:Vault' #REDSTONE_TORCH_ON
-    - 'Item:256:0, Cost:22, Currency:Vault' #IRON_SPADE
-    - 'Item:61:0, Cost:8, Currency:Vault' #FURNACE
-    - 'Item:267:0, Cost:22, Currency:Vault' #IRON_SWORD
-    - 'Item:23:0, Cost:58, Currency:Vault' #DISPENSER
-    - 'Item:271:0, Cost:2, Currency:Vault' #WOOD_AXE
-    - 'Item:295:0, Cost:2, Currency:Vault' #SEEDS
-    - 'Item:321:0, Cost:25, Currency:Vault' #PAINTING
-    - 'Item:72:0, Cost:1, Currency:Vault' #WOOD_PLATE
-    - 'Item:73:0, Cost:30, Currency:Vault' #REDSTONE_ORE
-    - 'Item:277:0, Cost:210, Currency:Vault' #DIAMOND_SPADE
-    - 'Item:326:0, Cost:40, Currency:Vault' #WATER_BUCKET
-    - 'Item:8:0, Cost:1, Currency:Vault' #WATER
-    - 'Item:7:0, Cost:100, Currency:Vault' #BEDROCK
-    - 'Item:71:0, Cost:15, Currency:Vault' #IRON_DOOR_BLOCK
-    - 'Item:294:0, Cost:6, Currency:Vault' #GOLD_HOE
-    - 'Item:12:0, Cost:1, Currency:Vault' #SAND
-    - 'Item:283:0, Cost:6, Currency:Vault' #GOLD_SWORD
-    - 'Item:275:0, Cost:3, Currency:Vault' #STONE_AXE
-    - 'Item:47:0, Cost:140, Currency:Vault' #BOOKSHELF
-    - 'Item:42:0, Cost:190, Currency:Vault' #IRON_BLOCK
-    - 'Item:91:0, Cost:56, Currency:Vault' #JACK_O_LANTERN
-    - 'Item:333:0, Cost:3, Currency:Vault' #BOAT
-    - 'Item:311:0, Cost:1750, Currency:Vault' #DIAMOND_CHESTPLATE
-    - 'Item:55:0, Cost:30, Currency:Vault' #REDSTONE_WIRE
-    - 'Item:40:0, Cost:2, Currency:Vault' #RED_MUSHROOM
-    - 'Item:287:0, Cost:5, Currency:Vault' #STRING
-    - 'Item:70:0, Cost:6, Currency:Vault' #STONE_PLATE
-    - 'Item:68:0, Cost:1, Currency:Vault' #WALL_SIGN
-    - 'Item:81:0, Cost:10, Currency:Vault' #CACTUS
-    - 'Item:289:0, Cost:20, Currency:Vault' #SULPHUR
-    - 'Item:66:0, Cost:22, Currency:Vault' #RAILS
-    - 'Item:15:0, Cost:18, Currency:Vault' #IRON_ORE
-    - 'Item:298:0, Cost:52, Currency:Vault' #LEATHER_HELMET
-    - 'Item:1:0, Cost:3, Currency:Vault' #STONE
-    - 'Item:344:0, Cost:1, Currency:Vault' #EGG
-    - 'Item:56:0, Cost:200, Currency:Vault' #DIAMOND_ORE
-    - 'Item:290:0, Cost:2, Currency:Vault' #WOOD_HOE
-    - 'Item:316:0, Cost:6, Currency:Vault' #GOLD_LEGGINGS
-    - 'Item:304:0, Cost:50, Currency:Vault' #CHAINMAIL_LEGGINGS
-    - 'Item:37:0, Cost:2, Currency:Vault' #YELLOW_FLOWER
-    - 'Item:306:0, Cost:22, Currency:Vault' #IRON_HELMET
-    - 'Item:49:0, Cost:130, Currency:Vault' #OBSIDIAN
-    - 'Item:3:0, Cost:1, Currency:Vault' #DIRT
-    - 'Item:334:0, Cost:10, Currency:Vault' #LEATHER
-    - 'Item:301:0, Cost:42, Currency:Vault' #LEATHER_BOOTS
-    - 'Item:69:0, Cost:1, Currency:Vault' #LEVER
-    - 'Item:4:0, Cost:1, Currency:Vault' #COBBLESTONE
-    - 'Item:354:0, Cost:180, Currency:Vault' #CAKE
-    - 'Item:53:0, Cost:1, Currency:Vault' #WOOD_STAIRS
-    - 'Item:265:0, Cost:0, Currency:Vault' #IRON_INGOT
-    - 'Item:14:0, Cost:45, Currency:Vault' #GOLD_ORE
-    - 'Item:86:0, Cost:50, Currency:Vault' #PUMPKIN
-    - 'Item:355:0, Cost:68, Currency:Vault' #BED
-    - 'Item:347:0, Cost:6, Currency:Vault' #WATCH
-    - 'Item:308:0, Cost:22, Currency:Vault' #IRON_LEGGINGS
-    - 'Item:323:0, Cost:1, Currency:Vault' #SIGN
-    - 'Item:43:0, Cost:1, Currency:Vault' #DOUBLE_STEP
-    - 'Item:270:0, Cost:2, Currency:Vault' #WOOD_PICKAXE
-    - 'Item:274:0, Cost:4, Currency:Vault' #STONE_PICKAXE
-    - 'Item:305:0, Cost:30, Currency:Vault' #CHAINMAIL_BOOTS
-    - 'Item:312:0, Cost:1500, Currency:Vault' #DIAMOND_LEGGINGS
-    - 'Item:350:0, Cost:7, Currency:Vault' #COOKED_FISH
-    - 'Item:329:0, Cost:100, Currency:Vault' #SADDLE
-    - 'Item:67:0, Cost:1, Currency:Vault' #COBBLESTONE_STAIRS
-    - 'Item:46:0, Cost:100, Currency:Vault' #TNT
-    - 'Item:74:0, Cost:30, Currency:Vault' #GLOWING_REDSTONE_ORE
-    - 'Item:260:0, Cost:10, Currency:Vault' #APPLE
-    - 'Item:269:0, Cost:1, Currency:Vault' #WOOD_SPADE
-    - 'Item:266:0, Cost:105, Currency:Vault' #GOLD_INGOT
-    - 'Item:356:0, Cost:110, Currency:Vault' #DIODE
-    - 'Item:60:0, Cost:1, Currency:Vault' #SOIL
-    - 'Item:82:0, Cost:12, Currency:Vault' #CLAY
-    - 'Item:41:0, Cost:450, Currency:Vault' #GOLD_BLOCK
-    - 'Item:280:0, Cost:0, Currency:Vault' #STICK
-    - 'Item:339:0, Cost:10, Currency:Vault' #PAPER
-    - 'Item:45:0, Cost:21, Currency:Vault' #BRICK
-    - 'Item:11:0, Cost:1, Currency:Vault' #STATIONARY_LAVA
-    - 'Item:54:0, Cost:4, Currency:Vault' #CHEST
-    - 'Item:24:0, Cost:3, Currency:Vault' #SANDSTONE
-    - 'Item:285:0, Cost:6, Currency:Vault' #GOLD_PICKAXE
-    - 'Item:345:0, Cost:22, Currency:Vault' #COMPASS
-    - 'Item:338:0, Cost:10, Currency:Vault' #SUGAR_CANE
-    - 'Item:276:0, Cost:420, Currency:Vault' #DIAMOND_SWORD
-    - 'Item:317:0, Cost:6, Currency:Vault' #GOLD_BOOTS
-    - 'Item:272:0, Cost:2, Currency:Vault' #STONE_SWORD
-    - 'Item:263:0, Cost:15, Currency:Vault' #COAL
-    - 'Item:286:0, Cost:6, Currency:Vault' #GOLD_AXE
-    - 'Item:352:0, Cost:2, Currency:Vault' #BONE
-    - 'Item:264:0, Cost:200, Currency:Vault' #DIAMOND
-    - 'Item:20:0, Cost:3, Currency:Vault' #GLASS
-    - 'Item:284:0, Cost:6, Currency:Vault' #GOLD_SPADE
-    - 'Item:22:0, Cost:950, Currency:Vault' #LAPIS_BLOCK
-    - 'Item:327:0, Cost:40, Currency:Vault' #LAVA_BUCKET
-    - 'Item:296:0, Cost:9, Currency:Vault' #WHEAT
-    - 'Item:65:0, Cost:0, Currency:Vault' #LADDER
-    - 'Item:83:0, Cost:15, Currency:Vault' #SUGAR_CANE_BLOCK
-    - 'Item:281:0, Cost:0, Currency:Vault' #BOWL
-    - 'Item:303:0, Cost:40, Currency:Vault' #CHAINMAIL_CHESTPLATE
-    - 'Item:313:0, Cost:850, Currency:Vault' #DIAMOND_BOOTS
-    - 'Item:21:0, Cost:100, Currency:Vault' #LAPIS_ORE
-    - 'Item:10:0, Cost:25, Currency:Vault' #LAVA
-    - 'Item:335:0, Cost:40, Currency:Vault' #MILK_BUCKET
-    - 'Item:331:0, Cost:32, Currency:Vault' #REDSTONE
-    - 'Item:2257:0, Cost:100, Currency:Vault' #GREEN_RECORD
-    - 'Item:351:0, Cost:10, Currency:Vault' #INK_SACK
-    - 'Item:348:0, Cost:10, Currency:Vault' #GLOWSTONE_DUST
-    - 'Item:340:0, Cost:45, Currency:Vault' #BOOK
-    - 'Item:261:0, Cost:15, Currency:Vault' #BOW
-    - 'Item:309:0, Cost:22, Currency:Vault' #IRON_BOOTS
-    - 'Item:44:0, Cost:1, Currency:Vault' #STEP
-    - 'Item:353:0, Cost:10, Currency:Vault' #SUGAR
+  Item-Cost:
+    - 'Item:LOG:0, Cost:2, Currency:Vault'
+    - 'Item:WOOL:0, Cost:0, Currency:Vault'
+    - 'Item:LEAVES:0, Cost:1, Currency:Vault'
+    - 'Item:SAPLING:0, Cost:0, Currency:Vault'
+    - 'Item:STONE_BUTTON:0, Cost:6, Currency:Vault'
+    - 'Item:WOOD:0, Cost:0, Currency:Vault'
+    - 'Item:ARROW:0, Cost:3, Currency:Vault'
+    - 'Item:DIAMOND_PICKAXE:0, Cost:650, Currency:Vault'
+    - 'Item:RAW_FISH:0, Cost:5, Currency:Vault'
+    - 'Item:MINECART:0, Cost:23, Currency:Vault'
+    - 'Item:LEATHER_CHESTPLATE:0, Cost:85, Currency:Vault'
+    - 'Item:STORAGE_MINECART:0, Cost:30, Currency:Vault'
+    - 'Item:FEATHER:0, Cost:3, Currency:Vault'
+    - 'Item:GOLD_CHESTPLATE:0, Cost:6, Currency:Vault'
+    - 'Item:MUSHROOM_SOUP:0, Cost:4, Currency:Vault'
+    - 'Item:BREAD:0, Cost:30, Currency:Vault'
+    - 'Item:STATIONARY_WATER:0, Cost:1, Currency:Vault'
+    - 'Item:WORKBENCH:0, Cost:2, Currency:Vault'
+    - 'Item:STONE_HOE:0, Cost:2, Currency:Vault'
+    - 'Item:BROWN_MUSHROOM:0, Cost:2, Currency:Vault'
+    - 'Item:DIAMOND_HOE:0, Cost:400, Currency:Vault'
+    - 'Item:WOOD_SWORD:0, Cost:1, Currency:Vault'
+    - 'Item:TORCH:0, Cost:4, Currency:Vault'
+    - 'Item:GRASS:0, Cost:1, Currency:Vault'
+    - 'Item:POWERED_MINECART:0, Cost:32, Currency:Vault'
+    - 'Item:SNOW_BALL:0, Cost:1, Currency:Vault'
+    - 'Item:GOLDEN_APPLE:0, Cost:100, Currency:Vault'
+    - 'Item:LEATHER_LEGGINGS:0, Cost:75, Currency:Vault'
+    - 'Item:DIAMOND_AXE:0, Cost:650, Currency:Vault'
+    - 'Item:SLIME_BALL:0, Cost:50, Currency:Vault'
+    - 'Item:FENCE:0, Cost:1, Currency:Vault'
+    - 'Item:STONE_SPADE:0, Cost:1, Currency:Vault'
+    - 'Item:CLAY_BRICK:0, Cost:5, Currency:Vault'
+    - 'Item:NOTE_BLOCK:0, Cost:36, Currency:Vault'
+    - 'Item:IRON_AXE:0, Cost:22, Currency:Vault'
+    - 'Item:COAL_ORE:0, Cost:15, Currency:Vault'
+    - 'Item:CLAY_BALL:0, Cost:3, Currency:Vault'
+    - 'Item:FISHING_ROD:0, Cost:10, Currency:Vault'
+    - 'Item:IRON_HOE:0, Cost:22, Currency:Vault'
+    - 'Item:GOLD_RECORD:0, Cost:100, Currency:Vault'
+    - 'Item:IRON_PICKAXE:0, Cost:22, Currency:Vault'
+    - 'Item:IRON_DOOR:0, Cost:22, Currency:Vault'
+    - 'Item:BUCKET:0, Cost:22, Currency:Vault'
+    - 'Item:RED_ROSE:0, Cost:2, Currency:Vault'
+    - 'Item:GRILLED_PORK:0, Cost:7, Currency:Vault'
+    - 'Item:GRAVEL:0, Cost:1, Currency:Vault'
+    - 'Item:WOOD_DOOR:0, Cost:3, Currency:Vault'
+    - 'Item:CHAINMAIL_HELMET:0, Cost:40, Currency:Vault'
+    - 'Item:IRON_CHESTPLATE:0, Cost:22, Currency:Vault'
+    - 'Item:DIAMOND_BLOCK:0, Cost:2000, Currency:Vault'
+    - 'Item:DIAMOND_HELMET:0, Cost:1000, Currency:Vault'
+    - 'Item:GOLD_HELMET:0, Cost:6, Currency:Vault'
+    - 'Item:REDSTONE_TORCH_ON:0, Cost:32, Currency:Vault'
+    - 'Item:IRON_SPADE:0, Cost:22, Currency:Vault'
+    - 'Item:FURNACE:0, Cost:8, Currency:Vault'
+    - 'Item:IRON_SWORD:0, Cost:22, Currency:Vault'
+    - 'Item:DISPENSER:0, Cost:58, Currency:Vault'
+    - 'Item:WOOD_AXE:0, Cost:2, Currency:Vault'
+    - 'Item:SEEDS:0, Cost:2, Currency:Vault'
+    - 'Item:PAINTING:0, Cost:25, Currency:Vault'
+    - 'Item:WOOD_PLATE:0, Cost:1, Currency:Vault'
+    - 'Item:REDSTONE_ORE:0, Cost:30, Currency:Vault'
+    - 'Item:DIAMOND_SPADE:0, Cost:210, Currency:Vault'
+    - 'Item:WATER_BUCKET:0, Cost:40, Currency:Vault'
+    - 'Item:WATER:0, Cost:1, Currency:Vault'
+    - 'Item:BEDROCK:0, Cost:100, Currency:Vault'
+    - 'Item:IRON_DOOR_BLOCK:0, Cost:15, Currency:Vault'
+    - 'Item:GOLD_HOE:0, Cost:6, Currency:Vault'
+    - 'Item:SAND:0, Cost:1, Currency:Vault'
+    - 'Item:GOLD_SWORD:0, Cost:6, Currency:Vault'
+    - 'Item:STONE_AXE:0, Cost:3, Currency:Vault'
+    - 'Item:BOOKSHELF:0, Cost:140, Currency:Vault'
+    - 'Item:IRON_BLOCK:0, Cost:190, Currency:Vault'
+    - 'Item:JACK_O_LANTERN:0, Cost:56, Currency:Vault'
+    - 'Item:BOAT:0, Cost:3, Currency:Vault'
+    - 'Item:DIAMOND_CHESTPLATE:0, Cost:1750, Currency:Vault'
+    - 'Item:REDSTONE_WIRE:0, Cost:30, Currency:Vault'
+    - 'Item:RED_MUSHROOM:0, Cost:2, Currency:Vault'
+    - 'Item:STRING:0, Cost:5, Currency:Vault'
+    - 'Item:STONE_PLATE:0, Cost:6, Currency:Vault'
+    - 'Item:WALL_SIGN:0, Cost:1, Currency:Vault'
+    - 'Item:CACTUS:0, Cost:10, Currency:Vault'
+    - 'Item:SULPHUR:0, Cost:20, Currency:Vault'
+    - 'Item:RAILS:0, Cost:22, Currency:Vault'
+    - 'Item:IRON_ORE:0, Cost:18, Currency:Vault'
+    - 'Item:LEATHER_HELMET:0, Cost:52, Currency:Vault'
+    - 'Item:STONE:0, Cost:3, Currency:Vault'
+    - 'Item:EGG:0, Cost:1, Currency:Vault'
+    - 'Item:DIAMOND_ORE:0, Cost:200, Currency:Vault'
+    - 'Item:WOOD_HOE:0, Cost:2, Currency:Vault'
+    - 'Item:GOLD_LEGGINGS:0, Cost:6, Currency:Vault'
+    - 'Item:CHAINMAIL_LEGGINGS:0, Cost:50, Currency:Vault'
+    - 'Item:YELLOW_FLOWER:0, Cost:2, Currency:Vault'
+    - 'Item:IRON_HELMET:0, Cost:22, Currency:Vault'
+    - 'Item:OBSIDIAN:0, Cost:130, Currency:Vault'
+    - 'Item:DIRT:0, Cost:1, Currency:Vault'
+    - 'Item:LEATHER:0, Cost:10, Currency:Vault'
+    - 'Item:LEATHER_BOOTS:0, Cost:42, Currency:Vault'
+    - 'Item:LEVER:0, Cost:1, Currency:Vault'
+    - 'Item:COBBLESTONE:0, Cost:1, Currency:Vault'
+    - 'Item:CAKE:0, Cost:180, Currency:Vault'
+    - 'Item:WOOD_STAIRS:0, Cost:1, Currency:Vault'
+    - 'Item:IRON_INGOT:0, Cost:0, Currency:Vault'
+    - 'Item:GOLD_ORE:0, Cost:45, Currency:Vault'
+    - 'Item:PUMPKIN:0, Cost:50, Currency:Vault'
+    - 'Item:BED:0, Cost:68, Currency:Vault'
+    - 'Item:WATCH:0, Cost:6, Currency:Vault'
+    - 'Item:IRON_LEGGINGS:0, Cost:22, Currency:Vault'
+    - 'Item:SIGN:0, Cost:1, Currency:Vault'
+    - 'Item:DOUBLE_STEP:0, Cost:1, Currency:Vault'
+    - 'Item:WOOD_PICKAXE:0, Cost:2, Currency:Vault'
+    - 'Item:STONE_PICKAXE:0, Cost:4, Currency:Vault'
+    - 'Item:CHAINMAIL_BOOTS:0, Cost:30, Currency:Vault'
+    - 'Item:DIAMOND_LEGGINGS:0, Cost:1500, Currency:Vault'
+    - 'Item:COOKED_FISH:0, Cost:7, Currency:Vault'
+    - 'Item:SADDLE:0, Cost:100, Currency:Vault'
+    - 'Item:COBBLESTONE_STAIRS:0, Cost:1, Currency:Vault'
+    - 'Item:TNT:0, Cost:100, Currency:Vault'
+    - 'Item:GLOWING_REDSTONE_ORE:0, Cost:30, Currency:Vault'
+    - 'Item:APPLE:0, Cost:10, Currency:Vault'
+    - 'Item:WOOD_SPADE:0, Cost:1, Currency:Vault'
+    - 'Item:GOLD_INGOT:0, Cost:105, Currency:Vault'
+    - 'Item:DIODE:0, Cost:110, Currency:Vault'
+    - 'Item:SOIL:0, Cost:1, Currency:Vault'
+    - 'Item:CLAY:0, Cost:12, Currency:Vault'
+    - 'Item:GOLD_BLOCK:0, Cost:450, Currency:Vault'
+    - 'Item:STICK:0, Cost:0, Currency:Vault'
+    - 'Item:PAPER:0, Cost:10, Currency:Vault'
+    - 'Item:BRICK:0, Cost:21, Currency:Vault'
+    - 'Item:STATIONARY_LAVA:0, Cost:1, Currency:Vault'
+    - 'Item:CHEST:0, Cost:4, Currency:Vault'
+    - 'Item:SANDSTONE:0, Cost:3, Currency:Vault'
+    - 'Item:GOLD_PICKAXE:0, Cost:6, Currency:Vault'
+    - 'Item:COMPASS:0, Cost:22, Currency:Vault'
+    - 'Item:SUGAR_CANE:0, Cost:10, Currency:Vault'
+    - 'Item:DIAMOND_SWORD:0, Cost:420, Currency:Vault'
+    - 'Item:GOLD_BOOTS:0, Cost:6, Currency:Vault'
+    - 'Item:STONE_SWORD:0, Cost:2, Currency:Vault'
+    - 'Item:COAL:0, Cost:15, Currency:Vault'
+    - 'Item:GOLD_AXE:0, Cost:6, Currency:Vault'
+    - 'Item:BONE:0, Cost:2, Currency:Vault'
+    - 'Item:DIAMOND:0, Cost:200, Currency:Vault'
+    - 'Item:GLASS:0, Cost:3, Currency:Vault'
+    - 'Item:GOLD_SPADE:0, Cost:6, Currency:Vault'
+    - 'Item:LAPIS_BLOCK:0, Cost:950, Currency:Vault'
+    - 'Item:LAVA_BUCKET:0, Cost:40, Currency:Vault'
+    - 'Item:WHEAT:0, Cost:9, Currency:Vault'
+    - 'Item:LADDER:0, Cost:0, Currency:Vault'
+    - 'Item:SUGAR_CANE_BLOCK:0, Cost:15, Currency:Vault'
+    - 'Item:BOWL:0, Cost:0, Currency:Vault'
+    - 'Item:CHAINMAIL_CHESTPLATE:0, Cost:40, Currency:Vault'
+    - 'Item:DIAMOND_BOOTS:0, Cost:850, Currency:Vault'
+    - 'Item:LAPIS_ORE:0, Cost:100, Currency:Vault'
+    - 'Item:LAVA:0, Cost:25, Currency:Vault'
+    - 'Item:MILK_BUCKET:0, Cost:40, Currency:Vault'
+    - 'Item:REDSTONE:0, Cost:32, Currency:Vault'
+    - 'Item:GREEN_RECORD:0, Cost:100, Currency:Vault'
+    - 'Item:INK_SACK:0, Cost:10, Currency:Vault'
+    - 'Item:GLOWSTONE_DUST:0, Cost:10, Currency:Vault'
+    - 'Item:BOOK:0, Cost:45, Currency:Vault'
+    - 'Item:BOW:0, Cost:15, Currency:Vault'
+    - 'Item:IRON_BOOTS:0, Cost:22, Currency:Vault'
+    - 'Item:STEP:0, Cost:1, Currency:Vault'
+    - 'Item:SUGAR:0, Cost:10, Currency:Vault'

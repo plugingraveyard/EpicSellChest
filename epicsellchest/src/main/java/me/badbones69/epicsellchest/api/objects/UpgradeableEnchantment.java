@@ -1,4 +1,4 @@
-package me.badbones69.epicsellchest.api;
+package me.badbones69.epicsellchest.api.objects;
 
 import org.bukkit.enchantments.Enchantment;
 
