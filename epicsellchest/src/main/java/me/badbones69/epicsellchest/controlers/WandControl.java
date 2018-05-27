@@ -57,7 +57,7 @@ public class WandControl implements Listener {
 											SellChestEvent event = new SellChestEvent(player, items, SellType.SINGLE);
 											Bukkit.getPluginManager().callEvent(event);
 											if(!event.isCancelled()) {
-												HashMap<String, Integer> placeholders = new HashMap<>();
+												HashMap<String, Double> placeholders = new HashMap<>();
 												for(Currency currency : Currency.values()) {
 													placeholders.put("%" + currency.getName().toLowerCase() + "%", sc.getFullCost(player, items, currency));
 													placeholders.put("%" + currency.getName() + "%", sc.getFullCost(player, items, currency));
@@ -68,9 +68,12 @@ public class WandControl implements Listener {
 												}
 												sc.sellSellableItems(player, items);
 												for(SellItem item : items) {
-													chest.getInventory().remove(item.getItem());
-												}
-												player.sendMessage(Messages.SOLD_CHEST.getMessageInt(placeholders));
+													if(item.usesSellingAmount()) {
+														item.getItem().setAmount(item.getItem().getAmount() - (item.getSellingAmount() * item.getSellingMinimum()));
+													}else {
+														chest.getInventory().remove(item.getItem());
+													}												}
+												player.sendMessage(Messages.SOLD_CHEST.getMessageDouble(placeholders));
 											}
 										}else {
 											player.sendMessage(Messages.NO_SELLABLE_ITEMS.getMessage());

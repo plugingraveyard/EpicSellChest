@@ -57,4 +57,12 @@ public enum Messages {
 		return msg;
 	}
 	
+	public String getMessageDouble(HashMap<String, Double> placeholders) {
+		String msg = Methods.prefix(Files.MESSAGES.getFile().getString("Messages." + path));
+		for(String placeholder : placeholders.keySet()) {
+			msg = msg.replaceAll(placeholder, placeholders.get(placeholder) + "");
+		}
+		return msg;
+	}
+	
 }

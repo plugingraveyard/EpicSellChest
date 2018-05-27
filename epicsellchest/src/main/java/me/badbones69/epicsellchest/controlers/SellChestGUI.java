@@ -49,7 +49,7 @@ public class SellChestGUI implements Listener {
 							SellChestEvent event = new SellChestEvent(player, items, SellType.GUI);
 							Bukkit.getPluginManager().callEvent(event);
 							if(!event.isCancelled()) {
-								HashMap<String, Integer> placeholders = new HashMap<>();
+								HashMap<String, Double> placeholders = new HashMap<>();
 								for(Currency currency : Currency.values()) {
 									placeholders.put("%" + currency.getName().toLowerCase() + "%", sc.getFullCost(player, items, currency));
 									placeholders.put("%" + currency.getName() + "%", sc.getFullCost(player, items, currency));
@@ -60,10 +60,14 @@ public class SellChestGUI implements Listener {
 								}
 								sc.sellSellableItems(player, items);
 								for(SellItem item : items) {
-									inv.remove(item.getItem());
+									if(item.usesSellingAmount()) {
+										item.getItem().setAmount(item.getItem().getAmount() - (item.getSellingAmount() * item.getSellingMinimum()));
+									}else {
+										inv.remove(item.getItem());
+									}
 								}
 								sc.removeTwoFactorAuth(uuid);
-								player.sendMessage(Messages.SOLD_CHEST.getMessageInt(placeholders));
+								player.sendMessage(Messages.SOLD_CHEST.getMessageDouble(placeholders));
 							}
 						}else {
 							player.sendMessage(Messages.NO_SELLABLE_ITEMS.getMessage());
@@ -82,7 +86,11 @@ public class SellChestGUI implements Listener {
 						ArrayList<SellItem> items = sc.getSellableItems(inv);
 						sellables.put(uuid, items);
 						for(SellItem item : items) {
-							inv.remove(item.getItem());
+							if(item.usesSellingAmount()) {
+								item.getItem().setAmount(item.getItem().getAmount() - (item.getSellingAmount() * item.getSellingMinimum()));
+							}else {
+								inv.remove(item.getItem());
+							}
 						}
 						ArrayList<ItemStack> others = new ArrayList<>();
 						for(ItemStack item : inv.getContents()) {
@@ -107,7 +115,7 @@ public class SellChestGUI implements Listener {
 						SellChestEvent event = new SellChestEvent(player, items, SellType.GUI);
 						Bukkit.getPluginManager().callEvent(event);
 						if(!event.isCancelled()) {
-							HashMap<String, Integer> placeholders = new HashMap<>();
+							HashMap<String, Double> placeholders = new HashMap<>();
 							for(Currency currency : Currency.values()) {
 								placeholders.put("%" + currency.getName().toLowerCase() + "%", sc.getFullCost(player, items, currency));
 								placeholders.put("%" + currency.getName() + "%", sc.getFullCost(player, items, currency));
@@ -117,7 +125,7 @@ public class SellChestGUI implements Listener {
 								placeholders.put("%" + currency.getName() + "%", sc.getFullCost(player, items, currency));
 							}
 							sc.sellSellableItems(player, items);
-							player.sendMessage(Messages.SOLD_CHEST.getMessageInt(placeholders));
+							player.sendMessage(Messages.SOLD_CHEST.getMessageDouble(placeholders));
 						}
 					}else {
 						player.sendMessage(Messages.NO_SELLABLE_ITEMS.getMessage());
@@ -156,7 +164,7 @@ public class SellChestGUI implements Listener {
 								SellChestEvent event = new SellChestEvent(player, items, SellType.GUI);
 								Bukkit.getPluginManager().callEvent(event);
 								if(!event.isCancelled()) {
-									HashMap<String, Integer> placeholders = new HashMap<>();
+									HashMap<String, Double> placeholders = new HashMap<>();
 									for(Currency currency : Currency.values()) {
 										placeholders.put("%" + currency.getName().toLowerCase() + "%", sc.getFullCost(player, items, currency));
 										placeholders.put("%" + currency.getName() + "%", sc.getFullCost(player, items, currency));
@@ -166,7 +174,7 @@ public class SellChestGUI implements Listener {
 										placeholders.put("%" + currency.getName() + "%", sc.getFullCost(player, items, currency));
 									}
 									sc.sellSellableItems(player, items);
-									player.sendMessage(Messages.SOLD_CHEST.getMessageInt(placeholders));
+									player.sendMessage(Messages.SOLD_CHEST.getMessageDouble(placeholders));
 								}
 							}else {
 								player.sendMessage(Messages.NO_SELLABLE_ITEMS.getMessage());

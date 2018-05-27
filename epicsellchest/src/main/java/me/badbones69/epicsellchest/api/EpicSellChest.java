@@ -31,7 +31,7 @@ import java.util.UUID;
 
 public class EpicSellChest {
 	
-	private Integer basePrice;
+	private Double basePrice;
 	private Boolean useMetrics;
 	private Boolean checkUpdates;
 	private Currency baseCurrency;
@@ -63,7 +63,7 @@ public class EpicSellChest {
 		blackListEnchantments.clear();
 		upgradeableEnchantments.clear();
 		FileConfiguration config = Files.CONFIG.getFile();
-		basePrice = config.getInt("Settings.Base-Price");
+		basePrice = config.getDouble("Settings.Base-Price");
 		useMetrics = config.getBoolean("Settings.Metrics");
 		checkUpdates = config.getBoolean("Settings.Check-For-Updates");
 		chestSellingItem = Methods.addGlowing(Methods.makeItem(config.getString("Settings.Chest-Selling-Item.Item"), 1, config.getString("Settings.Chest-Selling-Item.Name"), config.getStringList("Settings.Chest-Selling-Item.Lore")), config.getBoolean("Settings.Chest-Selling-Item.Glowing"));
@@ -92,7 +92,7 @@ public class EpicSellChest {
 			}
 		}
 		for(String line : config.getStringList("Settings.Item-Cost")) {
-			int cost = 0;
+			Double cost = 0.0;
 			ItemStack item = null;
 			Material m = null;
 			String command = "";
@@ -113,8 +113,11 @@ public class EpicSellChest {
 					item = new ItemStack(m, 1, (short) md);
 				}else if(i.startsWith("cost:")) {
 					i = i.replaceAll("cost:", "");
-					if(Methods.isInt(i)) {
-						cost = Integer.parseInt(i);
+					if(Methods.isDouble(i)) {
+						cost = Double.parseDouble(i);
+						if(line.toLowerCase().contains("torch")) {
+							System.out.println(line + ": " + cost);
+						}
 					}
 				}else if(i.startsWith("currency:")) {
 					i = i.replaceAll("currency:", "");
@@ -228,7 +231,8 @@ public class EpicSellChest {
 		for(ItemStack item : inv.getContents()) {
 			if(item != null) {
 				if(canSellItem(item)) {
-					int price = 0, sellingAmount = 0, sellingMinimum = 0;
+					Double price = 0.0;
+					int sellingMinimum = 0, sellingAmount = 0;
 					String command = "";
 					Currency currency = getBaseCurrency();
 					CustomCurrency customCurrency = baseCustomCurrency;
@@ -294,7 +298,8 @@ public class EpicSellChest {
 						if(item.getType() == sell.getType()) {
 							if(item.getDurability() == sell.getDurability()) {
 								if(canSellItem(item)) {
-									int price = 0, sellingAmount = 0, sellingMinimum = 0;
+									Double price = 0.0;
+									int sellingMinimum = 0, sellingAmount = 0;
 									String command = "";
 									Currency currency = getBaseCurrency();
 									CustomCurrency custom = getBaseCustomCurrency();
@@ -361,8 +366,8 @@ public class EpicSellChest {
 		}
 	}
 	
-	public Integer getFullCost(Player player, ArrayList<SellItem> items, Currency currency) {
-		int cost = 0;
+	public Double getFullCost(Player player, ArrayList<SellItem> items, Currency currency) {
+		Double cost = 0.0;
 		for(SellItem item : items) {
 			if(item.getCurrency() == currency) {
 				cost += item.getPrice();
@@ -371,8 +376,8 @@ public class EpicSellChest {
 		return cost;
 	}
 	
-	public Integer getFullCost(Player player, ArrayList<SellItem> items, CustomCurrency currency) {
-		int cost = 0;
+	public Double getFullCost(Player player, ArrayList<SellItem> items, CustomCurrency currency) {
+		Double cost = 0.0;
 		for(SellItem item : items) {
 			if(item.getCurrency() == Currency.CUSTOM) {
 				if(currency.getName().equalsIgnoreCase(item.getCustomCurrency().getName())) {
@@ -439,7 +444,7 @@ public class EpicSellChest {
 		return upgradeableEnchantments;
 	}
 	
-	public int getBasePrice() {
+	public Double getBasePrice() {
 		return this.basePrice;
 	}
 	

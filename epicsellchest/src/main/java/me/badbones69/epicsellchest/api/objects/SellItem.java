@@ -6,13 +6,24 @@ import org.bukkit.inventory.ItemStack;
 
 public class SellItem {
 	
-	private int price, sellingAmount, sellingMinimum;
+	private Double price;
+	private Integer sellingAmount, sellingMinimum;
 	private String command;
 	private ItemStack item;
 	private Currency currency;
 	private CustomCurrency custom;
 	
-	public SellItem(ItemStack item, int sellingAmount, int sellingMinimum, int price, Currency currency, CustomCurrency custom, String command) {
+	/**
+	 *
+	 * @param item The item that is being sold.
+	 * @param sellingAmount The amount of times the minium amount goes into the total amount.
+	 * @param sellingMinimum The minmum amount the itemstack has to have to be sold.
+	 * @param price The worth of the items.
+	 * @param currency The type of currency that is being used.
+	 * @param custom If the currency is custom.
+	 * @param command The command that is being ran by the custom currency.
+	 */
+	public SellItem(ItemStack item, Integer sellingAmount, Integer sellingMinimum, Double price, Currency currency, CustomCurrency custom, String command) {
 		this.item = item;
 		this.price = price;
 		this.custom = custom;
@@ -22,34 +33,58 @@ public class SellItem {
 		this.sellingMinimum = sellingMinimum;
 	}
 	
+	/**
+	 * @return The itemstack being sold.
+	 */
 	public ItemStack getItem() {
 		return this.item;
 	}
 	
-	public int getSellingAmount() {
+	/**
+	 * @return The amount of times the minimum amount goes into the item anount.
+	 */
+	public Integer getSellingAmount() {
 		return sellingAmount;
 	}
 	
-	public int getSellingMinimum() {
-		return sellingMinimum;
-	}
-	
+	/**
+	 * @return True if the item needs multiple items to be sold.
+	 */
 	public Boolean usesSellingAmount() {
 		return sellingAmount > 0;
 	}
 	
-	public int getPrice() {
+	/**
+	 * @return The minimum amount of the itemstack has to have to be sold.
+	 */
+	public Integer getSellingMinimum() {
+		return sellingMinimum;
+	}
+	
+	/**
+	 * @return The worth of the itemstack.
+	 */
+	public Double getPrice() {
 		return this.price;
 	}
 	
+	/**
+	 * @return The currency used for this itemstack.
+	 */
 	public Currency getCurrency() {
 		return this.currency;
 	}
 	
+	/**
+	 * @return The custom currency used for this itemstack.
+	 */
 	public CustomCurrency getCustomCurrency() {
 		return custom;
 	}
 	
+	/**
+	 * @return The command ran by the custom currency.
+	 */
 	public String getCommand() {
 		return this.command;
 	}

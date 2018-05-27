@@ -86,7 +86,7 @@ public class Main extends JavaPlugin {
 											SellChestEvent event = new SellChestEvent(player, items, SellType.SINGLE);
 											Bukkit.getPluginManager().callEvent(event);
 											if(!event.isCancelled()) {
-												HashMap<String, Integer> placeholders = new HashMap<>();
+												HashMap<String, Double> placeholders = new HashMap<>();
 												for(Currency currency : Currency.values()) {
 													placeholders.put("%" + currency.getName().toLowerCase() + "%", sc.getFullCost(player, items, currency));
 													placeholders.put("%" + currency.getName() + "%", sc.getFullCost(player, items, currency));
@@ -103,7 +103,7 @@ public class Main extends JavaPlugin {
 														chest.getInventory().remove(item.getItem());
 													}
 												}
-												player.sendMessage(Messages.SOLD_CHEST.getMessageInt(placeholders));
+												player.sendMessage(Messages.SOLD_CHEST.getMessageDouble(placeholders));
 												return true;
 											}
 										}else {
@@ -244,7 +244,7 @@ public class Main extends JavaPlugin {
 											if(Support.SPARTAN.isEnabled()) {
 												SpartanSupport.cancelBlockChecker(player);
 											}
-											HashMap<String, Integer> placeholders = new HashMap<>();
+											HashMap<String, Double> placeholders = new HashMap<>();
 											for(Chest chest : chests) {
 												BlockBreakEvent check = new BlockBreakEvent(chest.getBlock(), player);
 												Bukkit.getPluginManager().callEvent(check);
@@ -295,7 +295,7 @@ public class Main extends JavaPlugin {
 											if(placeholders.size() == 0) {
 												player.sendMessage(Messages.NO_CHESTS_IN_CHUNK.getMessage());
 											}else {
-												player.sendMessage(Messages.SOLD_CHUNK_CHESTS.getMessageInt(placeholders));
+												player.sendMessage(Messages.SOLD_CHUNK_CHESTS.getMessageDouble(placeholders));
 											}
 										}else {
 											player.sendMessage(Messages.NO_CHESTS_IN_CHUNK.getMessage());
@@ -339,7 +339,7 @@ public class Main extends JavaPlugin {
 													if(Support.SPARTAN.isEnabled()) {
 														SpartanSupport.cancelBlockChecker(player);
 													}
-													HashMap<String, Integer> placeholders = new HashMap<>();
+													HashMap<String, Double> placeholders = new HashMap<>();
 													for(Chest chest : chests) {
 														BlockBreakEvent check = new BlockBreakEvent(chest.getBlock(), player);
 														Bukkit.getPluginManager().callEvent(check);
@@ -390,7 +390,7 @@ public class Main extends JavaPlugin {
 													if(placeholders.size() == 0) {
 														player.sendMessage(Messages.NO_CHESTS_IN_CHUNK.getMessage());
 													}else {
-														player.sendMessage(Messages.SOLD_CHUNK_CHESTS.getMessageInt(placeholders));
+														player.sendMessage(Messages.SOLD_CHUNK_CHESTS.getMessageDouble(placeholders));
 													}
 												}else {
 													player.sendMessage(Messages.NO_CHESTS_IN_REGION.getMessage());
@@ -479,7 +479,7 @@ public class Main extends JavaPlugin {
 												SellChestEvent event = new SellChestEvent(player, items, SellType.SINGLE);
 												Bukkit.getPluginManager().callEvent(event);
 												if(!event.isCancelled()) {
-													HashMap<String, Integer> placeholders = new HashMap<>();
+													HashMap<String, Double> placeholders = new HashMap<>();
 													for(Currency currency : Currency.values()) {
 														placeholders.put("%" + currency.getName().toLowerCase() + "%", sc.getFullCost(player, items, currency));
 														placeholders.put("%" + currency.getName() + "%", sc.getFullCost(player, items, currency));
@@ -492,7 +492,7 @@ public class Main extends JavaPlugin {
 													for(SellItem item : items) {
 														chest.getInventory().remove(item.getItem());
 													}
-													player.sendMessage(Messages.SOLD_CHEST.getMessageInt(placeholders));
+													player.sendMessage(Messages.SOLD_CHEST.getMessageDouble(placeholders));
 													return true;
 												}
 											}else {

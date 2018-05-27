@@ -52,7 +52,7 @@ public class ShopGUIPlus {
 										}
 									}
 								}
-								items.add(new SellableItem(builder.build(), shops.getInt(path + ".sellPrice"),
+								items.add(new SellableItem(builder.build(), shops.getDouble(path + ".sellPrice"),
 								currency,
 								customCurrency,
 								customCurrency.getCommand(),

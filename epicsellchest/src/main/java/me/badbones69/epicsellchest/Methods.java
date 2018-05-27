@@ -126,6 +126,15 @@ public class Methods {
 		return true;
 	}
 	
+	public static boolean isDouble(String s) {
+		try {
+			Double.parseDouble(s);
+		}catch(NumberFormatException nfe) {
+			return false;
+		}
+		return true;
+	}
+	
 	public static Location getLoc(Player player) {
 		return player.getLocation();
 	}

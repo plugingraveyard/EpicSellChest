@@ -13,10 +13,10 @@ public class CurrencyAPI {
 	 * @param amount The amount you are giving to the player.
 	 * @param command The command used for the Custom currency. Leave null if nothing.
 	 */
-	public static void giveCurrency(Player player, Currency currency, int amount, String command) {
+	public static void giveCurrency(Player player, Currency currency, Double amount, String command) {
 		switch(currency) {
 			case XP_LEVEL:
-				player.setLevel(player.getLevel() + amount);
+				player.setLevel((int) (player.getLevel() + amount));
 				break;
 			case XP_TOTAL:
 				giveTotalXP(player, amount);
@@ -27,9 +27,9 @@ public class CurrencyAPI {
 		}
 	}
 	
-	private static void giveTotalXP(Player player, int amount) {
+	private static void giveTotalXP(Player player, Double amount) {
 		if(Version.getCurrentVersion().getVersionInteger() >= 181) {
-			int total = getTotalExperience(player) + amount;
+			int total = (int) (getTotalExperience(player) + amount);
 			player.setTotalExperience(0);
 			player.setTotalExperience(total);
 			player.setLevel(0);
@@ -41,7 +41,7 @@ public class CurrencyAPI {
 			float xp = (float) total / (float) player.getExpToLevel();
 			player.setExp(xp);
 		}else {
-			player.giveExp(-amount);
+			player.giveExp((int) -amount);
 		}
 	}
 	
