@@ -106,6 +106,11 @@ public class FileManager {
 					}
 				}
 			}
+			// Removing debug Data.yml
+			File data = new File(plugin.getDataFolder(), "/Data.yml");
+			if(data.exists()) {
+				data.delete();
+			}
 			if(log) System.out.println(prefix + "Finished loading custom files.");
 		}
 		return this;
@@ -142,9 +147,7 @@ public class FileManager {
 	 * @param homeFolder The folder with custom files in it.
 	 */
 	public FileManager unregisterCustomFilesFolder(String homeFolder) {
-		if(homeFolders.contains(homeFolder)) {
-			homeFolders.remove(homeFolder);
-		}
+		homeFolders.remove(homeFolder);
 		return this;
 	}
 	
@@ -163,9 +166,7 @@ public class FileManager {
 	 * @param fileName The file that you want to remove from auto-generating.
 	 */
 	public FileManager unregisterDefaultGenerateFiles(String fileName) {
-		if(autoGenerateFiles.containsKey(fileName)) {
-			autoGenerateFiles.remove(fileName);
-		}
+		autoGenerateFiles.remove(fileName);
 		return this;
 	}
 	
@@ -288,7 +289,7 @@ public class FileManager {
 		//ENUM_NAME("FileName.yml", "FilePath.yml"),
 		CONFIG("Config.yml", "Config.yml"),
 		//This file is ment for testing stuff.
-		DATA("Data.yml", "Data.yml"),
+		//DATA("Data.yml", "Data.yml"),
 		MESSAGES("Messages.yml", "Messages.yml");
 		
 		private String fileName;
