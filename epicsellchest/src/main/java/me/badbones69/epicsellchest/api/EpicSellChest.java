@@ -115,9 +115,6 @@ public class EpicSellChest {
 					i = i.replaceAll("cost:", "");
 					if(Methods.isDouble(i)) {
 						cost = Double.parseDouble(i);
-						if(line.toLowerCase().contains("torch")) {
-							System.out.println(line + ": " + cost);
-						}
 					}
 				}else if(i.startsWith("currency:")) {
 					i = i.replaceAll("currency:", "");
@@ -270,6 +267,9 @@ public class EpicSellChest {
 					}
 					if(!found) {
 						price = getBasePrice() * item.getAmount();
+						if(currency == Currency.CUSTOM) {
+							command = customCurrency.getCommand();
+						}
 						if(item.hasItemMeta()) {
 							if(item.getItemMeta().hasEnchants()) {
 								for(UpgradeableEnchantment enchantment : getUpgradeableEnchantment()) {
@@ -302,13 +302,13 @@ public class EpicSellChest {
 									int sellingMinimum = 0, sellingAmount = 0;
 									String command = "";
 									Currency currency = getBaseCurrency();
-									CustomCurrency custom = getBaseCustomCurrency();
+									CustomCurrency customCurrency = getBaseCustomCurrency();
 									Boolean found = false;
 									for(SellableItem sellItem : getSellableItems()) {
 										if(Methods.isSimilar(sellItem.getItem(), item)) {
 											command = sellItem.getCommand();
 											currency = sellItem.getCurrency();
-											custom = sellItem.getCustomCurrency();
+											customCurrency = sellItem.getCustomCurrency();
 											if(sellItem.usesCheckAmount()) {
 												int amount = item.getAmount();
 												sellingMinimum = sellItem.getCheckAmount();
@@ -337,6 +337,9 @@ public class EpicSellChest {
 									}
 									if(!found) {
 										price = getBasePrice() * item.getAmount();
+										if(currency == Currency.CUSTOM) {
+											command = customCurrency.getCommand();
+										}
 										if(item.hasItemMeta()) {
 											if(item.getItemMeta().hasEnchants()) {
 												for(UpgradeableEnchantment enchantment : getUpgradeableEnchantment()) {
@@ -349,7 +352,7 @@ public class EpicSellChest {
 											}
 										}
 									}
-									items.add(new SellItem(item, sellingAmount, sellingMinimum, price, currency, custom, command));
+									items.add(new SellItem(item, sellingAmount, sellingMinimum, price, currency, customCurrency, command));
 								}
 							}
 						}

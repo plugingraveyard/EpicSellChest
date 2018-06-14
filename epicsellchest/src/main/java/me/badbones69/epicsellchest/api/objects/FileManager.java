@@ -106,12 +106,12 @@ public class FileManager {
 					}
 				}
 			}
-			// Removing debug Data.yml
-			File data = new File(plugin.getDataFolder(), "/Data.yml");
-			if(data.exists()) {
-				data.delete();
-			}
 			if(log) System.out.println(prefix + "Finished loading custom files.");
+		}
+		// Removing debug Data.yml
+		File data = new File(plugin.getDataFolder(), "/Data.yml");
+		if(data.exists()) {
+			data.delete();
 		}
 		return this;
 	}

@@ -1,4 +1,4 @@
-package me.badbones69.epicsellchest.controlers;
+package me.badbones69.epicsellchest.controllers;
 
 import me.badbones69.epicsellchest.api.objects.FileManager.Files;
 import me.badbones69.epicsellchest.Methods;
