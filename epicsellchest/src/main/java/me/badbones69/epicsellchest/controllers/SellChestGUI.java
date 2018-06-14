@@ -1,6 +1,5 @@
-package me.badbones69.epicsellchest.controlers;
+package me.badbones69.epicsellchest.controllers;
 
-import me.badbones69.epicsellchest.api.objects.FileManager.Files;
 import me.badbones69.epicsellchest.Methods;
 import me.badbones69.epicsellchest.api.EpicSellChest;
 import me.badbones69.epicsellchest.api.currency.Currency;
@@ -8,6 +7,7 @@ import me.badbones69.epicsellchest.api.currency.CustomCurrency;
 import me.badbones69.epicsellchest.api.enums.Messages;
 import me.badbones69.epicsellchest.api.enums.SellType;
 import me.badbones69.epicsellchest.api.event.SellChestEvent;
+import me.badbones69.epicsellchest.api.objects.FileManager.Files;
 import me.badbones69.epicsellchest.api.objects.SellItem;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;

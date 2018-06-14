@@ -1,4 +1,4 @@
-package me.badbones69.epicsellchest.controlers;
+package me.badbones69.epicsellchest.controllers;
 
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
