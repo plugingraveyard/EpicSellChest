@@ -2,14 +2,11 @@ package me.badbones69.epicsellchest;
 
 import me.badbones69.epicsellchest.api.enums.Version;
 import me.badbones69.epicsellchest.api.objects.FileManager.Files;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;

@@ -2,14 +2,14 @@ package me.badbones69.epicsellchest.controllers;
 
 import me.badbones69.epicsellchest.Methods;
 import me.badbones69.epicsellchest.api.EpicSellChest;
-import me.badbones69.epicsellchest.api.enums.Messages;
-import me.badbones69.epicsellchest.api.objects.SellItem;
-import me.badbones69.epicsellchest.api.enums.SellType;
 import me.badbones69.epicsellchest.api.currency.Currency;
 import me.badbones69.epicsellchest.api.currency.CustomCurrency;
-import me.badbones69.epicsellchest.api.event.SellChestEvent;
-import me.badbones69.epicsellchest.multisupport.NoCheatPlusSupport;
+import me.badbones69.epicsellchest.api.enums.Messages;
+import me.badbones69.epicsellchest.api.enums.SellType;
 import me.badbones69.epicsellchest.api.enums.Support;
+import me.badbones69.epicsellchest.api.event.SellChestEvent;
+import me.badbones69.epicsellchest.api.objects.SellItem;
+import me.badbones69.epicsellchest.multisupport.NoCheatPlusSupport;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -72,7 +72,8 @@ public class WandControl implements Listener {
 														item.getItem().setAmount(item.getItem().getAmount() - (item.getSellingAmount() * item.getSellingMinimum()));
 													}else {
 														chest.getInventory().remove(item.getItem());
-													}												}
+													}
+												}
 												player.sendMessage(Messages.SOLD_CHEST.getMessageDouble(placeholders));
 											}
 										}else {
