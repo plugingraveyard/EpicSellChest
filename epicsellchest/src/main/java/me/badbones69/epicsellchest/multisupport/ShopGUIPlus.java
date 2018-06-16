@@ -29,12 +29,11 @@ public class ShopGUIPlus {
 			CustomCurrency customCurrency = esc.getCustomCurrency(cur);
 			FileConfiguration shops = YamlConfiguration.loadConfiguration(new File(shopGUI.getDataFolder() + "/shops.yml"));
 			for(String shop : shops.getConfigurationSection("shops").getKeys(false)) {
-				String path = "shops." + shop;
-				for(String item : shops.getConfigurationSection(path + ".items").getKeys(false)) {
-					path += ".items." + item;
+				for(String item : shops.getConfigurationSection("shops." + shop + ".items").getKeys(false)) {
+					String path = "shops." + shop + ".items." + item;
 					if(shops.contains(path + ".type")) {
 						if(shops.getString(path + ".type").equalsIgnoreCase("item")) {
-							if(shops.getInt(path + ".sellPrice") >= 0) {
+							if(shops.getDouble(path + ".sellPrice") >= 0.0) {
 								ItemBuilder builder = new ItemBuilder()
 								.setMaterial(shops.getString(path + ".item.material"))
 								.setMetaData(shops.getInt(path + ".item.damage"))
