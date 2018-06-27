@@ -440,7 +440,16 @@ public class ItemBuilder implements Cloneable {
 		if(item != null) {
 			ItemBuilder otherItem = ItemBuilder.convertItemStack(item);
 			if(this.getMaterial() == otherItem.getMaterial() && this.getMetaData().equals(otherItem.getMetaData()) &&
-			this.getName().equals(otherItem.getName()) && this.getLore() == otherItem.getLore() && this.getEnchantments() == otherItem.getEnchantments()) {
+			this.getName().equals(otherItem.getName()) && this.getLore().containsAll(otherItem.getLore())) {
+				for(Enchantment enchantment : this.getEnchantments().keySet()) {
+					if(otherItem.getEnchantments().containsKey(enchantment)) {
+						if(otherItem.getEnchantments().get(enchantment).equals(this.getEnchantments().get(enchantment))) {
+							return false;
+						}
+					}else {
+						return false;
+					}
+				}
 				if(this.getMaterial() == Material.MOB_SPAWNER || this.getMaterial() == Material.MONSTER_EGGS) {
 					return this.getEntityType() == otherItem.getEntityType();
 				}else {

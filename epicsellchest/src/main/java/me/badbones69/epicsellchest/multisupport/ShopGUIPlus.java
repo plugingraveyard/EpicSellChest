@@ -34,34 +34,40 @@ public class ShopGUIPlus {
 					if(shops.contains(path + ".type")) {
 						if(shops.getString(path + ".type").equalsIgnoreCase("item")) {
 							if(shops.getDouble(path + ".sellPrice") >= 0.0) {
-								ItemBuilder builder = new ItemBuilder()
-								.setMaterial(shops.getString(path + ".item.material"))
-								.setMetaData(shops.getInt(path + ".item.damage"))
-								.setAmount(shops.getInt(path + ".item.quantity"))
-								.setName(shops.getString(path + ".item.name"))
-								.setLore(shops.getStringList(path + ".item.lore"));
-								if(shops.getBoolean(path + ".item.spawner")) {
-									builder.setEntityType(shops.getString(path + ".item.mob"));
-									if(builder.getEntityType() == null) {
-										continue;
+								try {
+									ItemBuilder builder = new ItemBuilder()
+									.setMaterial(shops.getString(path + ".item.material"))
+									.setMetaData(shops.getInt(path + ".item.damage"))
+									.setAmount(shops.getInt(path + ".item.quantity"))
+									.setName(shops.getString(path + ".item.name"))
+									.setLore(shops.getStringList(path + ".item.lore"));
+									if(shops.getBoolean(path + ".item.spawner")) {
+										builder.setEntityType(shops.getString(path + ".item.mob"));
+										if(builder.getEntityType() == null) {
+											continue;
+										}
 									}
-								}
-								for(String i : shops.getStringList(path + ".item.enchantments")) {
-									for(Enchantment enc : Enchantment.values()) {
-										if(enc.getName() != null) {
-											if(i.toLowerCase().startsWith(enc.getName().toLowerCase() + ":") || i.toLowerCase().startsWith(Methods.getEnchantmentName(enc).toLowerCase() + ":")) {
-												String[] breakdown = i.split(":");
-												int lvl = Integer.parseInt(breakdown[1]);
-												builder.addEnchantments(enc, lvl);
+									for(String i : shops.getStringList(path + ".item.enchantments")) {
+										for(Enchantment enc : Enchantment.values()) {
+											if(enc.getName() != null) {
+												if(i.toLowerCase().startsWith(enc.getName().toLowerCase() + ":") || i.toLowerCase().startsWith(Methods.getEnchantmentName(enc).toLowerCase() + ":")) {
+													String[] breakdown = i.split(":");
+													int lvl = Integer.parseInt(breakdown[1]);
+													builder.addEnchantments(enc, lvl);
+												}
 											}
 										}
 									}
+									items.add(new SellableItem(builder, shops.getDouble(path + ".sellPrice"),
+									currency,
+									customCurrency,
+									customCurrency.getCommand(),
+									builder.getAmount() > 1));
+								}catch(Exception e) {
+									//Debunging what things are erroring.
+									//System.out.println(path);
+									//e.printStackTrace();
 								}
-								items.add(new SellableItem(builder, shops.getDouble(path + ".sellPrice"),
-								currency,
-								customCurrency,
-								customCurrency.getCommand(),
-								builder.getAmount() > 1));
 							}
 						}
 					}
