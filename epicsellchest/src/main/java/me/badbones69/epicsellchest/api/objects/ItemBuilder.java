@@ -1,6 +1,7 @@
 package me.badbones69.epicsellchest.api.objects;
 
 import me.badbones69.epicsellchest.api.enums.Version;
+import me.badbones69.epicsellchest.multisupport.itemnbtapi.NBTItem;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -21,11 +22,12 @@ import java.util.List;
  * @author BadBones69
  *
  */
-public class ItemBuilder {
+public class ItemBuilder implements Cloneable {
 	
 	private Material material;
 	private Short metaData;
 	private String name;
+	private Boolean glowing;
 	private List<String> lore;
 	private Integer amount;
 	private HashMap<Enchantment, Integer> enchantments;
@@ -41,6 +43,7 @@ public class ItemBuilder {
 		this.material = Material.STONE;
 		this.metaData = 0;
 		this.name = "";
+		this.glowing = false;
 		this.lore = new ArrayList<>();
 		this.amount = 1;
 		this.entityType = EntityType.BAT;
@@ -102,7 +105,7 @@ public class ItemBuilder {
 		if(material != null) {
 			this.material = material;
 			if(Version.getCurrentVersion().isNewer(Version.v1_8_R3)) {
-				if(material == Material.MONSTER_EGG) {
+				if(material == Material.MONSTER_EGG || material == Material.MOB_SPAWNER) {
 					this.entityType = EntityType.fromId(metaData);
 				}else {
 					this.metaData = metaData;
@@ -245,8 +248,41 @@ public class ItemBuilder {
 	 * @param entityType The entity type the mob egg will be.
 	 * @return The ItemBuilder with updated info.
 	 */
+	public ItemBuilder setEntityType(Integer entityType) {
+		if(entityType != null) {
+			this.entityType = EntityType.fromId(entityType);
+		}
+		return this;
+	}
+	
+	/**
+	 * Sets the type of mob egg.
+	 * @param entityType The entity type the mob egg will be.
+	 * @return The ItemBuilder with updated info.
+	 */
+	public ItemBuilder setEntityType(String entityType) {
+		if(entityType != null) {
+			try {
+				EntityType mob = EntityType.valueOf(entityType);
+				if(mob != null) {
+					this.entityType = mob;
+				}
+			}catch(Exception e) {
+				this.entityType = null;
+			}
+		}
+		return this;
+	}
+	
+	/**
+	 * Sets the type of mob egg.
+	 * @param entityType The entity type the mob egg will be.
+	 * @return The ItemBuilder with updated info.
+	 */
 	public ItemBuilder setEntityType(EntityType entityType) {
-		this.entityType = entityType;
+		if(entityType != null) {
+			this.entityType = entityType;
+		}
 		return this;
 	}
 	
@@ -365,6 +401,24 @@ public class ItemBuilder {
 	}
 	
 	/**
+	 * Check if the item in the builder is glowing.
+	 * @return The ItemBuilder with updated info.
+	 */
+	public Boolean isGlowing() {
+		return glowing;
+	}
+	
+	/**
+	 * Set if the item in the builder to be glowing or not.
+	 * @param glowing True will set the item to have a glowing effect.
+	 * @return The ItemBuilder with updated info.
+	 */
+	public ItemBuilder setGlowing(Boolean glowing) {
+		this.glowing = glowing;
+		return this;
+	}
+	
+	/**
 	 * Builder the item from all the information that was given to the builder.
 	 * @return The result of all the info that was given to the builder as an ItemStack.
 	 */
@@ -375,7 +429,49 @@ public class ItemBuilder {
 		itemMeta.setLore(getUpdatedLore());
 		item.setItemMeta(itemMeta);
 		item.addUnsafeEnchantments(enchantments);
+		NBTItem nbt = new NBTItem(item);
+		if(material == Material.MONSTER_EGG || material == Material.MOB_SPAWNER) {
+			nbt.addCompound("EntityTag").setString("id", "minecraft:" + entityType.name());
+		}
 		return item;
+	}
+	
+	public boolean isSimilar(ItemStack item) {
+		if(item != null) {
+			ItemBuilder otherItem = ItemBuilder.convertItemStack(item);
+			if(this.getMaterial() == otherItem.getMaterial() && this.getMetaData().equals(otherItem.getMetaData()) &&
+			this.getName().equals(otherItem.getName()) && this.getLore() == otherItem.getLore() && this.getEnchantments() == otherItem.getEnchantments()) {
+				if(this.getMaterial() == Material.MOB_SPAWNER || this.getMaterial() == Material.MONSTER_EGGS) {
+					return this.getEntityType() == otherItem.getEntityType();
+				}else {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	
+	public boolean isSimilar(ItemBuilder otherItem) {
+		if(otherItem != null) {
+			if(this.getMaterial() == otherItem.getMaterial() && this.getMetaData().equals(otherItem.getMetaData()) &&
+			this.getName().equals(otherItem.getName()) && this.getLore() == otherItem.getLore() && this.getEnchantments() == otherItem.getEnchantments()) {
+				if(this.getMaterial() == Material.MOB_SPAWNER || this.getMaterial() == Material.MONSTER_EGGS) {
+					return this.getEntityType() == otherItem.getEntityType();
+				}else {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	
+	public ItemBuilder clone() {
+		try {
+			return (ItemBuilder) super.clone();
+		}catch(CloneNotSupportedException e) {
+			throw new Error(e);
+		}
+		
 	}
 	
 	/**
@@ -390,6 +486,28 @@ public class ItemBuilder {
 	
 	private String color(String msg) {
 		return ChatColor.translateAlternateColorCodes('&', msg);
+	}
+	
+	private ItemStack addGlow(ItemStack item, boolean toggle) {
+		if(toggle) {
+			try {
+				if(item != null) {
+					if(item.hasItemMeta()) {
+						if(item.getItemMeta().hasEnchants()) {
+							return item;
+						}
+					}
+					item.addUnsafeEnchantment(Enchantment.LUCK, 1);
+					ItemMeta meta = item.getItemMeta();
+					meta.addItemFlags(org.bukkit.inventory.ItemFlag.HIDE_ENCHANTS);
+					item.setItemMeta(meta);
+				}
+				return item;
+			}catch(NoClassDefFoundError e) {
+				return item;
+			}
+		}
+		return item;
 	}
 	
 }

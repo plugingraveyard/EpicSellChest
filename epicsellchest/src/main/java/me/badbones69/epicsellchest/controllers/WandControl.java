@@ -38,7 +38,7 @@ public class WandControl implements Listener {
 		ItemStack wand = Methods.getItemInHand(player);
 		if(e.getAction() == Action.RIGHT_CLICK_BLOCK) {
 			if(wand != null) {
-				if(Methods.isSimilar(sc.getChestSellingItem(), wand)) {
+				if(sc.getSellingWand().isSimilar(wand)) {
 					if(block != null) {
 						if(block.getType() == Material.CHEST || block.getType() == Material.TRAPPED_CHEST) {
 							e.setCancelled(true);

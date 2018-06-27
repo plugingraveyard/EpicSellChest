@@ -30,6 +30,7 @@ Messages:
   Help:
     - '&6/sc &7- Sells the chest you are currently looking at or standing on.'
     - '&6/sc Reload &7- Reloads the config and messages files.'
+    - '&6/sc Debug &7- Shows all broken items and duplicated items.'
     - '&6/sc Wand [Amount] [Player] &7- Give a player a Chest Selling Wand.'
     - '&6/sc [ID:MD] [ID:MD].... &7- Allows you to sell specific items in a chest you are looking at or standing on.'
     - '&6/sc Chunk &7- Sell all items in all the chests in your current chunk.'

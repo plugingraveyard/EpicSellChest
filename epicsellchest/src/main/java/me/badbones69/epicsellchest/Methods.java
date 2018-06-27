@@ -160,60 +160,6 @@ public class Methods {
 		}
 	}
 	
-	public static boolean isSimilar(ItemStack one, ItemStack two) {
-		if(one != null && two != null) {
-			if(one.getType() == two.getType()) {
-				if(one.getDurability() == two.getDurability()) {
-					if(one.hasItemMeta() && two.hasItemMeta()) {
-						if(one.getItemMeta().hasEnchants() && two.getItemMeta().hasEnchants()) {
-							for(Enchantment enchantment : one.getItemMeta().getEnchants().keySet()) {
-								if(two.getItemMeta().hasEnchant(enchantment)) {
-									if(two.getItemMeta().getEnchantLevel(enchantment) != one.getItemMeta().getEnchantLevel(enchantment)) {
-										return false;
-									}
-								}else {
-									return false;
-								}
-							}
-						}
-						if(one.getItemMeta().hasDisplayName() && two.getItemMeta().hasDisplayName()) {
-							if(one.getItemMeta().getDisplayName().equalsIgnoreCase(two.getItemMeta().getDisplayName())) {
-								if(one.getItemMeta().hasLore() && two.getItemMeta().hasLore()) {
-									if(one.getItemMeta().getLore().size() == two.getItemMeta().getLore().size()) {
-										int i = 0;
-										for(String lore : one.getItemMeta().getLore()) {
-											if(!lore.equals(two.getItemMeta().getLore().get(i))) {
-												return false;
-											}
-											i++;
-										}
-										return true;
-									}
-								}else return !one.getItemMeta().hasLore() && !two.getItemMeta().hasLore();
-							}
-						}else if(!one.getItemMeta().hasDisplayName() && !two.getItemMeta().hasDisplayName()) {
-							if(one.getItemMeta().hasLore() && two.getItemMeta().hasLore()) {
-								if(one.getItemMeta().getLore().size() == two.getItemMeta().getLore().size()) {
-									int i = 0;
-									for(String lore : one.getItemMeta().getLore()) {
-										if(!lore.equals(two.getItemMeta().getLore().get(i))) {
-											return false;
-										}
-										i++;
-									}
-									return true;
-								}else {
-									return false;
-								}
-							}else return !one.getItemMeta().hasLore() && !two.getItemMeta().hasLore();
-						}
-					}else return !one.hasItemMeta() && !two.hasItemMeta();
-				}
-			}
-		}
-		return false;
-	}
-	
 	public static String getEnchantmentName(Enchantment en) {
 		HashMap<String, String> enchants = new HashMap<>();
 		enchants.put("ARROW_DAMAGE", "Power");

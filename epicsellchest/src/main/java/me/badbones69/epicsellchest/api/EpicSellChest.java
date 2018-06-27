@@ -4,12 +4,10 @@ import me.badbones69.epicsellchest.Methods;
 import me.badbones69.epicsellchest.api.currency.Currency;
 import me.badbones69.epicsellchest.api.currency.CurrencyAPI;
 import me.badbones69.epicsellchest.api.currency.CustomCurrency;
+import me.badbones69.epicsellchest.api.enums.RegisterType;
 import me.badbones69.epicsellchest.api.enums.Support;
-import me.badbones69.epicsellchest.api.objects.FileManager;
+import me.badbones69.epicsellchest.api.objects.*;
 import me.badbones69.epicsellchest.api.objects.FileManager.Files;
-import me.badbones69.epicsellchest.api.objects.SellItem;
-import me.badbones69.epicsellchest.api.objects.SellableItem;
-import me.badbones69.epicsellchest.api.objects.UpgradeableEnchantment;
 import me.badbones69.epicsellchest.multisupport.ShopGUIPlus;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -35,15 +33,18 @@ public class EpicSellChest {
 	private Boolean useMetrics;
 	private Boolean checkUpdates;
 	private Currency baseCurrency;
-	private ItemStack chestSellingItem;
+	private ItemBuilder sellingWand;
 	private static EpicSellChest instance;
 	private CustomCurrency baseCustomCurrency;
+	private ArrayList<String> brokeItems = new ArrayList<>();
+	private ArrayList<String> duplicateItems = new ArrayList<>();
 	private ArrayList<UUID> twoFactorAuth = new ArrayList<>();
 	private ArrayList<Material> blackListItems = new ArrayList<>();
-	private ArrayList<SellableItem> sellableItems = new ArrayList<>();
 	private HashMap<UUID, ArrayList<Chest>> queryChests = new HashMap<>();
 	private ArrayList<CustomCurrency> customCurrencies = new ArrayList<>();
 	private ArrayList<Enchantment> blackListEnchantments = new ArrayList<>();
+	private ArrayList<SellableItem> registeredSellableItems = new ArrayList<>();
+	private HashMap<ItemBuilder, RegisterType> registeredMaterials = new HashMap<>();
 	private ArrayList<UpgradeableEnchantment> upgradeableEnchantments = new ArrayList<>();
 	
 	public static EpicSellChest getInstance() {
@@ -56,8 +57,10 @@ public class EpicSellChest {
 	}
 	
 	public void loadEpicSellChest() {
-		sellableItems.clear();
-		chestSellingItem = null;
+		brokeItems.clear();
+		duplicateItems.clear();
+		registeredMaterials.clear();
+		registeredSellableItems.clear();
 		blackListItems.clear();
 		customCurrencies.clear();
 		blackListEnchantments.clear();
@@ -66,7 +69,7 @@ public class EpicSellChest {
 		basePrice = config.getDouble("Settings.Base-Price");
 		useMetrics = config.getBoolean("Settings.Metrics");
 		checkUpdates = config.getBoolean("Settings.Check-For-Updates");
-		chestSellingItem = Methods.addGlowing(Methods.makeItem(config.getString("Settings.Chest-Selling-Item.Item"), 1, config.getString("Settings.Chest-Selling-Item.Name"), config.getStringList("Settings.Chest-Selling-Item.Lore")), config.getBoolean("Settings.Chest-Selling-Item.Glowing"));
+		sellingWand = new ItemBuilder().setMaterial(config.getString("Settings.Chest-Selling-Item.Item")).setName(config.getString("Settings.Chest-Selling-Item.Name")).setLore(config.getStringList("Settings.Chest-Selling-Item.Lore")).setGlowing(config.getBoolean("Settings.Chest-Selling-Item.Glowing"));
 		for(String currency : config.getConfigurationSection("Settings.Custom-Currencies").getKeys(false)) {
 			customCurrencies.add(new CustomCurrency(currency, config.getString("Settings.Custom-Currencies." + currency + ".Command")));
 		}
@@ -93,7 +96,7 @@ public class EpicSellChest {
 		}
 		for(String line : config.getStringList("Settings.Item-Cost")) {
 			Double cost = 0.0;
-			ItemStack item = null;
+			ItemBuilder item = new ItemBuilder();
 			Material m = null;
 			String command = "";
 			Boolean checkAmount = false;
@@ -102,7 +105,7 @@ public class EpicSellChest {
 			for(String i : line.split(", ")) {
 				i = i.toLowerCase();
 				if(i.startsWith("item:")) {
-					i = i.replaceAll("item:", "");
+					i = i.substring(5);
 					int md = 0;
 					String id = i;
 					if(i.contains(":")) {
@@ -110,14 +113,18 @@ public class EpicSellChest {
 						id = i.split(":")[0];
 					}
 					m = Material.matchMaterial(id);
-					item = new ItemStack(m, 1, (short) md);
+					if(m != null) {
+						item.setMaterial(m).setMetaData(md);
+					}else {
+						brokeItems.add("&cBroken Line: &a" + line + " &7: &cBroken ID: &a" + i);
+					}
 				}else if(i.startsWith("cost:")) {
-					i = i.replaceAll("cost:", "");
+					i = i.substring(5);
 					if(Methods.isDouble(i)) {
 						cost = Double.parseDouble(i);
 					}
 				}else if(i.startsWith("currency:")) {
-					i = i.replaceAll("currency:", "");
+					i = i.substring(9);
 					Currency c = Currency.getCurrency(i);
 					if(Currency.isCurrency(i)) {
 						if(c != null) {
@@ -132,7 +139,7 @@ public class EpicSellChest {
 						}
 					}
 				}else if(i.startsWith("amount:")) {
-					i = i.replaceAll("amount:", "");
+					i = i.substring(7);
 					try {
 						int amount = Integer.parseInt(i);
 						if(amount > 1) {
@@ -146,11 +153,23 @@ public class EpicSellChest {
 				}
 			}
 			if(m != null && currency != null) {
-				sellableItems.add(new SellableItem(item, cost, currency, custom, command, checkAmount));
+				if(isRegisteredMaterial(item)) {
+					duplicateItems.add("&cDuplicate Item: &a" + line + " &7: &cAlready Registered With: &a" + getRegisteredPlugin(item).getName() + " &7: &cTryed To Register With: &a" + RegisterType.EPICSELLCHEST.getName());
+				}else {
+					registeredSellableItems.add(new SellableItem(item, cost, currency, custom, command, checkAmount));
+					registeredMaterials.put(item, RegisterType.EPICSELLCHEST);
+				}
 			}
 		}
 		if(Support.SHOP_GUI_PLUS.isEnabled()) {
-			sellableItems.addAll(ShopGUIPlus.getSellableItems());
+			for(SellableItem item : ShopGUIPlus.getSellableItems()) {
+				if(isRegisteredMaterial(item.getItem())) {
+					duplicateItems.add("&cDuplicate Item: &a" + item.getItem().getType() + ":" + item.getItem().getDurability() + " &7: &cAlready Registered With: &a" + getRegisteredPlugin(item.getItem()).getName() + " &7: &cTryed To Register With: &a" + RegisterType.SHOP_GUI_PLUS.getName());
+				}else {
+					registeredSellableItems.add(item);
+					registeredMaterials.put(ItemBuilder.convertItemStack(item.getItem()), RegisterType.SHOP_GUI_PLUS);
+				}
+			}
 		}
 		for(String name : config.getConfigurationSection("Settings.Enchantment-Cost").getKeys(false)) {
 			Enchantment enchant = Enchantment.getByName(name);
@@ -178,6 +197,14 @@ public class EpicSellChest {
 				upgradeableEnchantments.add(new UpgradeableEnchantment(enchant, levels));
 			}
 		}
+	}
+	
+	public ArrayList<String> getDuplicateItems() {
+		return duplicateItems;
+	}
+	
+	public ArrayList<String> getBrokeItems() {
+		return brokeItems;
 	}
 	
 	public FileManager getFileManager() {
@@ -213,14 +240,12 @@ public class EpicSellChest {
 		return null;
 	}
 	
-	public ItemStack getChestSellingItem() {
-		return chestSellingItem.clone();
+	public ItemStack getSellingWand() {
+		return sellingWand.build();
 	}
 	
 	public ItemStack getChestSellingItem(int amount) {
-		ItemStack item = chestSellingItem.clone();
-		item.setAmount(amount);
-		return item;
+		return sellingWand.clone().setAmount(amount).build();
 	}
 	
 	public ArrayList<SellItem> getSellableItems(Inventory inv) {
@@ -234,8 +259,8 @@ public class EpicSellChest {
 					Currency currency = getBaseCurrency();
 					CustomCurrency customCurrency = baseCustomCurrency;
 					Boolean found = false;
-					for(SellableItem sellItem : getSellableItems()) {
-						if(Methods.isSimilar(sellItem.getItem(), item)) {
+					for(SellableItem sellItem : getRegisteredSellableItems()) {
+						if(sellItem.getItemBuilder().isSimilar(item)) {
 							command = sellItem.getCommand();
 							currency = sellItem.getCurrency();
 							customCurrency = sellItem.getCustomCurrency();
@@ -304,8 +329,8 @@ public class EpicSellChest {
 									Currency currency = getBaseCurrency();
 									CustomCurrency customCurrency = getBaseCustomCurrency();
 									Boolean found = false;
-									for(SellableItem sellItem : getSellableItems()) {
-										if(Methods.isSimilar(sellItem.getItem(), item)) {
+									for(SellableItem sellItem : getRegisteredSellableItems()) {
+										if(sellItem.getItemBuilder().isSimilar(item)) {
 											command = sellItem.getCommand();
 											currency = sellItem.getCurrency();
 											customCurrency = sellItem.getCustomCurrency();
@@ -415,8 +440,8 @@ public class EpicSellChest {
 		}
 		Boolean pricesOnly = Files.CONFIG.getFile().getBoolean("Settings.Selling-Options.Price-Selling-Only");
 		Boolean canSell = !pricesOnly;
-		for(SellableItem sellable : getSellableItems()) {
-			if(Methods.isSimilar(sellable.getItem(), item)) {
+		for(SellableItem sellable : getRegisteredSellableItems()) {
+			if(sellable.getItemBuilder().isSimilar(item)) {
 				if(pricesOnly) {
 					canSell = true;
 				}
@@ -431,8 +456,8 @@ public class EpicSellChest {
 		return canSell;
 	}
 	
-	public ArrayList<SellableItem> getSellableItems() {
-		return sellableItems;
+	public ArrayList<SellableItem> getRegisteredSellableItems() {
+		return registeredSellableItems;
 	}
 	
 	public ArrayList<Material> getBlackListItems() {
@@ -549,6 +574,47 @@ public class EpicSellChest {
 	
 	public Plugin getPlugin() {
 		return Bukkit.getPluginManager().getPlugin("EpicSellChest");
+	}
+	
+	public Boolean isRegisteredMaterial(ItemBuilder itemBuilder) {
+		for(ItemBuilder item : registeredMaterials.keySet()) {
+			if(item.getMaterial() == itemBuilder.getMaterial() &&
+			item.getMetaData().equals(itemBuilder.getMetaData())) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public Boolean isRegisteredMaterial(ItemStack itemStack) {
+		ItemBuilder item = ItemBuilder.convertItemStack(itemStack);
+		for(ItemBuilder itemBuilder : registeredMaterials.keySet()) {
+			if(item.getMaterial() == itemBuilder.getMaterial() &&
+			item.getMetaData().equals(itemBuilder.getMetaData())) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public RegisterType getRegisteredPlugin(ItemBuilder itemBuilder) {
+		for(ItemBuilder item : registeredMaterials.keySet()) {
+			if(item.getMaterial() == itemBuilder.getMaterial() &&
+			item.getMetaData().equals(itemBuilder.getMetaData())) {
+				return registeredMaterials.get(itemBuilder);
+			}
+		}
+		return null;
+	}
+	
+	public RegisterType getRegisteredPlugin(ItemStack item) {
+		for(ItemBuilder itemBuilder : registeredMaterials.keySet()) {
+			if(item.getType() == itemBuilder.getMaterial() &&
+			item.getDurability() == itemBuilder.getMetaData()) {
+				return registeredMaterials.get(itemBuilder);
+			}
+		}
+		return null;
 	}
 	
 	private Vector getMinimumPoint(Location pos1, Location pos2) {

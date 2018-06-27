@@ -40,6 +40,12 @@ public class ShopGUIPlus {
 								.setAmount(shops.getInt(path + ".item.quantity"))
 								.setName(shops.getString(path + ".item.name"))
 								.setLore(shops.getStringList(path + ".item.lore"));
+								if(shops.getBoolean(path + ".item.spawner")) {
+									builder.setEntityType(shops.getString(path + ".item.mob"));
+									if(builder.getEntityType() == null) {
+										continue;
+									}
+								}
 								for(String i : shops.getStringList(path + ".item.enchantments")) {
 									for(Enchantment enc : Enchantment.values()) {
 										if(enc.getName() != null) {
@@ -51,7 +57,7 @@ public class ShopGUIPlus {
 										}
 									}
 								}
-								items.add(new SellableItem(builder.build(), shops.getDouble(path + ".sellPrice"),
+								items.add(new SellableItem(builder, shops.getDouble(path + ".sellPrice"),
 								currency,
 								customCurrency,
 								customCurrency.getCommand(),
