@@ -7,14 +7,16 @@ import org.bukkit.inventory.ItemStack;
 public class SellableItem {
 	
 	private Double price;
+	private ItemBuilder itemBuilder;
 	private ItemStack item;
 	private String command;
 	private Currency currency;
 	private CustomCurrency customCurrency;
 	private Boolean checkAmount;
 	
-	public SellableItem(ItemStack item, Double price, Currency currency, CustomCurrency customCurrency, String command, Boolean checkAmount) {
-		this.item = item;
+	public SellableItem(ItemBuilder itemBuilder, Double price, Currency currency, CustomCurrency customCurrency, String command, Boolean checkAmount) {
+		this.itemBuilder = itemBuilder;
+		this.item = itemBuilder.build();
 		this.price = price;
 		this.customCurrency = customCurrency;
 		this.command = command;
@@ -24,6 +26,10 @@ public class SellableItem {
 	
 	public ItemStack getItem() {
 		return item;
+	}
+	
+	public ItemBuilder getItemBuilder() {
+		return itemBuilder;
 	}
 	
 	public Double getPrice() {

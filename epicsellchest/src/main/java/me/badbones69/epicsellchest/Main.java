@@ -151,7 +151,7 @@ public class Main extends JavaPlugin {
 					//	FileConfiguration data = Files.DATA.getFile();
 					//	data.set("Item-Cost", null);
 					//	List<String> items = new ArrayList<>();
-					//	for(SellableItem item : sc.getSellableItems()) {
+					//	for(SellableItem item : sc.getRegisteredSellableItems()) {
 					//		items.add("Item:" + item.getItem().getType().name() + ":" + item.getItem().getDurability()
 					//		+ ", Cost:" + item.getPrice()
 					//		+ ", Currency:" + (item.getCurrency() == Currency.CUSTOM ? item.getCustomCurrency().getName() : item.getCurrency().getName())
@@ -167,6 +167,37 @@ public class Main extends JavaPlugin {
 						fileManager.setup(this);
 						sc.loadEpicSellChest();
 						sender.sendMessage(Messages.RELOADED.getMessage());
+						return true;
+					}else {
+						sender.sendMessage(Messages.NO_PERMISSION.getMessage());
+						return true;
+					}
+				}else if(args[0].equalsIgnoreCase("debug")) {
+					if(sender.hasPermission("epicsellchest.debug") || sender.hasPermission("epicsellchest.admin")) {
+						if(!sc.getBrokeItems().isEmpty()) {
+							sender.sendMessage(Methods.prefix("&7List of all broken items:"));
+							for(String item : sc.getBrokeItems()) {
+								sender.sendMessage(Methods.color(item));
+							}
+						}else {
+							sender.sendMessage(Methods.prefix("&aYour Config.yml contains no broken items."));
+						}
+						if(!sc.getDuplicateItems().isEmpty()) {
+							sender.sendMessage(Methods.prefix("&7List of all duplicate items:"));
+							for(String item : sc.getDuplicateItems()) {
+								sender.sendMessage(Methods.color(item));
+							}
+							if(Support.SHOP_GUI_PLUS.isEnabled()) {
+								sender.sendMessage("");
+								sender.sendMessage(Methods.color("&7&l(&c&l!&7&l) &7If the EpicSellChest's config.yml contains items that the ShopGUIPlus plugin has, EpicSellChest's prices will override ShopGUIPlus's price of that item."));
+								sender.sendMessage("");
+								sender.sendMessage(Methods.color("&7&l(&c&l!&7&l) &7If you wish to not use EpicSellChest's price just go into the config.yml and remove that item from the list."));
+								sender.sendMessage("");
+								sender.sendMessage(Methods.color("&7&l(&c&l!&7&l) &7If you want to make sure EpicSellChest doesn't get the price of multiple of the same items from ShopGUIPlus, just set that items price in the EpicSellChest's config.yml."));
+							}
+						}else {
+							sender.sendMessage(Methods.prefix("&aThere are no duplicate items."));
+						}
 						return true;
 					}else {
 						sender.sendMessage(Messages.NO_PERMISSION.getMessage());
