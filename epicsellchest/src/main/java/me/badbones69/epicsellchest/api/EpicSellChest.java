@@ -601,7 +601,7 @@ public class EpicSellChest {
 		for(ItemBuilder item : registeredMaterials.keySet()) {
 			if(item.getMaterial() == itemBuilder.getMaterial() &&
 			item.getMetaData().equals(itemBuilder.getMetaData())) {
-				return registeredMaterials.get(itemBuilder);
+				return registeredMaterials.get(item);
 			}
 		}
 		return null;
