@@ -101,17 +101,24 @@ public class ItemBuilder implements Cloneable {
 			string = b[0];
 			metaData = Short.parseShort(b[1]);
 		}
-		Material material = Material.matchMaterial(string); //Needs to be changed to getMaterial() for 1.13.
-		if(material != null) {
-			this.material = material;
-			if(Version.getCurrentVersion().isNewer(Version.v1_8_R3)) {
-				if(material == Material.MONSTER_EGG || material == Material.MOB_SPAWNER) {
-					this.entityType = EntityType.fromId(metaData);
+		if(Version.getCurrentVersion().isOlder(Version.v1_13_R1)) {
+			Material material = Material.matchMaterial(string); //Needs to be changed to getMaterial() for 1.13.
+			if(material != null) {
+				this.material = material;
+				if(Version.getCurrentVersion().isNewer(Version.v1_8_R3)) {
+					if(material == Material.matchMaterial("MONSTER_EGG") || material == Material.matchMaterial("MOB_SPAWNER")) {
+						this.entityType = EntityType.fromId(metaData);
+					}else {
+						this.metaData = metaData;
+					}
 				}else {
 					this.metaData = metaData;
 				}
-			}else {
-				this.metaData = metaData;
+			}
+		}else {
+			Material material = Material.getMaterial(string);
+			if(material != null) {
+				this.material = material;
 			}
 		}
 		return this;
@@ -425,13 +432,17 @@ public class ItemBuilder implements Cloneable {
 	public ItemStack build() {
 		ItemStack item = referenceItem != null ? referenceItem : new ItemStack(material, amount, metaData);
 		ItemMeta itemMeta = item.getItemMeta();
-		itemMeta.setDisplayName(getUpdatedName());
-		itemMeta.setLore(getUpdatedLore());
-		item.setItemMeta(itemMeta);
+		if(itemMeta != null) {
+			itemMeta.setDisplayName(getUpdatedName());
+			itemMeta.setLore(getUpdatedLore());
+			item.setItemMeta(itemMeta);
+		}
 		item.addUnsafeEnchantments(enchantments);
 		NBTItem nbt = new NBTItem(item);
-		if(material == Material.MONSTER_EGG || material == Material.MOB_SPAWNER) {
-			nbt.addCompound("EntityTag").setString("id", "minecraft:" + entityType.name());
+		if(Version.getCurrentVersion().isOlder(Version.v1_13_R1)) {
+			if(material == Material.matchMaterial("MONSTER_EGG") || material == Material.matchMaterial("MOB_SPAWNER")) {
+				nbt.addCompound("EntityTag").setString("id", "minecraft:" + entityType.name());
+			}
 		}
 		return item;
 	}
@@ -450,11 +461,12 @@ public class ItemBuilder implements Cloneable {
 						return false;
 					}
 				}
-				if(this.getMaterial() == Material.MOB_SPAWNER || this.getMaterial() == Material.MONSTER_EGGS) {
-					return this.getEntityType() == otherItem.getEntityType();
-				}else {
-					return true;
+				if(Version.getCurrentVersion().isOlder(Version.v1_13_R1)) {
+					if(material == Material.matchMaterial("MONSTER_EGG") || material == Material.matchMaterial("MOB_SPAWNER")) {
+						return this.getEntityType() == otherItem.getEntityType();
+					}
 				}
+				return true;
 			}
 		}
 		return false;
@@ -464,9 +476,10 @@ public class ItemBuilder implements Cloneable {
 		if(otherItem != null) {
 			if(this.getMaterial() == otherItem.getMaterial() && this.getMetaData().equals(otherItem.getMetaData()) &&
 			this.getName().equals(otherItem.getName()) && this.getLore() == otherItem.getLore() && this.getEnchantments() == otherItem.getEnchantments()) {
-				if(this.getMaterial() == Material.MOB_SPAWNER || this.getMaterial() == Material.MONSTER_EGGS) {
-					return this.getEntityType() == otherItem.getEntityType();
-				}else {
+				if(Version.getCurrentVersion().isOlder(Version.v1_13_R1)) {
+					if(material == Material.matchMaterial("MONSTER_EGG") || material == Material.matchMaterial("MOB_SPAWNER")) {
+						return this.getEntityType() == otherItem.getEntityType();
+					}
 					return true;
 				}
 			}

@@ -41,7 +41,7 @@ public class SellChestGUI implements Listener {
 		UUID uuid = player.getUniqueId();
 		FileConfiguration config = Files.CONFIG.getFile();
 		if(inv != null) {
-			if(inv.getName().equalsIgnoreCase(Methods.color(config.getString("Settings.Sign-Options.Inventory-Name")))) {
+			if(e.getView().getTitle().equalsIgnoreCase(Methods.color(config.getString("Settings.Sign-Options.Inventory-Name")))) {
 				if(!Methods.isInvEmpty(inv)) {
 					if(!sc.needsTwoFactorAuth(uuid)) {
 						ArrayList<SellItem> items = sc.getSellableItems(inv);
@@ -108,7 +108,7 @@ public class SellChestGUI implements Listener {
 						}.runTaskLater(sc.getPlugin(), 0);
 					}
 				}
-			}else if(inv.getName().equalsIgnoreCase(Methods.color(Files.CONFIG.getFile().getString("Settings.Sign-Options.Two-Factor-Auth-Options.Inventory-Name")))) {
+			}else if(e.getView().getTitle().equalsIgnoreCase(Methods.color(Files.CONFIG.getFile().getString("Settings.Sign-Options.Two-Factor-Auth-Options.Inventory-Name")))) {
 				if(sellables.containsKey(uuid) && nonsellables.containsKey(uuid)) {
 					ArrayList<SellItem> items = sellables.get(uuid);
 					if(items.size() > 0) {
@@ -153,7 +153,7 @@ public class SellChestGUI implements Listener {
 		UUID uuid = player.getUniqueId();
 		Inventory inv = e.getInventory();
 		if(inv != null) {
-			if(inv.getName().equalsIgnoreCase(Methods.color(Files.CONFIG.getFile().getString("Settings.Sign-Options.Two-Factor-Auth-Options.Inventory-Name")))) {
+			if(e.getView().getTitle().equalsIgnoreCase(Methods.color(Files.CONFIG.getFile().getString("Settings.Sign-Options.Two-Factor-Auth-Options.Inventory-Name")))) {
 				e.setCancelled(true);
 				if(sellables.containsKey(uuid) && nonsellables.containsKey(uuid)) {
 					ItemStack check = e.getCurrentItem();

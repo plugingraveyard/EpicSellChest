@@ -6,6 +6,7 @@ import me.badbones69.epicsellchest.api.currency.CurrencyAPI;
 import me.badbones69.epicsellchest.api.currency.CustomCurrency;
 import me.badbones69.epicsellchest.api.enums.RegisterType;
 import me.badbones69.epicsellchest.api.enums.Support;
+import me.badbones69.epicsellchest.api.enums.Version;
 import me.badbones69.epicsellchest.api.objects.*;
 import me.badbones69.epicsellchest.api.objects.FileManager.Files;
 import me.badbones69.epicsellchest.multisupport.ShopGUIPlus;
@@ -112,7 +113,11 @@ public class EpicSellChest {
 						md = Integer.parseInt(i.split(":")[1]);
 						id = i.split(":")[0];
 					}
-					m = Material.matchMaterial(id);
+					if(Version.getCurrentVersion().isNewer(Version.v1_12_R1)) {// 1.13+
+						m = Material.matchMaterial(id, true);
+					}else {// Checks 1.12.2 down names
+						m = Material.matchMaterial(id);
+					}
 					if(m != null) {
 						item.setMaterial(m).setMetaData(md);
 					}else {
@@ -628,57 +633,74 @@ public class EpicSellChest {
 	}
 	
 	private ArrayList<Material> getDamageableItems() {
-		ArrayList<Material> ma = new ArrayList<>();
-		ma.add(Material.DIAMOND_HELMET);
-		ma.add(Material.DIAMOND_CHESTPLATE);
-		ma.add(Material.DIAMOND_LEGGINGS);
-		ma.add(Material.DIAMOND_BOOTS);
-		ma.add(Material.CHAINMAIL_HELMET);
-		ma.add(Material.CHAINMAIL_CHESTPLATE);
-		ma.add(Material.CHAINMAIL_LEGGINGS);
-		ma.add(Material.CHAINMAIL_BOOTS);
-		ma.add(Material.GOLD_HELMET);
-		ma.add(Material.GOLD_CHESTPLATE);
-		ma.add(Material.GOLD_LEGGINGS);
-		ma.add(Material.GOLD_BOOTS);
-		ma.add(Material.IRON_HELMET);
-		ma.add(Material.IRON_CHESTPLATE);
-		ma.add(Material.IRON_LEGGINGS);
-		ma.add(Material.IRON_BOOTS);
-		ma.add(Material.LEATHER_HELMET);
-		ma.add(Material.LEATHER_CHESTPLATE);
-		ma.add(Material.LEATHER_LEGGINGS);
-		ma.add(Material.LEATHER_BOOTS);
-		ma.add(Material.BOW);
-		ma.add(Material.WOOD_SWORD);
-		ma.add(Material.STONE_SWORD);
-		ma.add(Material.GOLD_SWORD);
-		ma.add(Material.IRON_SWORD);
-		ma.add(Material.DIAMOND_SWORD);
-		ma.add(Material.WOOD_PICKAXE);
-		ma.add(Material.STONE_PICKAXE);
-		ma.add(Material.GOLD_PICKAXE);
-		ma.add(Material.IRON_PICKAXE);
-		ma.add(Material.DIAMOND_PICKAXE);
-		ma.add(Material.WOOD_AXE);
-		ma.add(Material.STONE_AXE);
-		ma.add(Material.GOLD_AXE);
-		ma.add(Material.IRON_AXE);
-		ma.add(Material.DIAMOND_AXE);
-		ma.add(Material.WOOD_SPADE);
-		ma.add(Material.STONE_SPADE);
-		ma.add(Material.GOLD_SPADE);
-		ma.add(Material.IRON_SPADE);
-		ma.add(Material.DIAMOND_SPADE);
-		ma.add(Material.WOOD_HOE);
-		ma.add(Material.STONE_HOE);
-		ma.add(Material.GOLD_HOE);
-		ma.add(Material.IRON_HOE);
-		ma.add(Material.DIAMOND_HOE);
-		ma.add(Material.FLINT_AND_STEEL);
-		ma.add(Material.ANVIL);
-		ma.add(Material.FISHING_ROD);
-		return ma;
+		ArrayList<Material> materials = new ArrayList<>();
+		if(Version.getCurrentVersion().isNewer(Version.v1_12_R1)) {
+			materials.add(Material.matchMaterial("GOLDEN_HELMET"));
+			materials.add(Material.matchMaterial("GOLDEN_CHESTPLATE"));
+			materials.add(Material.matchMaterial("GOLDEN_LEGGINGS"));
+			materials.add(Material.matchMaterial("GOLDEN_BOOTS"));
+			materials.add(Material.matchMaterial("WOODEN_SWORD"));
+			materials.add(Material.matchMaterial("WOODEN_AXE"));
+			materials.add(Material.matchMaterial("WOODEN_PICKAXE"));
+			materials.add(Material.matchMaterial("WOODEN_AXE"));
+			materials.add(Material.matchMaterial("WOODEN_SHOVEL"));
+			materials.add(Material.matchMaterial("STONE_SHOVEL"));
+			materials.add(Material.matchMaterial("IRON_SHOVEL"));
+			materials.add(Material.matchMaterial("DIAMOND_SHOVEL"));
+			materials.add(Material.matchMaterial("WOODEN_HOE"));
+			materials.add(Material.matchMaterial("GOLDEN_HOE"));
+		}else {
+			materials.add(Material.matchMaterial("GOLD_HELMET"));
+			materials.add(Material.matchMaterial("GOLD_CHESTPLATE"));
+			materials.add(Material.matchMaterial("GOLD_LEGGINGS"));
+			materials.add(Material.matchMaterial("GOLD_BOOTS"));
+			materials.add(Material.matchMaterial("WOOD_SWORD"));
+			materials.add(Material.matchMaterial("WOOD_AXE"));
+			materials.add(Material.matchMaterial("WOOD_PICKAXE"));
+			materials.add(Material.matchMaterial("WOOD_AXE"));
+			materials.add(Material.matchMaterial("WOOD_SPADE"));
+			materials.add(Material.matchMaterial("STONE_SPADE"));
+			materials.add(Material.matchMaterial("IRON_SPADE"));
+			materials.add(Material.matchMaterial("DIAMOND_SPADE"));
+			materials.add(Material.matchMaterial("WOOD_HOE"));
+			materials.add(Material.matchMaterial("GOLD_HOE"));
+		}
+		materials.add(Material.DIAMOND_HELMET);
+		materials.add(Material.DIAMOND_CHESTPLATE);
+		materials.add(Material.DIAMOND_LEGGINGS);
+		materials.add(Material.DIAMOND_BOOTS);
+		materials.add(Material.CHAINMAIL_HELMET);
+		materials.add(Material.CHAINMAIL_CHESTPLATE);
+		materials.add(Material.CHAINMAIL_LEGGINGS);
+		materials.add(Material.CHAINMAIL_BOOTS);
+		materials.add(Material.IRON_HELMET);
+		materials.add(Material.IRON_CHESTPLATE);
+		materials.add(Material.IRON_LEGGINGS);
+		materials.add(Material.IRON_BOOTS);
+		materials.add(Material.LEATHER_HELMET);
+		materials.add(Material.LEATHER_CHESTPLATE);
+		materials.add(Material.LEATHER_LEGGINGS);
+		materials.add(Material.LEATHER_BOOTS);
+		materials.add(Material.BOW);
+		materials.add(Material.STONE_SWORD);
+		materials.add(Material.IRON_SWORD);
+		materials.add(Material.DIAMOND_SWORD);
+		materials.add(Material.STONE_AXE);
+		materials.add(Material.IRON_AXE);
+		materials.add(Material.DIAMOND_AXE);
+		materials.add(Material.STONE_PICKAXE);
+		materials.add(Material.IRON_PICKAXE);
+		materials.add(Material.DIAMOND_PICKAXE);
+		materials.add(Material.STONE_AXE);
+		materials.add(Material.IRON_AXE);
+		materials.add(Material.DIAMOND_AXE);
+		materials.add(Material.STONE_HOE);
+		materials.add(Material.IRON_HOE);
+		materials.add(Material.DIAMOND_HOE);
+		materials.add(Material.FLINT_AND_STEEL);
+		materials.add(Material.ANVIL);
+		materials.add(Material.FISHING_ROD);
+		return materials;
 	}
 	
 }
