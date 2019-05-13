@@ -6,12 +6,12 @@
 
     <groupId>me.badbones69</groupId>
     <artifactId>EpicSellChest</artifactId>
-    <version>1.2.0.5</version>
+    <version>1.3</version>
 
     <dependencies>
         <dependency>
             <groupId>org.spigotmc</groupId>
-            <artifactId>spigot</artifactId>
+            <artifactId>spigot-api</artifactId>
             <version>1.14-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
@@ -70,16 +70,16 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>1.5</version>
+                <version>3.2.1</version>
                 <configuration>
                     <artifactSet>
                         <includes>
                             <include>me.badbones69:*</include>
                         </includes>
                     </artifactSet>
-                    <!--<finalName>${project.artifactId}[v${project.version}]</finalName>-->
-                    <!--<outputFile>/Users/badbones/Desktop/Stuff/Server/plugins/${project.artifactId}[v${project.version}].jar</outputFile>-->
-                    <outputFile>/Users/badbones/Plugins/Public Plugins/EpicSellChest/${project.artifactId}[v${project.version}].jar</outputFile>
+                    <!--<finalName>EpicSellChest[v${project.version}]</finalName>-->
+                    <!--                    <outputFile>/Users/badbones/Desktop/Stuff/Server/plugins/EpicSellChest[v${project.version}].jar</outputFile>-->
+                    <outputFile>/Users/badbones/Plugins/Public Plugins/EpicSellChest/EpicSellChest[v${project.version}].jar</outputFile>
                 </configuration>
                 <executions>
                     <execution>
