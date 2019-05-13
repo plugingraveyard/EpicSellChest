@@ -88,12 +88,12 @@ public class Main extends JavaPlugin {
 											if(!event.isCancelled()) {
 												HashMap<String, Double> placeholders = new HashMap<>();
 												for(Currency currency : Currency.values()) {
-													placeholders.put("%" + currency.getName().toLowerCase() + "%", sc.getFullCost(player, items, currency));
-													placeholders.put("%" + currency.getName() + "%", sc.getFullCost(player, items, currency));
+													placeholders.put("%" + currency.getName().toLowerCase() + "%", sc.getFullCost(items, currency));
+													placeholders.put("%" + currency.getName() + "%", sc.getFullCost(items, currency));
 												}
 												for(CustomCurrency currency : sc.getCustomCurrencies()) {
-													placeholders.put("%" + currency.getName().toLowerCase() + "%", sc.getFullCost(player, items, currency));
-													placeholders.put("%" + currency.getName() + "%", sc.getFullCost(player, items, currency));
+													placeholders.put("%" + currency.getName().toLowerCase() + "%", sc.getFullCost(items, currency));
+													placeholders.put("%" + currency.getName() + "%", sc.getFullCost(items, currency));
 												}
 												sc.sellSellableItems(player, items);
 												for(SellItem item : items) {
@@ -152,10 +152,10 @@ public class Main extends JavaPlugin {
 					//	data.set("Item-Cost", null);
 					//	List<String> items = new ArrayList<>();
 					//	for(SellableItem item : sc.getRegisteredSellableItems()) {
-					//		items.add("Item:" + item.getItem().getType().name() + ":" + item.getItem().getDurability()
+					//		items.add("Item:" + item.getItem().getType().name().replace("LEGACY_", "")
 					//		+ ", Cost:" + item.getPrice()
 					//		+ ", Currency:" + (item.getCurrency() == Currency.CUSTOM ? item.getCustomCurrency().getName() : item.getCurrency().getName())
-					//		+ ", Amount:0");
+					//		+ ", Amount:1");
 					//	}
 					//	data.set("Item-Cost", items);
 					//	Files.DATA.saveFile();
@@ -297,20 +297,20 @@ public class Main extends JavaPlugin {
 													if(!event.isCancelled()) {
 														for(Currency currency : Currency.values()) {
 															if(placeholders.containsKey("%" + currency.getName().toLowerCase() + "%") || placeholders.containsKey("%" + currency.getName() + "%")) {
-																placeholders.put("%" + currency.getName().toLowerCase() + "%", placeholders.get("%" + currency.getName().toLowerCase() + "%") + sc.getFullCost(player, items, currency));
-																placeholders.put("%" + currency.getName() + "%", placeholders.get("%" + currency.getName() + "%") + sc.getFullCost(player, items, currency));
+																placeholders.put("%" + currency.getName().toLowerCase() + "%", placeholders.get("%" + currency.getName().toLowerCase() + "%") + sc.getFullCost(items, currency));
+																placeholders.put("%" + currency.getName() + "%", placeholders.get("%" + currency.getName() + "%") + sc.getFullCost(items, currency));
 															}else {
-																placeholders.put("%" + currency.getName().toLowerCase() + "%", sc.getFullCost(player, items, currency));
-																placeholders.put("%" + currency.getName() + "%", sc.getFullCost(player, items, currency));
+																placeholders.put("%" + currency.getName().toLowerCase() + "%", sc.getFullCost(items, currency));
+																placeholders.put("%" + currency.getName() + "%", sc.getFullCost(items, currency));
 															}
 														}
 														for(CustomCurrency currency : sc.getCustomCurrencies()) {
 															if(placeholders.containsKey("%" + currency.getName().toLowerCase() + "%") || placeholders.containsKey("%" + currency.getName() + "%")) {
-																placeholders.put("%" + currency.getName().toLowerCase() + "%", placeholders.get("%" + currency.getName().toLowerCase() + "%") + sc.getFullCost(player, items, currency));
-																placeholders.put("%" + currency.getName() + "%", placeholders.get("%" + currency.getName() + "%") + sc.getFullCost(player, items, currency));
+																placeholders.put("%" + currency.getName().toLowerCase() + "%", placeholders.get("%" + currency.getName().toLowerCase() + "%") + sc.getFullCost(items, currency));
+																placeholders.put("%" + currency.getName() + "%", placeholders.get("%" + currency.getName() + "%") + sc.getFullCost(items, currency));
 															}else {
-																placeholders.put("%" + currency.getName().toLowerCase() + "%", sc.getFullCost(player, items, currency));
-																placeholders.put("%" + currency.getName() + "%", sc.getFullCost(player, items, currency));
+																placeholders.put("%" + currency.getName().toLowerCase() + "%", sc.getFullCost(items, currency));
+																placeholders.put("%" + currency.getName() + "%", sc.getFullCost(items, currency));
 															}
 														}
 														sc.sellSellableItems(player, items);
@@ -392,20 +392,20 @@ public class Main extends JavaPlugin {
 															if(!event.isCancelled()) {
 																for(Currency currency : Currency.values()) {
 																	if(placeholders.containsKey("%" + currency.getName().toLowerCase() + "%") || placeholders.containsKey("%" + currency.getName() + "%")) {
-																		placeholders.put("%" + currency.getName().toLowerCase() + "%", placeholders.get("%" + currency.getName().toLowerCase() + "%") + sc.getFullCost(player, items, currency));
-																		placeholders.put("%" + currency.getName() + "%", placeholders.get("%" + currency.getName() + "%") + sc.getFullCost(player, items, currency));
+																		placeholders.put("%" + currency.getName().toLowerCase() + "%", placeholders.get("%" + currency.getName().toLowerCase() + "%") + sc.getFullCost(items, currency));
+																		placeholders.put("%" + currency.getName() + "%", placeholders.get("%" + currency.getName() + "%") + sc.getFullCost(items, currency));
 																	}else {
-																		placeholders.put("%" + currency.getName().toLowerCase() + "%", sc.getFullCost(player, items, currency));
-																		placeholders.put("%" + currency.getName() + "%", sc.getFullCost(player, items, currency));
+																		placeholders.put("%" + currency.getName().toLowerCase() + "%", sc.getFullCost(items, currency));
+																		placeholders.put("%" + currency.getName() + "%", sc.getFullCost(items, currency));
 																	}
 																}
 																for(CustomCurrency currency : sc.getCustomCurrencies()) {
 																	if(placeholders.containsKey("%" + currency.getName().toLowerCase() + "%") || placeholders.containsKey("%" + currency.getName() + "%")) {
-																		placeholders.put("%" + currency.getName().toLowerCase() + "%", placeholders.get("%" + currency.getName().toLowerCase() + "%") + sc.getFullCost(player, items, currency));
-																		placeholders.put("%" + currency.getName() + "%", placeholders.get("%" + currency.getName() + "%") + sc.getFullCost(player, items, currency));
+																		placeholders.put("%" + currency.getName().toLowerCase() + "%", placeholders.get("%" + currency.getName().toLowerCase() + "%") + sc.getFullCost(items, currency));
+																		placeholders.put("%" + currency.getName() + "%", placeholders.get("%" + currency.getName() + "%") + sc.getFullCost(items, currency));
 																	}else {
-																		placeholders.put("%" + currency.getName().toLowerCase() + "%", sc.getFullCost(player, items, currency));
-																		placeholders.put("%" + currency.getName() + "%", sc.getFullCost(player, items, currency));
+																		placeholders.put("%" + currency.getName().toLowerCase() + "%", sc.getFullCost(items, currency));
+																		placeholders.put("%" + currency.getName() + "%", sc.getFullCost(items, currency));
 																	}
 																}
 																sc.sellSellableItems(player, items);
@@ -512,12 +512,12 @@ public class Main extends JavaPlugin {
 												if(!event.isCancelled()) {
 													HashMap<String, Double> placeholders = new HashMap<>();
 													for(Currency currency : Currency.values()) {
-														placeholders.put("%" + currency.getName().toLowerCase() + "%", sc.getFullCost(player, items, currency));
-														placeholders.put("%" + currency.getName() + "%", sc.getFullCost(player, items, currency));
+														placeholders.put("%" + currency.getName().toLowerCase() + "%", sc.getFullCost(items, currency));
+														placeholders.put("%" + currency.getName() + "%", sc.getFullCost(items, currency));
 													}
 													for(CustomCurrency currency : sc.getCustomCurrencies()) {
-														placeholders.put("%" + currency.getName().toLowerCase() + "%", sc.getFullCost(player, items, currency));
-														placeholders.put("%" + currency.getName() + "%", sc.getFullCost(player, items, currency));
+														placeholders.put("%" + currency.getName().toLowerCase() + "%", sc.getFullCost(items, currency));
+														placeholders.put("%" + currency.getName() + "%", sc.getFullCost(items, currency));
 													}
 													sc.sellSellableItems(player, items);
 													for(SellItem item : items) {

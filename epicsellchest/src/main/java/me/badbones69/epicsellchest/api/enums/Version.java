@@ -98,11 +98,7 @@ public enum Version {
 	 * @return True if newer then the checked version and false if the same or older.
 	 */
 	public Boolean isNewer(Version version) {
-		if(this.versionInteger > version.versionInteger || this.versionInteger == -2) {
-			return true;
-		}else {
-			return false;
-		}
+		return this.versionInteger > version.versionInteger || this.versionInteger == -2;
 	}
 	
 	/**
@@ -111,11 +107,7 @@ public enum Version {
 	 * @return True if both the current and checked version is the same and false if otherwise.
 	 */
 	public Boolean isSame(Version version) {
-		if(this.versionInteger == version.versionInteger) {
-			return true;
-		}else {
-			return false;
-		}
+		return this.versionInteger.equals(version.versionInteger);
 	}
 	
 	/**
@@ -124,11 +116,7 @@ public enum Version {
 	 * @return True if older then the checked version and false if the same or newer.
 	 */
 	public Boolean isOlder(Version version) {
-		if(this.versionInteger < version.versionInteger || this.versionInteger == -1) {
-			return true;
-		}else {
-			return false;
-		}
+		return this.versionInteger < version.versionInteger || this.versionInteger == -1;
 	}
 	
 }

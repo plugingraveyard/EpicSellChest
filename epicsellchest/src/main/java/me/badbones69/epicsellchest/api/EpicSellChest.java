@@ -96,11 +96,11 @@ public class EpicSellChest {
 			}
 		}
 		for(String line : config.getStringList("Settings.Item-Cost")) {
-			Double cost = 0.0;
+			double cost = 0.0;
 			ItemBuilder item = new ItemBuilder();
 			Material m = null;
 			String command = "";
-			Boolean checkAmount = false;
+			boolean checkAmount = false;
 			Currency currency = null;
 			CustomCurrency custom = null;
 			for(String i : line.split(", ")) {
@@ -258,12 +258,12 @@ public class EpicSellChest {
 		for(ItemStack item : inv.getContents()) {
 			if(item != null) {
 				if(canSellItem(item)) {
-					Double price = 0.0;
+					double price = 0.0;
 					int sellingMinimum = 0, sellingAmount = 0;
 					String command = "";
 					Currency currency = getBaseCurrency();
 					CustomCurrency customCurrency = baseCustomCurrency;
-					Boolean found = false;
+					boolean found = false;
 					for(SellableItem sellItem : getRegisteredSellableItems()) {
 						if(sellItem.getItemBuilder().isSimilar(item)) {
 							command = sellItem.getCommand();
@@ -328,12 +328,12 @@ public class EpicSellChest {
 						if(item.getType() == sell.getType()) {
 							if(item.getDurability() == sell.getDurability()) {
 								if(canSellItem(item)) {
-									Double price = 0.0;
+									double price = 0.0;
 									int sellingMinimum = 0, sellingAmount = 0;
 									String command = "";
 									Currency currency = getBaseCurrency();
 									CustomCurrency customCurrency = getBaseCustomCurrency();
-									Boolean found = false;
+									boolean found = false;
 									for(SellableItem sellItem : getRegisteredSellableItems()) {
 										if(sellItem.getItemBuilder().isSimilar(item)) {
 											command = sellItem.getCommand();
@@ -399,7 +399,7 @@ public class EpicSellChest {
 		}
 	}
 	
-	public Double getFullCost(Player player, ArrayList<SellItem> items, Currency currency) {
+	public Double getFullCost(ArrayList<SellItem> items, Currency currency) {
 		Double cost = 0.0;
 		for(SellItem item : items) {
 			if(item.getCurrency() == currency) {
@@ -409,7 +409,7 @@ public class EpicSellChest {
 		return cost;
 	}
 	
-	public Double getFullCost(Player player, ArrayList<SellItem> items, CustomCurrency currency) {
+	public Double getFullCost(ArrayList<SellItem> items, CustomCurrency currency) {
 		Double cost = 0.0;
 		for(SellItem item : items) {
 			if(item.getCurrency() == Currency.CUSTOM) {
@@ -443,8 +443,8 @@ public class EpicSellChest {
 				}
 			}
 		}
-		Boolean pricesOnly = Files.CONFIG.getFile().getBoolean("Settings.Selling-Options.Price-Selling-Only");
-		Boolean canSell = !pricesOnly;
+		boolean pricesOnly = Files.CONFIG.getFile().getBoolean("Settings.Selling-Options.Price-Selling-Only");
+		boolean canSell = !pricesOnly;
 		for(SellableItem sellable : getRegisteredSellableItems()) {
 			if(sellable.getItemBuilder().isSimilar(item)) {
 				if(pricesOnly) {

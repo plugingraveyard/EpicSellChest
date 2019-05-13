@@ -59,12 +59,12 @@ public class WandControl implements Listener {
 											if(!event.isCancelled()) {
 												HashMap<String, Double> placeholders = new HashMap<>();
 												for(Currency currency : Currency.values()) {
-													placeholders.put("%" + currency.getName().toLowerCase() + "%", sc.getFullCost(player, items, currency));
-													placeholders.put("%" + currency.getName() + "%", sc.getFullCost(player, items, currency));
+													placeholders.put("%" + currency.getName().toLowerCase() + "%", sc.getFullCost(items, currency));
+													placeholders.put("%" + currency.getName() + "%", sc.getFullCost(items, currency));
 												}
 												for(CustomCurrency currency : sc.getCustomCurrencies()) {
-													placeholders.put("%" + currency.getName().toLowerCase() + "%", sc.getFullCost(player, items, currency));
-													placeholders.put("%" + currency.getName() + "%", sc.getFullCost(player, items, currency));
+													placeholders.put("%" + currency.getName().toLowerCase() + "%", sc.getFullCost(items, currency));
+													placeholders.put("%" + currency.getName() + "%", sc.getFullCost(items, currency));
 												}
 												sc.sellSellableItems(player, items);
 												for(SellItem item : items) {
