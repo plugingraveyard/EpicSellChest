@@ -394,9 +394,20 @@ public class EpicSellChest {
 	}
 	
 	public void sellSellableItems(Player player, ArrayList<SellItem> items) {
+		HashMap<Currency, Double> amounts = new HashMap<>();
+		HashMap<Currency, String> commands = new HashMap<>();
 		for(SellItem item : items) {
-			CurrencyAPI.giveCurrency(player, item.getCurrency(), item.getPrice(), item.getCommand());
+			if(amounts.containsKey(item.getCurrency())) {
+				amounts.put(item.getCurrency(), (amounts.get(item.getCurrency()) + item.getPrice()));
+			}else {
+				amounts.put(item.getCurrency(), item.getPrice());
+				commands.put(item.getCurrency(), item.getCommand());
+			}
 		}
+		for(Currency currency : amounts.keySet()) {
+			CurrencyAPI.giveCurrency(player, currency, amounts.get(currency), commands.get(currency));
+		}
+		
 	}
 	
 	public Double getFullCost(ArrayList<SellItem> items, Currency currency) {
