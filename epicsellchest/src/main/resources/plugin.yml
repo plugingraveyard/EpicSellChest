@@ -4,7 +4,7 @@ main: me.badbones69.epicsellchest.Main
 version: ${project.version}
 softdepend: [Vault, DakataAntiCheat, NoCheatPlus, Spartan, ShopGUIPlus]
 description: This allows users to sell all the items in a chest.
-api-version: 1.14
+api-version: 1.13
 commands:
   sellchest:
     description: Sell all items in a chest.
