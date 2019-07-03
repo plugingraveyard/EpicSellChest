@@ -1,16 +1,12 @@
 
-\.idea/
+\.DS_Store
 
-\.settings/
+\.idea/
 
 *.iml
 
-epicsellchest/target/
+src/main/lib/
 
-epicsellchest/src/main/lib/
+target/
 
-epicsellchest/src/main/resources/Data\.yml
-
-epicsellchest/src/main/\.DS_Store
-
-\.DS_Store
+dependency-reduced-pom\.xml

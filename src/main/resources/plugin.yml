@@ -1,4 +1,4 @@
-name: ${project.artifactId}
+name: EpicSellChest
 author: BadBones69
 main: me.badbones69.epicsellchest.Main
 version: ${project.version}
