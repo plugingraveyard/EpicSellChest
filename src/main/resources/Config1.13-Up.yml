@@ -19,7 +19,7 @@ Settings:
       - '&7chest that you right click with it.'
       - ''
       - '&7&l(&4&l!&7&l) &7Right click a chest to sell it.'
-    Glowing: true #If the item has an enchanted glowing effect.
+    Glowing: true #If it has a glowing effect.
   Selling-Options:
     Price-Selling-Only: false #Sell only items that have a price.
   Region-Options: #All the options regarding regions.

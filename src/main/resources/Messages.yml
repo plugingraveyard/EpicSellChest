@@ -12,7 +12,7 @@ Messages:
   No-Sellable-Items: '&cThat chest has no sellable items.'
   Cant-Sell-Chest: '&cYou can''t sell that chest because it doesn''t belong to you.'
   Not-A-Chest: '&cYou are not looking at or standing on a chest.'
-  Sold-Chest: '&7You have just sold the contents of that chest for &a$%vault%&7.'
+  Sold-Chest: '&7You have sold the contents of that chest for &a$%vault%&7.'
   Sold-Chunk-Chests: '&7You have sold the contents of all chests in your chunk for &a$%vault%&7.'
   Sold-Region-Chests: '&7You have sold the contents of all the chests in your region for &a$%vault%&7.'
   Loading-Region-Chests: '&aLoading chests from the region.'
