@@ -1,7 +1,7 @@
 name: EpicSellChest
 author: BadBones69
 main: me.badbones69.epicsellchest.Main
-version: ${project.version}
+version: ${project.version}${build.number}
 softdepend: [Vault, DakataAntiCheat, NoCheatPlus, Spartan, ShopGUIPlus]
 description: This allows users to sell all the items in a chest.
 api-version: 1.13
