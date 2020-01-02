@@ -8,18 +8,18 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 public class DakataAntiCheatSupport implements Listener {
-	
-	private EpicSellChest sc = EpicSellChest.getInstance();
-	
-	@EventHandler
-	public void onCheatDetect(PlayerCheatEvent e) {
-		Player player = e.getPlayer();
-		CheatType cheatType = e.getCheatType();
-		if(cheatType == CheatType.AUTOCLICKER || cheatType == CheatType.INVALIDBLOCK_BREAK || cheatType == CheatType.NOBREAKDELAY || cheatType == CheatType.REACH_BLOCK) {
-			if(sc.hasChestQuery(player.getUniqueId())) {
-				e.setCancelled(true);
-			}
-		}
-	}
-	
+    
+    private EpicSellChest sc = EpicSellChest.getInstance();
+    
+    @EventHandler
+    public void onCheatDetect(PlayerCheatEvent e) {
+        Player player = e.getPlayer();
+        CheatType cheatType = e.getCheatType();
+        if (cheatType == CheatType.AUTOCLICKER || cheatType == CheatType.INVALIDBLOCK_BREAK || cheatType == CheatType.NOBREAKDELAY || cheatType == CheatType.REACH_BLOCK) {
+            if (sc.hasChestQuery(player.getUniqueId())) {
+                e.setCancelled(true);
+            }
+        }
+    }
+    
 }
