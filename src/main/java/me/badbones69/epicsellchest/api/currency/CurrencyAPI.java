@@ -14,6 +14,8 @@ public class CurrencyAPI {
      * @param command The command used for the Custom currency. Leave null if nothing.
      */
     public static void giveCurrency(Player player, Currency currency, double amount, String command) {
+        //Checks to see if the amount variable is a whole number and if so removes the decimal. This fixes issues with some custom currency commands.
+        String stringAmount = amount % 1 == 0 ? ((int) amount + "") : (amount + "");
         switch (currency) {
             case XP_LEVEL:
                 player.setLevel((int) (player.getLevel() + amount));
@@ -22,7 +24,10 @@ public class CurrencyAPI {
                 giveTotalXP(player, amount);
                 break;
             case CUSTOM:
-                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command.replaceAll("%Player%", player.getName()).replaceAll("%player%", player.getName()).replaceAll("%Cost%", amount + "").replaceAll("%cost%", amount + "").replaceAll("%Amount%", amount + "").replaceAll("%amount%", amount + ""));
+                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command
+                .replaceAll("%Player%", player.getName()).replaceAll("%player%", player.getName())
+                .replaceAll("%Cost%", stringAmount).replaceAll("%cost%", stringAmount)
+                .replaceAll("%Amount%", stringAmount).replaceAll("%amount%", stringAmount));
                 break;
         }
     }
