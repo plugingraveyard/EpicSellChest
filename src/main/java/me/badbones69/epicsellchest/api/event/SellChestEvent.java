@@ -12,7 +12,7 @@ import java.util.ArrayList;
 public class SellChestEvent extends Event implements Cancellable {
     
     private Player player;
-    private Boolean cancel;
+    private boolean cancel;
     private SellType sellType;
     private ArrayList<SellItem> items;
     private static final HandlerList handlers = new HandlerList();

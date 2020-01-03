@@ -6,8 +6,8 @@ import org.bukkit.inventory.ItemStack;
 
 public class SellItem {
     
-    private Double price;
-    private Integer sellingAmount, sellingMinimum;
+    private double price;
+    private int sellingAmount, sellingMinimum;
     private String command;
     private ItemStack item;
     private Currency currency;
@@ -23,7 +23,7 @@ public class SellItem {
      * @param custom If the currency is custom.
      * @param command The command that is being ran by the custom currency.
      */
-    public SellItem(ItemStack item, Integer sellingAmount, Integer sellingMinimum, Double price, Currency currency, CustomCurrency custom, String command) {
+    public SellItem(ItemStack item, int sellingAmount, int sellingMinimum, double price, Currency currency, CustomCurrency custom, String command) {
         this.item = item;
         this.price = price;
         this.custom = custom;
@@ -43,28 +43,28 @@ public class SellItem {
     /**
      * @return The amount of times the minimum amount goes into the item anount.
      */
-    public Integer getSellingAmount() {
+    public int getSellingAmount() {
         return sellingAmount;
     }
     
     /**
      * @return True if the item needs multiple items to be sold.
      */
-    public Boolean usesSellingAmount() {
+    public boolean usesSellingAmount() {
         return sellingAmount > 0;
     }
     
     /**
      * @return The minimum amount of the itemstack has to have to be sold.
      */
-    public Integer getSellingMinimum() {
+    public int getSellingMinimum() {
         return sellingMinimum;
     }
     
     /**
      * @return The worth of the itemstack.
      */
-    public Double getPrice() {
+    public double getPrice() {
         return this.price;
     }
     

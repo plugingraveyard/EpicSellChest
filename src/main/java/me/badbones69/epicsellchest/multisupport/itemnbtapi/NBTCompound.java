@@ -88,7 +88,7 @@ public class NBTCompound {
      * @param key
      * @param value
      */
-    public void setInteger(String key, Integer value) {
+    public void setInteger(String key, int value) {
         NBTReflectionUtil.setData(this, ReflectionMethod.COMPOUND_SET_INT, key, value);
     }
     
@@ -98,7 +98,7 @@ public class NBTCompound {
      * @param key
      * @return The stored value or NMS fallback
      */
-    public Integer getInteger(String key) {
+    public int getInteger(String key) {
         return (Integer) NBTReflectionUtil.getData(this, ReflectionMethod.COMPOUND_GET_INT, key);
     }
     
@@ -108,7 +108,7 @@ public class NBTCompound {
      * @param key
      * @param value
      */
-    public void setDouble(String key, Double value) {
+    public void setDouble(String key, double value) {
         NBTReflectionUtil.setData(this, ReflectionMethod.COMPOUND_SET_DOUBLE, key, value);
     }
     
@@ -118,7 +118,7 @@ public class NBTCompound {
      * @param key
      * @return The stored value or NMS fallback
      */
-    public Double getDouble(String key) {
+    public double getDouble(String key) {
         return (Double) NBTReflectionUtil.getData(this, ReflectionMethod.COMPOUND_GET_DOUBLE, key);
     }
     
@@ -248,7 +248,7 @@ public class NBTCompound {
      * @param key
      * @param value
      */
-    public void setBoolean(String key, Boolean value) {
+    public void setBoolean(String key, boolean value) {
         NBTReflectionUtil.setData(this, ReflectionMethod.COMPOUND_SET_BOOLEAN, key, value);
     }
     
@@ -262,7 +262,7 @@ public class NBTCompound {
      * @param key
      * @return The stored value or NMS fallback
      */
-    public Boolean getBoolean(String key) {
+    public boolean getBoolean(String key) {
         return (Boolean) NBTReflectionUtil.getData(this, ReflectionMethod.COMPOUND_GET_BOOLEAN, key);
     }
     
@@ -291,7 +291,7 @@ public class NBTCompound {
      * @param key
      * @return True if the key is set
      */
-    public Boolean hasKey(String key) {
+    public boolean hasKey(String key) {
         Boolean b = (Boolean) NBTReflectionUtil.getData(this, ReflectionMethod.COMPOUND_HAS_KEY, key);
         if (b == null)
             return false;
@@ -351,7 +351,7 @@ public class NBTCompound {
     
     /**
      * @param name
-     * @return The retrieved Integer List
+     * @return The retrieved int List
      */
     public NBTList<Integer> getIntegerList(String name) {
         return NBTReflectionUtil.getList(this, name, NBTType.NBTTagInt, Integer.class);

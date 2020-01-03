@@ -93,7 +93,7 @@ public class Methods {
         }
     }
     
-    public static ItemStack addGlowing(ItemStack item, Boolean glowing) {
+    public static ItemStack addGlowing(ItemStack item, boolean glowing) {
         ItemStack it = item.clone();
         if (glowing) {
             try {

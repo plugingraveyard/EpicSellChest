@@ -27,9 +27,9 @@ public class ItemBuilder implements Cloneable {
     private Material material;
     private Short metaData;
     private String name;
-    private Boolean glowing;
+    private boolean glowing;
     private List<String> lore;
-    private Integer amount;
+    private int amount;
     private HashMap<Enchantment, Integer> enchantments;
     private ItemStack referenceItem;
     private EntityType entityType;
@@ -95,7 +95,7 @@ public class ItemBuilder implements Cloneable {
      * @return The ItemBuilder with updated info.
      */
     public ItemBuilder setMaterial(String string) {
-        Short metaData = 0;
+        short metaData = 0;
         if (string.contains(":")) {
             String[] b = string.split(":");
             string = b[0];
@@ -351,7 +351,7 @@ public class ItemBuilder implements Cloneable {
      * The amount of the item stack in the builder.
      * @return The amount that is set in the builder.
      */
-    public Integer getAmount() {
+    public int getAmount() {
         return amount;
     }
     
@@ -379,7 +379,7 @@ public class ItemBuilder implements Cloneable {
      * @param level The level of the enchantment. This can be unsafe levels.
      * @return The ItemBuilder with updated info.
      */
-    public ItemBuilder addEnchantments(Enchantment enchantment, Integer level) {
+    public ItemBuilder addEnchantments(Enchantment enchantment, int level) {
         this.enchantments.put(enchantment, level);
         return this;
     }
@@ -411,7 +411,7 @@ public class ItemBuilder implements Cloneable {
      * Check if the item in the builder is glowing.
      * @return The ItemBuilder with updated info.
      */
-    public Boolean isGlowing() {
+    public boolean isGlowing() {
         return glowing;
     }
     

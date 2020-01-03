@@ -141,11 +141,10 @@ public class Main extends JavaPlugin {
                         for (String msg : Files.MESSAGES.getFile().getStringList("Messages.Help")) {
                             sender.sendMessage(Methods.color(msg));
                         }
-                        return true;
                     } else {
                         sender.sendMessage(Messages.NO_PERMISSION.getMessage());
-                        return true;
                     }
+                    return true;
                     //==== This is just for simple coverting for when needed ====//
                     //}else if(args[0].equalsIgnoreCase("convert")) {
                     //	FileConfiguration data = Files.DATA.getFile();
@@ -167,11 +166,10 @@ public class Main extends JavaPlugin {
                         fileManager.setup(this);
                         sc.loadEpicSellChest();
                         sender.sendMessage(Messages.RELOADED.getMessage());
-                        return true;
                     } else {
                         sender.sendMessage(Messages.NO_PERMISSION.getMessage());
-                        return true;
                     }
+                    return true;
                 } else if (args[0].equalsIgnoreCase("debug")) {
                     if (sender.hasPermission("epicsellchest.debug") || sender.hasPermission("epicsellchest.admin")) {
                         if (!sc.getBrokeItems().isEmpty()) {
@@ -198,11 +196,10 @@ public class Main extends JavaPlugin {
                         } else {
                             sender.sendMessage(Methods.prefix("&aThere are no duplicate items."));
                         }
-                        return true;
                     } else {
                         sender.sendMessage(Messages.NO_PERMISSION.getMessage());
-                        return true;
                     }
+                    return true;
                 } else if (args[0].equalsIgnoreCase("wand")) {// /sc wand [Amount] [Player]
                     if (sender.hasPermission("epicsellchest.wand") || sender.hasPermission("epicsellchest.admin")) {
                         if (args.length == 1) {
@@ -237,11 +234,10 @@ public class Main extends JavaPlugin {
                         placeholders.put("%player%", player.getName());
                         placeholders.put("%amount%", amount + "");
                         sender.sendMessage(Messages.WAND_GIVE.getMessage(placeholders));
-                        return true;
                     } else {
                         sender.sendMessage(Messages.NO_PERMISSION.getMessage());
-                        return true;
                     }
+                    return true;
                 } else if (args[0].equalsIgnoreCase("gui")) {
                     if (sender.hasPermission("epicsellchest.gui") || sender.hasPermission("epicsellchest.admin")) {
                         if (sender instanceof Player) {
