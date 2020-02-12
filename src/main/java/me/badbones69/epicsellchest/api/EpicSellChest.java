@@ -111,11 +111,7 @@ public class EpicSellChest {
                         md = Integer.parseInt(i.split(":")[1]);
                         id = i.split(":")[0];
                     }
-                    if (Version.getCurrentVersion().isNewer(Version.v1_12_R1)) {// 1.13+
-                        m = Material.matchMaterial(id, true);
-                    } else {// Checks 1.12.2 down names
-                        m = Material.matchMaterial(id);
-                    }
+                    m = Material.matchMaterial(id);
                     if (m != null) {
                         item.setMaterial(m).setMetaData(md);
                     } else {
