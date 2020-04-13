@@ -163,7 +163,7 @@ public class EpicSellChest {
         if (Support.SHOP_GUI_PLUS.isEnabled()) {
             for (SellableItem item : ShopGUIPlus.getSellableItems()) {
                 if (isRegisteredMaterial(item.getItem())) {
-                    duplicateItems.add("&cDuplicate Item: &a" + item.getItem().getType() + ":" + item.getItem().getDurability() + " &7: &cAlready Registered With: &a" + getRegisteredPlugin(item.getItem()).getName() + " &7: &cTryed To Register With: &a" + RegisterType.SHOP_GUI_PLUS.getName());
+                    duplicateItems.add("&cDuplicate Item: &a" + item.getItem().getType() + (item.getItem().getDurability() > 0 ? (":" + item.getItem().getDurability()) : "") + " &7: &cAlready Registered With: &a" + getRegisteredPlugin(item.getItem()).getName() + " &7: &cTried To Register With: &a" + RegisterType.SHOP_GUI_PLUS.getName());
                 } else {
                     registeredSellableItems.add(item);
                     registeredMaterials.put(ItemBuilder.convertItemStack(item.getItem()), RegisterType.SHOP_GUI_PLUS);
