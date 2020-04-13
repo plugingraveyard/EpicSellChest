@@ -22,52 +22,33 @@ public class ShopGUIPlus {
     
     public static List<SellableItem> getSellableItems() {
         List<SellableItem> items = new ArrayList<>();
-        if (Support.SHOP_GUI_PLUS.isEnabled()) {
-            Plugin shopGUI = Support.SHOP_GUI_PLUS.getPlugin();
-            String cur = YamlConfiguration.loadConfiguration(new File(shopGUI.getDataFolder() + "/config.yml")).getString("economyType");
-            Currency currency = Currency.getCurrency(cur);
-            CustomCurrency customCurrency = esc.getCustomCurrency(cur);
+        Plugin shopGUI = Support.SHOP_GUI_PLUS.getPlugin();
+        String currencyString = YamlConfiguration.loadConfiguration(new File(shopGUI.getDataFolder() + "/config.yml")).getString("economyType");
+        Currency currency = Currency.getCurrency(currencyString);
+        CustomCurrency customCurrency = esc.getCustomCurrency(currencyString);
+        if (isSingleFile()) {
             FileConfiguration shops = YamlConfiguration.loadConfiguration(new File(shopGUI.getDataFolder() + "/shops.yml"));
             for (String shop : shops.getConfigurationSection("shops").getKeys(false)) {
                 for (String item : shops.getConfigurationSection("shops." + shop + ".items").getKeys(false)) {
                     String path = "shops." + shop + ".items." + item;
-                    if (shops.contains(path + ".type")) {
-                        if (shops.getString(path + ".type").equalsIgnoreCase("item")) {
-                            if (shops.getDouble(path + ".sellPrice") >= 0.0) {
-                                try {
-                                    ItemBuilder builder = new ItemBuilder()
-                                    .setMaterial(shops.getString(path + ".item.material"))
-                                    .setMetaData(shops.getInt(path + ".item.damage"))
-                                    .setAmount(shops.getInt(path + ".item.quantity"))
-                                    .setName(shops.getString(path + ".item.name"))
-                                    .setLore(shops.getStringList(path + ".item.lore"));
-                                    if (shops.getBoolean(path + ".item.spawner")) {
-                                        builder.setEntityType(shops.getString(path + ".item.mob"));
-                                        if (builder.getEntityType() == null) {
-                                            continue;
-                                        }
-                                    }
-                                    for (String i : shops.getStringList(path + ".item.enchantments")) {
-                                        for (Enchantment enc : Enchantment.values()) {
-                                            if (enc.getName() != null) {
-                                                if (i.toLowerCase().startsWith(enc.getName().toLowerCase() + ":") || i.toLowerCase().startsWith(Methods.getEnchantmentName(enc).toLowerCase() + ":")) {
-                                                    String[] breakdown = i.split(":");
-                                                    int lvl = Integer.parseInt(breakdown[1]);
-                                                    builder.addEnchantments(enc, lvl);
-                                                }
-                                            }
-                                        }
-                                    }
-                                    items.add(new SellableItem(builder, shops.getDouble(path + ".sellPrice"),
-                                    currency,
-                                    customCurrency,
-                                    customCurrency.getCommand(),
-                                    builder.getAmount() > 1));
-                                } catch (Exception e) {
-                                    //Debunging what things are erroring.
-                                    //System.out.println(path);
-                                    //e.printStackTrace();
-                                }
+                    if (shops.contains(path + ".type") && shops.getString(path + ".type").equalsIgnoreCase("item") && shops.getDouble(path + ".sellPrice") >= 0.0) {
+                        SellableItem sellableItem = buildItem(path, shops, currency, customCurrency);
+                        if (sellableItem != null) {
+                            items.add(sellableItem);
+                        }
+                    }
+                }
+            }
+        } else {
+            for (File shop : getShopFiles()) {
+                FileConfiguration file = YamlConfiguration.loadConfiguration(shop);
+                for (String shopName : file.getConfigurationSection("").getKeys(false)) {
+                    for (String item : file.getConfigurationSection(shopName + ".items").getKeys(false)) {
+                        String path = shopName + ".items." + item;
+                        if (file.contains(path + ".type") && file.getString(path + ".type").equalsIgnoreCase("item") && file.getDouble(path + ".sellPrice") >= 0.0) {
+                            SellableItem sellableItem = buildItem(path, file, currency, customCurrency);
+                            if (sellableItem != null) {
+                                items.add(sellableItem);
                             }
                         }
                     }
@@ -75,6 +56,58 @@ public class ShopGUIPlus {
             }
         }
         return items;
+    }
+    
+    private static SellableItem buildItem(String path, FileConfiguration shop, Currency currency, CustomCurrency customCurrency) {
+        try {
+            ItemBuilder builder = new ItemBuilder()
+            .setMaterial(shop.getString(path + ".item.material"))
+            .setMetaData(shop.getInt(path + ".item.damage"))
+            .setAmount(shop.getInt(path + ".item.quantity"))
+            .setName(shop.getString(path + ".item.name"))
+            .setLore(shop.getStringList(path + ".item.lore"));
+            if (shop.getBoolean(path + ".item.spawner")) {
+                builder.setEntityType(shop.getString(path + ".item.mob"));
+                if (builder.getEntityType() == null) {
+                    return null;
+                }
+            }
+            for (String enchantments : shop.getStringList(path + ".item.enchantments")) {
+                for (Enchantment enchantment : Enchantment.values()) {
+                    if (enchantment.getName() != null && (enchantments.toLowerCase().startsWith(enchantment.getName().toLowerCase() + ":") || enchantments.toLowerCase().startsWith(Methods.getEnchantmentName(enchantment).toLowerCase() + ":"))) {
+                        String[] breakdown = enchantments.split(":");
+                        builder.addEnchantments(enchantment, Integer.parseInt(breakdown[1]));
+                    }
+                }
+            }
+            return new SellableItem(builder, shop.getDouble(path + ".sellPrice"),
+            currency,
+            customCurrency,
+            customCurrency.getCommand(),
+            builder.getAmount() > 1);
+        } catch (Exception e) {
+            //Debunging what things are erroring.
+            //System.out.println(path);
+            //e.printStackTrace();
+        }
+        return null;
+    }
+    
+    private static List<File> getShopFiles() {
+        List<File> files = new ArrayList<>();
+        File folder = new File(Support.SHOP_GUI_PLUS.getPlugin().getDataFolder() + "/shops");
+        if (folder.exists() && folder.isDirectory()) {
+            for (File file : folder.listFiles()) {
+                if (file.getName().endsWith(".yml")) {
+                    files.add(file);
+                }
+            }
+        }
+        return files;
+    }
+    
+    private static boolean isSingleFile() {
+        return new File(Support.SHOP_GUI_PLUS.getPlugin().getDataFolder() + "/shops.yml").exists();
     }
     
 }
