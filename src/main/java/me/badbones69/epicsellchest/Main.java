@@ -9,6 +9,7 @@ import me.badbones69.epicsellchest.api.enums.Support;
 import me.badbones69.epicsellchest.api.event.SellChestEvent;
 import me.badbones69.epicsellchest.api.objects.FileManager;
 import me.badbones69.epicsellchest.api.objects.FileManager.Files;
+import me.badbones69.epicsellchest.api.objects.ItemBuilder;
 import me.badbones69.epicsellchest.api.objects.SellItem;
 import me.badbones69.epicsellchest.controllers.Metrics;
 import me.badbones69.epicsellchest.controllers.SellChestGUI;
@@ -38,8 +39,8 @@ import java.util.UUID;
 public class Main extends JavaPlugin {
     
     public EpicSellChest sc = EpicSellChest.getInstance();
-    private HashMap<UUID, Location> pos1 = new HashMap<>();
-    private HashMap<UUID, Location> pos2 = new HashMap<>();
+    private final HashMap<UUID, Location> pos1 = new HashMap<>();
+    private final HashMap<UUID, Location> pos2 = new HashMap<>();
     public static FileManager fileManager = FileManager.getInstance();
     
     @Override
@@ -280,9 +281,7 @@ public class Main extends JavaPlugin {
                                                     if (args.length >= 2) {
                                                         ArrayList<ItemStack> selling = new ArrayList<>();
                                                         for (int i = 1; i < args.length; i++) {
-                                                            if (Methods.makeItem(args[i]) != null) {
-                                                                selling.add(Methods.makeItem(args[i]));
-                                                            }
+                                                            selling.add(new ItemBuilder().setMaterial(args[i]).build());
                                                         }
                                                         items = sc.getSellableItems(chest.getInventory(), selling);
                                                     } else {
@@ -375,9 +374,7 @@ public class Main extends JavaPlugin {
                                                             if (args.length >= 2) {
                                                                 ArrayList<ItemStack> selling = new ArrayList<>();
                                                                 for (int i = 1; i < args.length; i++) {
-                                                                    if (Methods.makeItem(args[i]) != null) {
-                                                                        selling.add(Methods.makeItem(args[i]));
-                                                                    }
+                                                                    selling.add(new ItemBuilder().setMaterial(args[i]).build());
                                                                 }
                                                                 items = sc.getSellableItems(chest.getInventory(), selling);
                                                             } else {
@@ -497,9 +494,7 @@ public class Main extends JavaPlugin {
                                             sc.removeTwoFactorAuth(uuid);
                                             ArrayList<ItemStack> selling = new ArrayList<>();
                                             for (String arg : args) {
-                                                if (Methods.makeItem(arg) != null) {
-                                                    selling.add(Methods.makeItem(arg));
-                                                }
+                                                selling.add(new ItemBuilder().setMaterial(arg).build());
                                             }
                                             ArrayList<SellItem> items = sc.getSellableItems(chest.getInventory(), selling);
                                             if (items.size() > 0) {

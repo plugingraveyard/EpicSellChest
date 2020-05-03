@@ -8,6 +8,7 @@ import me.badbones69.epicsellchest.api.enums.Messages;
 import me.badbones69.epicsellchest.api.enums.SellType;
 import me.badbones69.epicsellchest.api.event.SellChestEvent;
 import me.badbones69.epicsellchest.api.objects.FileManager.Files;
+import me.badbones69.epicsellchest.api.objects.ItemBuilder;
 import me.badbones69.epicsellchest.api.objects.SellItem;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -26,9 +27,9 @@ import java.util.UUID;
 
 public class SellChestGUI implements Listener {
     
-    private static EpicSellChest sc = EpicSellChest.getInstance();
-    private HashMap<UUID, ArrayList<SellItem>> sellables = new HashMap<>();
-    private HashMap<UUID, ArrayList<ItemStack>> nonsellables = new HashMap<>();
+    private static final EpicSellChest sc = EpicSellChest.getInstance();
+    private final HashMap<UUID, ArrayList<SellItem>> sellables = new HashMap<>();
+    private final HashMap<UUID, ArrayList<ItemStack>> nonsellables = new HashMap<>();
     
     public static void openSellChestGUI(Player player) {
         sc.openSellChestGUI(player);
@@ -239,18 +240,33 @@ public class SellChestGUI implements Listener {
     }
     
     private ItemStack getAcceptItem() {
-        String path = "Settings.Sign-Options.Two-Factor-Auth-Options";
-        return Methods.makeItem(Files.CONFIG.getFile().getString(path + ".Accept.Item"), 1, Files.CONFIG.getFile().getString(path + ".Accept.Name"), Files.CONFIG.getFile().getStringList(path + ".Accept.Lore"));
+        FileConfiguration config = Files.CONFIG.getFile();
+        String path = "Settings.Sign-Options.Two-Factor-Auth-Options.Accept.";
+        return new ItemBuilder()
+        .setMaterial(config.getString(path + "Item", ""))
+        .setName(config.getString(path + "Name", ""))
+        .setLore(config.getStringList(path + "Lore"))
+        .build();
     }
     
     private ItemStack getInfoItem() {
-        String path = "Settings.Sign-Options.Two-Factor-Auth-Options";
-        return Methods.makeItem(Files.CONFIG.getFile().getString(path + ".Info.Item"), 1, Files.CONFIG.getFile().getString(path + ".Info.Name"), Files.CONFIG.getFile().getStringList(path + ".Info.Lore"));
+        FileConfiguration config = Files.CONFIG.getFile();
+        String path = "Settings.Sign-Options.Two-Factor-Auth-Options.Info.";
+        return new ItemBuilder()
+        .setMaterial(config.getString(path + "Item", ""))
+        .setName(config.getString(path + "Name", ""))
+        .setLore(config.getStringList(path + "Lore"))
+        .build();
     }
     
     private ItemStack getDenyItem() {
-        String path = "Settings.Sign-Options.Two-Factor-Auth-Options";
-        return Methods.makeItem(Files.CONFIG.getFile().getString(path + ".Deny.Item"), 1, Files.CONFIG.getFile().getString(path + ".Deny.Name"), Files.CONFIG.getFile().getStringList(path + ".Deny.Lore"));
+        FileConfiguration config = Files.CONFIG.getFile();
+        String path = "Settings.Sign-Options.Two-Factor-Auth-Options.Deny.";
+        return new ItemBuilder()
+        .setMaterial(config.getString(path + "Item", ""))
+        .setName(config.getString(path + "Name", ""))
+        .setLore(config.getStringList(path + "Lore"))
+        .build();
     }
     
 }

@@ -12,9 +12,7 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 public class Methods {
     
@@ -26,71 +24,8 @@ public class Methods {
         return ChatColor.translateAlternateColorCodes('&', Files.CONFIG.getFile().getString("Settings.Prefix") + msg);
     }
     
-    public static ItemStack makeItem(String type) {
-        try {
-            int ty = 0;
-            if (type.contains(":")) {
-                String[] b = type.split(":");
-                type = b[0];
-                ty = Integer.parseInt(b[1]);
-            }
-            Material m = Material.matchMaterial(type);
-            return new ItemStack(m, 1, (short) ty);
-        } catch (Exception e) {
-            return null;
-        }
-    }
-    
-    public static ItemStack makeItem(String type, int amount, String name) {
-        int ty = 0;
-        if (type.contains(":")) {
-            String[] b = type.split(":");
-            type = b[0];
-            ty = Integer.parseInt(b[1]);
-        }
-        Material m = Material.matchMaterial(type);
-        ItemStack item = new ItemStack(m, amount, (short) ty);
-        ItemMeta me = item.getItemMeta();
-        me.setDisplayName(color(name));
-        item.setItemMeta(me);
-        return item;
-    }
-    
-    public static ItemStack makeItem(String type, int amount, String name, List<String> lore) {
-        ArrayList<String> l = new ArrayList<>();
-        int ty = 0;
-        if (type.contains(":")) {
-            String[] b = type.split(":");
-            type = b[0];
-            ty = Integer.parseInt(b[1]);
-        }
-        Material m = Material.matchMaterial(type);
-        ItemStack item = new ItemStack(m, amount, (short) ty);
-        ItemMeta me = item.getItemMeta();
-        me.setDisplayName(color(name));
-        for (String L : lore)
-            l.add(color(L));
-        me.setLore(l);
-        item.setItemMeta(me);
-        return item;
-    }
-    
     public static ItemStack addGlowing(ItemStack item) {
-        ItemStack it = item.clone();
-        try {
-            if (item.hasItemMeta()) {
-                if (item.getItemMeta().hasEnchants()) {
-                    return item;
-                }
-            }
-            item.addUnsafeEnchantment(Enchantment.LUCK, 1);
-            ItemMeta meta = item.getItemMeta();
-            meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-            item.setItemMeta(meta);
-            return item;
-        } catch (NoClassDefFoundError e) {
-            return it;
-        }
+        return addGlowing(item, true);
     }
     
     public static ItemStack addGlowing(ItemStack item, boolean glowing) {
