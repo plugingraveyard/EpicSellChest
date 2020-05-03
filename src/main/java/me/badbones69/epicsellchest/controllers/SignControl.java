@@ -39,17 +39,16 @@ public class SignControl implements Listener {
         Player player = e.getPlayer();
         Block block = e.getClickedBlock();
         FileConfiguration config = Files.CONFIG.getFile();
-        if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
-            if (block != null) {
-                if (block.getState() instanceof Sign) {
-                    Sign sign = (Sign) block.getState();
-                    if (sign.getLine(0).equals(Methods.color(config.getString("Settings.Sign-Options.Lines.1"))) && sign.getLine(1).equals(Methods.color(config.getString("Settings.Sign-Options.Lines.2"))) && sign.getLine(2).equals(Methods.color(config.getString("Settings.Sign-Options.Lines.3"))) && sign.getLine(3).equals(Methods.color(config.getString("Settings.Sign-Options.Lines.4")))) {
-                        if (player.hasPermission("epicsellchest.sign.use") || player.hasPermission("epicsellchest.admin")) {
-                            sc.openSellChestGUI(player);
-                        } else {
-                            player.sendMessage(Messages.NO_PERMISSION.getMessage());
-                        }
-                    }
+        if (e.getAction() == Action.RIGHT_CLICK_BLOCK && block != null && block.getState() instanceof Sign) {
+            Sign sign = (Sign) block.getState();
+            if (sign.getLine(0).equals(Methods.color(config.getString("Settings.Sign-Options.Lines.1")))
+            && sign.getLine(1).equals(Methods.color(config.getString("Settings.Sign-Options.Lines.2")))
+            && sign.getLine(2).equals(Methods.color(config.getString("Settings.Sign-Options.Lines.3")))
+            && sign.getLine(3).equals(Methods.color(config.getString("Settings.Sign-Options.Lines.4")))) {
+                if (player.hasPermission("epicsellchest.sign.use") || player.hasPermission("epicsellchest.admin")) {
+                    sc.openSellChestGUI(player);
+                } else {
+                    player.sendMessage(Messages.NO_PERMISSION.getMessage());
                 }
             }
         }

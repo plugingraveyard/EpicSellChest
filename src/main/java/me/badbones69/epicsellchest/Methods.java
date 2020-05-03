@@ -3,7 +3,6 @@ package me.badbones69.epicsellchest;
 import me.badbones69.epicsellchest.api.enums.Version;
 import me.badbones69.epicsellchest.api.objects.FileManager.Files;
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -21,7 +20,7 @@ public class Methods {
     }
     
     public static String prefix(String msg) {
-        return ChatColor.translateAlternateColorCodes('&', Files.CONFIG.getFile().getString("Settings.Prefix") + msg);
+        return color(Files.CONFIG.getFile().getString("Settings.Prefix") + msg);
     }
     
     public static ItemStack addGlowing(ItemStack item) {
@@ -65,10 +64,6 @@ public class Methods {
             return false;
         }
         return true;
-    }
-    
-    public static Location getLoc(Player player) {
-        return player.getLocation();
     }
     
     public static boolean isInvFull(Player player) {

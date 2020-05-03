@@ -153,70 +153,68 @@ public class SellChestGUI implements Listener {
         Player player = (Player) e.getWhoClicked();
         UUID uuid = player.getUniqueId();
         Inventory inv = e.getInventory();
-        if (inv != null) {
-            if (e.getView().getTitle().equalsIgnoreCase(Methods.color(Files.CONFIG.getFile().getString("Settings.Sign-Options.Two-Factor-Auth-Options.Inventory-Name")))) {
-                e.setCancelled(true);
-                if (sellables.containsKey(uuid) && nonsellables.containsKey(uuid)) {
-                    ItemStack check = e.getCurrentItem();
-                    if (check != null) {
-                        if (check.isSimilar(getAcceptItem())) {
-                            ArrayList<SellItem> items = sellables.get(uuid);
-                            if (items.size() > 0) {
-                                SellChestEvent event = new SellChestEvent(player, items, SellType.GUI);
-                                Bukkit.getPluginManager().callEvent(event);
-                                if (!event.isCancelled()) {
-                                    HashMap<String, Double> placeholders = new HashMap<>();
-                                    for (Currency currency : Currency.values()) {
-                                        placeholders.put("%" + currency.getName().toLowerCase() + "%", sc.getFullCost(items, currency));
-                                        placeholders.put("%" + currency.getName() + "%", sc.getFullCost(items, currency));
-                                    }
-                                    for (CustomCurrency currency : sc.getCustomCurrencies()) {
-                                        placeholders.put("%" + currency.getName().toLowerCase() + "%", sc.getFullCost(items, currency));
-                                        placeholders.put("%" + currency.getName() + "%", sc.getFullCost(items, currency));
-                                    }
-                                    sc.sellSellableItems(player, items);
-                                    player.sendMessage(Messages.SOLD_CHEST.getMessageDouble(placeholders));
+        if (inv != null && e.getView().getTitle().equalsIgnoreCase(Methods.color(Files.CONFIG.getFile().getString("Settings.Sign-Options.Two-Factor-Auth-Options.Inventory-Name")))) {
+            e.setCancelled(true);
+            if (sellables.containsKey(uuid) && nonsellables.containsKey(uuid)) {
+                ItemStack check = e.getCurrentItem();
+                if (check != null) {
+                    if (check.isSimilar(getAcceptItem())) {
+                        ArrayList<SellItem> items = sellables.get(uuid);
+                        if (items.size() > 0) {
+                            SellChestEvent event = new SellChestEvent(player, items, SellType.GUI);
+                            Bukkit.getPluginManager().callEvent(event);
+                            if (!event.isCancelled()) {
+                                HashMap<String, Double> placeholders = new HashMap<>();
+                                for (Currency currency : Currency.values()) {
+                                    placeholders.put("%" + currency.getName().toLowerCase() + "%", sc.getFullCost(items, currency));
+                                    placeholders.put("%" + currency.getName() + "%", sc.getFullCost(items, currency));
                                 }
-                            } else {
-                                player.sendMessage(Messages.NO_SELLABLE_ITEMS.getMessage());
-                            }
-                            for (ItemStack item : nonsellables.get(uuid)) {
-                                if (item != null) {
-                                    if (Methods.isInvFull(player)) {
-                                        player.getWorld().dropItemNaturally(player.getLocation(), item);
-                                    } else {
-                                        player.getInventory().addItem(item);
-                                    }
+                                for (CustomCurrency currency : sc.getCustomCurrencies()) {
+                                    placeholders.put("%" + currency.getName().toLowerCase() + "%", sc.getFullCost(items, currency));
+                                    placeholders.put("%" + currency.getName() + "%", sc.getFullCost(items, currency));
                                 }
+                                sc.sellSellableItems(player, items);
+                                player.sendMessage(Messages.SOLD_CHEST.getMessageDouble(placeholders));
                             }
-                            inv.clear();
-                            sellables.remove(uuid);
-                            nonsellables.remove(uuid);
-                            player.closeInventory();
-                        } else if (check.isSimilar(getDenyItem())) {
-                            for (SellItem item : sellables.get(uuid)) {
-                                if (item != null) {
-                                    if (Methods.isInvFull(player)) {
-                                        player.getWorld().dropItemNaturally(player.getLocation(), item.getItem());
-                                    } else {
-                                        player.getInventory().addItem(item.getItem());
-                                    }
-                                }
-                            }
-                            for (ItemStack item : nonsellables.get(uuid)) {
-                                if (item != null) {
-                                    if (Methods.isInvFull(player)) {
-                                        player.getWorld().dropItemNaturally(player.getLocation(), item);
-                                    } else {
-                                        player.getInventory().addItem(item);
-                                    }
-                                }
-                            }
-                            inv.clear();
-                            sellables.remove(uuid);
-                            nonsellables.remove(uuid);
-                            player.closeInventory();
+                        } else {
+                            player.sendMessage(Messages.NO_SELLABLE_ITEMS.getMessage());
                         }
+                        for (ItemStack item : nonsellables.get(uuid)) {
+                            if (item != null) {
+                                if (Methods.isInvFull(player)) {
+                                    player.getWorld().dropItemNaturally(player.getLocation(), item);
+                                } else {
+                                    player.getInventory().addItem(item);
+                                }
+                            }
+                        }
+                        inv.clear();
+                        sellables.remove(uuid);
+                        nonsellables.remove(uuid);
+                        player.closeInventory();
+                    } else if (check.isSimilar(getDenyItem())) {
+                        for (SellItem item : sellables.get(uuid)) {
+                            if (item != null) {
+                                if (Methods.isInvFull(player)) {
+                                    player.getWorld().dropItemNaturally(player.getLocation(), item.getItem());
+                                } else {
+                                    player.getInventory().addItem(item.getItem());
+                                }
+                            }
+                        }
+                        for (ItemStack item : nonsellables.get(uuid)) {
+                            if (item != null) {
+                                if (Methods.isInvFull(player)) {
+                                    player.getWorld().dropItemNaturally(player.getLocation(), item);
+                                } else {
+                                    player.getInventory().addItem(item);
+                                }
+                            }
+                        }
+                        inv.clear();
+                        sellables.remove(uuid);
+                        nonsellables.remove(uuid);
+                        player.closeInventory();
                     }
                 }
             }

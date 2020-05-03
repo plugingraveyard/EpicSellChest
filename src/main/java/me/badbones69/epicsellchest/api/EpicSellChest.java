@@ -105,6 +105,7 @@ public class EpicSellChest {
                 i = i.toLowerCase();
                 if (i.startsWith("item:")) {
                     i = i.substring(5);
+                    
                     int md = 0;
                     String id = i;
                     if (i.contains(":")) {
