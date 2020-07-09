@@ -1,7 +1,7 @@
 package me.badbones69.epicsellchest.api.objects;
 
+import de.tr7zw.changeme.nbtapi.NBTItem;
 import me.badbones69.epicsellchest.api.enums.Version;
-import me.badbones69.epicsellchest.multisupport.itemnbtapi.NBTItem;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
