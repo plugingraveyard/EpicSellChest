@@ -105,11 +105,6 @@
                             <shadedPattern>me.badbones69.epicsellchest.nbtapi</shadedPattern>
                         </relocation>
                     </relocations>
-                    <artifactSet>
-                        <includes>
-                            <include>me.badbones69:*</include>
-                        </includes>
-                    </artifactSet>
                     <!--                    <outputFile>/Users/badbones/Desktop/Minecraft/Server/plugins/EpicSellChest[v${project.version}].jar</outputFile>-->
                 </configuration>
                 <executions>
