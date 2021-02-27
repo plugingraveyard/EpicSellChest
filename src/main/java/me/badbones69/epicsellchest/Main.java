@@ -257,7 +257,7 @@ public class Main extends JavaPlugin {
                         if (!sc.needsTwoFactorAuth(uuid)) {
                             sc.removeTwoFactorAuth(uuid);
                             Location p1 = player.getLocation().getChunk().getBlock(0, 0, 0).getLocation();
-                            Location p2 = player.getLocation().getChunk().getBlock(15, player.getWorld().getMaxHeight(), 15).getLocation();
+                            Location p2 = player.getLocation().getChunk().getBlock(15, 255, 15).getLocation();
                             sc.queryChests(player, p1, p2);
                             player.sendMessage(Messages.LOADING_CHUNK_CHESTS.getMessage());
                             new BukkitRunnable() {
