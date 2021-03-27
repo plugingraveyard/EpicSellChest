@@ -639,7 +639,7 @@ public class EpicSellChest {
     
     private ArrayList<Material> getDamageableItems() {
         ArrayList<Material> materials = new ArrayList<>();
-        if (Version.getCurrentVersion().isNewer(Version.v1_12_R1)) {
+        if (Version.isNewer(Version.v1_12_R1)) {
             materials.add(Material.matchMaterial("GOLDEN_HELMET"));
             materials.add(Material.matchMaterial("GOLDEN_CHESTPLATE"));
             materials.add(Material.matchMaterial("GOLDEN_LEGGINGS"));

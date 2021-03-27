@@ -12,6 +12,8 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  *
@@ -101,11 +103,11 @@ public class ItemBuilder implements Cloneable {
             string = b[0];
             metaData = Short.parseShort(b[1]);
         }
-        if (Version.getCurrentVersion().isOlder(Version.v1_13_R1)) {
+        if (Version.isOlder(Version.v1_13_R2)) {
             Material material = Material.matchMaterial(string); //Needs to be changed to getMaterial() for 1.13.
             if (material != null) {
                 this.material = material;
-                if (Version.getCurrentVersion().isNewer(Version.v1_8_R3)) {
+                if (Version.isNewer(Version.v1_8_R3)) {
                     if (material == Material.matchMaterial("MONSTER_EGG") || material == Material.matchMaterial("MOB_SPAWNER")) {
                         this.entityType = EntityType.fromId(metaData);
                     } else {
@@ -439,7 +441,7 @@ public class ItemBuilder implements Cloneable {
         }
         item.addUnsafeEnchantments(enchantments);
         NBTItem nbt = new NBTItem(item);
-        if (Version.getCurrentVersion().isOlder(Version.v1_13_R1)) {
+        if (Version.isOlder(Version.v1_13_R2)) {
             if (material == Material.matchMaterial("MONSTER_EGG") || material == Material.matchMaterial("MOB_SPAWNER")) {
                 nbt.addCompound("EntityTag").setString("id", "minecraft:" + entityType.name());
             }
@@ -461,7 +463,7 @@ public class ItemBuilder implements Cloneable {
                         return false;
                     }
                 }
-                if (Version.getCurrentVersion().isOlder(Version.v1_13_R1)) {
+                if (Version.isOlder(Version.v1_13_R2)) {
                     if (material == Material.matchMaterial("MONSTER_EGG") || material == Material.matchMaterial("MOB_SPAWNER")) {
                         return this.getEntityType() == otherItem.getEntityType();
                     }
@@ -476,7 +478,7 @@ public class ItemBuilder implements Cloneable {
         if (otherItem != null) {
             if (this.getMaterial() == otherItem.getMaterial() && this.getMetaData().equals(otherItem.getMetaData()) &&
             this.getName().equals(otherItem.getName()) && this.getLore() == otherItem.getLore() && this.getEnchantments() == otherItem.getEnchantments()) {
-                if (Version.getCurrentVersion().isOlder(Version.v1_13_R1)) {
+                if (Version.isOlder(Version.v1_13_R2)) {
                     if (material == Material.matchMaterial("MONSTER_EGG") || material == Material.matchMaterial("MOB_SPAWNER")) {
                         return this.getEntityType() == otherItem.getEntityType();
                     }
@@ -506,8 +508,18 @@ public class ItemBuilder implements Cloneable {
         return this;
     }
     
-    private String color(String msg) {
-        return ChatColor.translateAlternateColorCodes('&', msg);
+    private final Pattern HEX_PATTERN = Pattern.compile("#[a-fA-F0-9]{6}");
+    
+    private String color(String message) {
+        if (Version.isNewer(Version.v1_15_R1)) {
+            Matcher matcher = HEX_PATTERN.matcher(message);
+            StringBuffer buffer = new StringBuffer();
+            while (matcher.find()) {
+                matcher.appendReplacement(buffer, net.md_5.bungee.api.ChatColor.of(matcher.group()).toString());
+            }
+            return ChatColor.translateAlternateColorCodes('&', matcher.appendTail(buffer).toString());
+        }
+        return ChatColor.translateAlternateColorCodes('&', message);
     }
     
     private ItemStack addGlow(ItemStack item, boolean toggle) {
