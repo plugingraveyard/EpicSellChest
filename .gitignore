@@ -1,12 +1,6 @@
+.gradle
+.idea
 
-\.DS_Store
-
-\.idea/
-
-*.iml
-
-src/main/lib/
-
-target/
-
-dependency-reduced-pom\.xml
+gradle
+gradlew
+gradlew.bat

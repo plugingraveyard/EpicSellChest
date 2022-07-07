@@ -1,10 +1,15 @@
-name: EpicSellChest
-author: BadBones69
-main: me.badbones69.epicsellchest.Main
-version: ${project.version}${build.number}
-softdepend: [Vault, DakataAntiCheat, NoCheatPlus, Spartan, ShopGUIPlus]
-description: This allows users to sell all the items in a chest.
+name: Vouchers
+main: "${group}.Vouchers"
+version: ${version}
 api-version: 1.13
+description: ${description}
+
+authors:
+  - BadBones69
+  - RyderBelserion
+
+softdepend: [Vault, NoCheatPlus, ShopGUIPlus]
+
 commands:
   sellchest:
     description: Sell all items in a chest.
