@@ -2,11 +2,11 @@
 
 [![Join us on Discord](https://img.shields.io/discord/685683385313919172.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://discord.badbones69.com)
 
-[![CrazyEnchantment's Stargazers](https://img.shields.io/github/stars/Crazy-Crew/EpicSellChest?label=stars&logo=github)](https://github.com/Crazy-Crew/EpicSellChest/stargazers)
-[![CrazyEnchantment's Forks](https://img.shields.io/github/forks/Crazy-Crew/EpicSellChest?label=forks&logo=github)](https://github.com/Crazy-Crew/EpicSellChest/network/members)
-[![CrazyEnchantment's Watchers](https://img.shields.io/github/watchers/Crazy-Crew/EpicSellChest?label=watchers&logo=github)](https://github.com/Crazy-Crew/EpicSellChest/watchers)
+[![EpicSellChest's Stargazers](https://img.shields.io/github/stars/Crazy-Crew/EpicSellChest?label=stars&logo=github)](https://github.com/Crazy-Crew/EpicSellChest/stargazers)
+[![EpicSellChest's Forks](https://img.shields.io/github/forks/Crazy-Crew/EpicSellChest?label=forks&logo=github)](https://github.com/Crazy-Crew/EpicSellChest/network/members)
+[![EpicSellChest's Watchers](https://img.shields.io/github/watchers/Crazy-Crew/EpicSellChest?label=watchers&logo=github)](https://github.com/Crazy-Crew/EpicSellChest/watchers)
 
-EpicSellChest is an enchantments plugin with over 80+ enchantments.
+EpicSellChest is a plugin that lets you sell items automatically using chests!
 
 ## Contact
 [![Join us on Discord](https://img.shields.io/discord/685683385313919172.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://discord.badbones69.com)
