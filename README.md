@@ -1,6 +1,6 @@
 ## EpicSellChest
 
-[![Join us on Discord](https://img.shields.io/discord/685683385313919172.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://discord.badbones69.com)
+[![Join us on Discord](https://img.shields.io/discord/182615261403283459.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://discord.badbones69.com)
 
 [![EpicSellChest's Stargazers](https://img.shields.io/github/stars/Crazy-Crew/EpicSellChest?label=stars&logo=github)](https://github.com/Crazy-Crew/EpicSellChest/stargazers)
 [![EpicSellChest's Forks](https://img.shields.io/github/forks/Crazy-Crew/EpicSellChest?label=forks&logo=github)](https://github.com/Crazy-Crew/EpicSellChest/network/members)
@@ -9,7 +9,7 @@
 EpicSellChest is a plugin that lets you sell items automatically using chests!
 
 ## Contact
-[![Join us on Discord](https://img.shields.io/discord/685683385313919172.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://discord.badbones69.com)
+[![Join us on Discord](https://img.shields.io/discord/182615261403283459.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://discord.badbones69.com)
 
 Join us on [Discord](https://discord.badbones69.com)
 
