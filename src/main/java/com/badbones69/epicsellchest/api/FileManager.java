@@ -1,9 +1,8 @@
 package com.badbones69.epicsellchest.api;
 
+import com.badbones69.epicsellchest.EpicSellChest;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.plugin.java.JavaPlugin;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -39,7 +38,7 @@ public class FileManager {
     /**
      * Sets up the plugin and loads all necessary files.
      */
-    public FileManager setup(JavaPlugin plugin) {
+    public FileManager setup(EpicSellChest plugin) {
 
         if (!plugin.getDataFolder().exists()) plugin.getDataFolder().mkdirs();
 
@@ -392,7 +391,7 @@ public class FileManager {
 
         private final String name;
         private final String fileName;
-        private final JavaPlugin plugin;
+        private final EpicSellChest plugin;
 
         private final String homeFolder;
         private FileConfiguration file;
@@ -402,7 +401,7 @@ public class FileManager {
          * @param name Name of the file.
          * @param homeFolder The home folder of the file.
          */
-        public CustomFile(String name, String homeFolder, JavaPlugin plugin) {
+        public CustomFile(String name, String homeFolder, EpicSellChest plugin) {
             this.name = name.replace(".yml", "");
             this.fileName = name;
             this.plugin = plugin;

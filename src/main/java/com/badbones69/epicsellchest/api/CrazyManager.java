@@ -1,5 +1,6 @@
 package com.badbones69.epicsellchest.api;
 
+import com.badbones69.epicsellchest.EpicSellChest;
 import com.badbones69.epicsellchest.Methods;
 import com.badbones69.epicsellchest.api.currency.CustomCurrency;
 import com.badbones69.epicsellchest.api.enums.RegisterType;
@@ -21,7 +22,6 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.Vector;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -53,13 +53,13 @@ public class CrazyManager {
     private final HashMap<ItemBuilder, RegisterType> registeredMaterials = new HashMap<>();
     private final ArrayList<UpgradeableEnchantment> upgradeableEnchantments = new ArrayList<>();
 
-    private JavaPlugin plugin;
+    private EpicSellChest plugin;
 
-    public JavaPlugin getPlugin() {
+    public EpicSellChest getPlugin() {
         return this.plugin;
     }
 
-    public void loadPlugin(JavaPlugin plugin) {
+    public void loadPlugin(EpicSellChest plugin) {
         this.plugin = plugin;
     }
 
