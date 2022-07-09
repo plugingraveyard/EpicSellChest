@@ -19,7 +19,7 @@ Join us on [Discord](https://discord.badbones69.com)
 Downloads can be obtained from the [spigot page](https://www.spigotmc.org/resources/epic-sell-chest.48597/) or the [Jenkins](https://jenkins.badbones69.com/view/Stable/job/EpicSellChest/).
 
 ## Plugin Data
-[![bStats Graph Data](https://bstats.org/signatures/bukkit/EpicSellChest.svg)](https://bstats.org/signatures/bukkit/EpicSellChest)
+[![bStats Graph Data](https://bstats.org/signatures/bukkit/EpicSellChest.svg)](https://bstats.org/plugin/bukkit/EpicSellChest/1713)
 
 ## API
 In Progress.
