@@ -17,17 +17,15 @@ import java.util.regex.Pattern;
 
 public class Methods {
     
-    public final static Pattern HEX_PATTERN = Pattern.compile("#[a-fA-F0-9]{6}");
+    public final static Pattern HEX_PATTERN = Pattern.compile("#[a-fA-F\\d]{6}");
     
     public static String color(String message) {
         if (ServerProtocol.isAtLeast(ServerProtocol.v1_15_R1)) {
             Matcher matcher = HEX_PATTERN.matcher(message);
             StringBuilder buffer = new StringBuilder();
-            
             while (matcher.find()) {
                 matcher.appendReplacement(buffer, net.md_5.bungee.api.ChatColor.of(matcher.group()).toString());
             }
-            
             return ChatColor.translateAlternateColorCodes('&', matcher.appendTail(buffer).toString());
         }
         
