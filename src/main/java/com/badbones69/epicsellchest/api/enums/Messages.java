@@ -1,6 +1,10 @@
 package com.badbones69.epicsellchest.api.enums;
 
-/*
+import com.badbones69.epicsellchest.Methods;
+import com.badbones69.epicsellchest.api.FileManager.Files;
+
+import java.util.HashMap;
+
 public enum Messages {
     
     NO_PERMISSION("No-Permission"),
@@ -33,37 +37,36 @@ public enum Messages {
         this.path = path;
     }
     
-    //public String getMessage() {
-    //    return Methods.prefix(Files.MESSAGES.getFile().getString("Messages." + path));
-    /}
+    public String getMessage() {
+        return Methods.prefix(Files.MESSAGES.getFile().getString("Messages." + path));
+    }
     
-    //public String getMessage(HashMap<String, String> placeholders) {
-    //    String msg = Methods.prefix(Files.MESSAGES.getFile().getString("Messages." + path));
-    //    for (String placeholder : placeholders.keySet()) {
-    //        msg = msg.replaceAll(placeholder, placeholders.get(placeholder));
-    //    }
-
-    //    return msg;
-    //}
+    public String getMessage(HashMap<String, String> placeholders) {
+        String msg = Methods.prefix(Files.MESSAGES.getFile().getString("Messages." + path));
+        for (String placeholder : placeholders.keySet()) {
+            msg = msg.replaceAll(placeholder, placeholders.get(placeholder));
+        }
+        
+        return msg;
+    }
     
-    //public String getMessageInt(HashMap<String, Integer> placeholders) {
-    //    String msg = Methods.prefix(Files.MESSAGES.getFile().getString("Messages." + path));
-
-    //    for (String placeholder : placeholders.keySet()) {
-    //        msg = msg.replaceAll(placeholder, placeholders.get(placeholder) + "");
-    //    }
-
-    //    return msg;
-    //}
+    public String getMessageInt(HashMap<String, Integer> placeholders) {
+        String msg = Methods.prefix(Files.MESSAGES.getFile().getString("Messages." + path));
+        
+        for (String placeholder : placeholders.keySet()) {
+            msg = msg.replaceAll(placeholder, placeholders.get(placeholder) + "");
+        }
+        
+        return msg;
+    }
     
-    //public String getMessageDouble(HashMap<String, Double> placeholders) {
-    //    String msg = Methods.prefix(Files.MESSAGES.getFile().getString("Messages." + path));
-
-    //    for (String placeholder : placeholders.keySet()) {
-    //        msg = msg.replaceAll(placeholder, placeholders.get(placeholder) + "");
-    //    }
-
-    //    return msg;
-    //}
-
- */
+    public String getMessageDouble(HashMap<String, Double> placeholders) {
+        String msg = Methods.prefix(Files.MESSAGES.getFile().getString("Messages." + path));
+        
+        for (String placeholder : placeholders.keySet()) {
+            msg = msg.replaceAll(placeholder, placeholders.get(placeholder) + "");
+        }
+        
+        return msg;
+    }
+}

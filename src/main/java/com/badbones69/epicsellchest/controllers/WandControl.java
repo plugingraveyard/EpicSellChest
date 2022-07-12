@@ -4,6 +4,7 @@ import com.badbones69.epicsellchest.Methods;
 import com.badbones69.epicsellchest.api.CrazyManager;
 import com.badbones69.epicsellchest.api.currency.Currency;
 import com.badbones69.epicsellchest.api.currency.CustomCurrency;
+import com.badbones69.epicsellchest.api.enums.Messages;
 import com.badbones69.epicsellchest.api.enums.SellType;
 import com.badbones69.epicsellchest.api.events.SellChestEvent;
 import com.badbones69.epicsellchest.api.objects.SellItem;
@@ -71,20 +72,20 @@ public class WandControl implements Listener {
                                         chest.getInventory().remove(item.getItem());
                                     }
                                 }
-                                //player.sendMessage(Messages.SOLD_CHEST.getMessageDouble(placeholders));
+                                player.sendMessage(Messages.SOLD_CHEST.getMessageDouble(placeholders));
                             }
                         } else {
-                            //player.sendMessage(Messages.NO_SELLABLE_ITEMS.getMessage());
+                            player.sendMessage(Messages.NO_SELLABLE_ITEMS.getMessage());
                         }
                     } else {
                         crazyManager.addTwoFactorAuth(uuid);
-                        //player.sendMessage(Messages.WAND_TWO_FACTOR_AUTH.getMessage());
+                        player.sendMessage(Messages.WAND_TWO_FACTOR_AUTH.getMessage());
                     }
                 } else {
-                    //player.sendMessage(Messages.NO_SELLABLE_ITEMS.getMessage());
+                    player.sendMessage(Messages.NO_SELLABLE_ITEMS.getMessage());
                 }
             } else {
-                //player.sendMessage(Messages.CANT_SELL_CHEST.getMessage());
+                player.sendMessage(Messages.CANT_SELL_CHEST.getMessage());
             }
         }
     }

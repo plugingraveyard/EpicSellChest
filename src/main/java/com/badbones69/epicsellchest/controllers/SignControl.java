@@ -3,6 +3,7 @@ package com.badbones69.epicsellchest.controllers;
 import com.badbones69.epicsellchest.Methods;
 import com.badbones69.epicsellchest.api.CrazyManager;
 import com.badbones69.epicsellchest.api.FileManager.Files;
+import com.badbones69.epicsellchest.api.enums.Messages;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -29,7 +30,7 @@ public class SignControl implements Listener {
                 e.setLine(2, Methods.color(config.getString("Settings.Sign-Options.Lines.3")));
                 e.setLine(3, Methods.color(config.getString("Settings.Sign-Options.Lines.4")));
             } else {
-                //player.sendMessage(Messages.NO_PERMISSION.getMessage());
+                player.sendMessage(Messages.NO_PERMISSION.getMessage());
             }
         }
     }
@@ -49,7 +50,7 @@ public class SignControl implements Listener {
                 if (player.hasPermission("epicsellchest.sign.use") || player.hasPermission("epicsellchest.admin")) {
                     crazyManager.openSellChestGUI(player);
                 } else {
-                    //player.sendMessage(Messages.NO_PERMISSION.getMessage());
+                    player.sendMessage(Messages.NO_PERMISSION.getMessage());
                 }
             }
         }

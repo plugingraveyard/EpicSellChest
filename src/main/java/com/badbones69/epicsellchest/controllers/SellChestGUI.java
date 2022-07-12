@@ -6,6 +6,7 @@ import com.badbones69.epicsellchest.api.FileManager.Files;
 import com.badbones69.epicsellchest.api.ItemBuilder;
 import com.badbones69.epicsellchest.api.currency.Currency;
 import com.badbones69.epicsellchest.api.currency.CustomCurrency;
+import com.badbones69.epicsellchest.api.enums.Messages;
 import com.badbones69.epicsellchest.api.enums.SellType;
 import com.badbones69.epicsellchest.api.events.SellChestEvent;
 import com.badbones69.epicsellchest.api.objects.SellItem;
@@ -72,10 +73,10 @@ public class SellChestGUI implements Listener {
                             }
                             
                             crazyManager.removeTwoFactorAuth(uuid);
-                            //player.sendMessage(Messages.SOLD_CHEST.getMessageDouble(placeholders));
+                            player.sendMessage(Messages.SOLD_CHEST.getMessageDouble(placeholders));
                         }
                     } else {
-                        //player.sendMessage(Messages.NO_SELLABLE_ITEMS.getMessage());
+                        player.sendMessage(Messages.NO_SELLABLE_ITEMS.getMessage());
                     }
                     
                     for (ItemStack item : inv.getContents()) {
@@ -136,10 +137,10 @@ public class SellChestGUI implements Listener {
                         }
                         
                         crazyManager.sellSellableItems(player, items);
-                        //player.sendMessage(Messages.SOLD_CHEST.getMessageDouble(placeholders));
+                        player.sendMessage(Messages.SOLD_CHEST.getMessageDouble(placeholders));
                     }
                 } else {
-                    //player.sendMessage(Messages.NO_SELLABLE_ITEMS.getMessage());
+                    player.sendMessage(Messages.NO_SELLABLE_ITEMS.getMessage());
                 }
                 
                 for (ItemStack item : nonsellables.get(uuid)) {
@@ -193,10 +194,10 @@ public class SellChestGUI implements Listener {
                                 }
                                 
                                 crazyManager.sellSellableItems(player, items);
-                                //player.sendMessage(Messages.SOLD_CHEST.getMessageDouble(placeholders));
+                                player.sendMessage(Messages.SOLD_CHEST.getMessageDouble(placeholders));
                             }
                         } else {
-                            //player.sendMessage(Messages.NO_SELLABLE_ITEMS.getMessage());
+                            player.sendMessage(Messages.NO_SELLABLE_ITEMS.getMessage());
                         }
                         
                         for (ItemStack item : nonsellables.get(uuid)) {
