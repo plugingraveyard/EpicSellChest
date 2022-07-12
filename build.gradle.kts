@@ -1,5 +1,6 @@
 plugins {
     java
+    idea
 
     id("com.github.johnrengelman.shadow") version "7.1.2"
 }
@@ -10,6 +11,13 @@ description = "This allows users to sell all the items in a chest."
 
 java {
     toolchain.languageVersion.set(JavaLanguageVersion.of(17))
+}
+
+idea {
+    module {
+        isDownloadJavadoc = true
+        isDownloadSources = true
+    }
 }
 
 repositories {
