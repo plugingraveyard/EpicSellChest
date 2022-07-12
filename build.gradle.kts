@@ -42,8 +42,6 @@ repositories {
 dependencies {
 
     // Anti Cheats.
-    compileOnly("fr.neatmonster:nocheatplus:3.16.1-SNAPSHOT")
-
     compileOnly("me.vagdedes:SpartanAPI:9.1")
 
     // Required.
