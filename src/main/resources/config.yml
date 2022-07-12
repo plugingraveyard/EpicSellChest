@@ -59,7 +59,7 @@ Settings:
   Black-List-Items: #Black listed items that can't be sold.
     - 'BEDROCK' #BedRock
     - 'SPONGE' #Sponge
-  Black-List-Enchantments: {} #Use like the normal Black-List option if using it this.
+  Black-List-Enchantments: { } #Use like the normal Black-List option if using it this.
   Enchantment-Cost: #The extra "Currency" each enchantment level gives to an item.
     #If you wish not to give extra make it like this "Enchantment-Cost: {}" and remove all enchantments.
     KNOCKBACK: #The enchantment which gives more "Currency"

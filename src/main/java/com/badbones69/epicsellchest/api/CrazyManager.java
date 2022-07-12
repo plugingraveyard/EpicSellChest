@@ -2,17 +2,17 @@ package com.badbones69.epicsellchest.api;
 
 import com.badbones69.epicsellchest.EpicSellChest;
 import com.badbones69.epicsellchest.Methods;
+import com.badbones69.epicsellchest.api.FileManager.Files;
+import com.badbones69.epicsellchest.api.currency.Currency;
+import com.badbones69.epicsellchest.api.currency.CurrencyAPI;
 import com.badbones69.epicsellchest.api.currency.CustomCurrency;
 import com.badbones69.epicsellchest.api.enums.RegisterType;
-import com.badbones69.epicsellchest.multisupport.ServerProtocol;
-import com.badbones69.epicsellchest.multisupport.Support;
 import com.badbones69.epicsellchest.api.objects.SellItem;
 import com.badbones69.epicsellchest.api.objects.SellableItem;
 import com.badbones69.epicsellchest.api.objects.UpgradeableEnchantment;
+import com.badbones69.epicsellchest.multisupport.ServerProtocol;
+import com.badbones69.epicsellchest.multisupport.Support;
 import com.badbones69.epicsellchest.multisupport.shopplugins.ShopGUIPlus;
-import com.badbones69.epicsellchest.api.currency.Currency;
-import com.badbones69.epicsellchest.api.currency.CurrencyAPI;
-import com.badbones69.epicsellchest.api.FileManager.Files;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -23,17 +23,18 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
 import java.util.UUID;
 
 public class CrazyManager {
-
+    
     public static CrazyManager getInstance() {
         return instance;
     }
-
+    
     private static final CrazyManager instance = new CrazyManager();
     
     private double basePrice;
@@ -52,19 +53,19 @@ public class CrazyManager {
     private final ArrayList<SellableItem> registeredSellableItems = new ArrayList<>();
     private final HashMap<ItemBuilder, RegisterType> registeredMaterials = new HashMap<>();
     private final ArrayList<UpgradeableEnchantment> upgradeableEnchantments = new ArrayList<>();
-
+    
     private EpicSellChest plugin;
-
+    
     public EpicSellChest getPlugin() {
         return this.plugin;
     }
-
+    
     public void loadPlugin(EpicSellChest plugin) {
         this.plugin = plugin;
     }
-
+    
     public void load() {
-
+        
         brokeItems.clear();
         duplicateItems.clear();
         registeredMaterials.clear();
@@ -77,45 +78,45 @@ public class CrazyManager {
         basePrice = config.getDouble("Settings.Base-Price");
         useMetrics = config.getBoolean("Settings.Metrics");
         checkUpdates = config.getBoolean("Settings.Check-For-Updates");
-
+        
         sellingWand = new ItemBuilder()
-                .setMaterial(Objects.requireNonNull(config.getString("Settings.Chest-Selling-Item.Item")))
-                .setName(config.getString("Settings.Chest-Selling-Item.Name"))
-                .setLore(config.getStringList("Settings.Chest-Selling-Item.Lore"))
-                .setGlow(config.getBoolean("Settings.Chest-Selling-Item.Glowing"));
-
+        .setMaterial(Objects.requireNonNull(config.getString("Settings.Chest-Selling-Item.Item")))
+        .setName(config.getString("Settings.Chest-Selling-Item.Name"))
+        .setLore(config.getStringList("Settings.Chest-Selling-Item.Lore"))
+        .setGlow(config.getBoolean("Settings.Chest-Selling-Item.Glowing"));
+        
         for (String currency : Objects.requireNonNull(config.getConfigurationSection("Settings.Custom-Currencies")).getKeys(false)) {
             customCurrencies.add(new CustomCurrency(currency, config.getString("Settings.Custom-Currencies." + currency + ".Command")));
         }
-
+        
         baseCurrency = Currency.getCurrency(config.getString("Settings.Base-Currency"));
-
+        
         if (baseCurrency == Currency.CUSTOM) {
             baseCustomCurrency = getCustomCurrency(config.getString("Settings.Base-Currency"));
         }
-
+        
         for (String id : config.getStringList("Settings.Black-List-Items")) {
             int md = 0;
-
+            
             if (id.contains(":")) {
                 md = Integer.parseInt(id.split(":")[1]);
                 id = id.split(":")[0];
             }
-
+            
             Material material = Material.matchMaterial(id);
-
+            
             if (material != null) {
                 blackListItems.add(new ItemStack(material, 1, (short) md).getType());
             }
         }
-
+        
         for (String name : config.getStringList("Settings.Black-List-Enchantments")) {
             Enchantment enchant = Enchantment.getByName(name);
             if (enchant != null) {
                 blackListEnchantments.add(enchant);
             }
         }
-
+        
         for (String line : config.getStringList("Settings.Item-Cost")) {
             double cost = 0.0;
             ItemBuilder item = new ItemBuilder();
@@ -124,7 +125,7 @@ public class CrazyManager {
             boolean checkAmount = false;
             Currency currency = null;
             CustomCurrency custom = null;
-
+            
             for (String i : line.split(", ")) {
                 i = i.toLowerCase();
                 if (i.startsWith("item:")) {
@@ -132,12 +133,12 @@ public class CrazyManager {
                     
                     int md = 0;
                     String id = i;
-
+                    
                     if (i.contains(":")) {
                         md = Integer.parseInt(i.split(":")[1]);
                         id = i.split(":")[0];
                     }
-
+                    
                     material = Material.matchMaterial(id);
                     //if (material != null) {
                     //    item.setMaterial(material).setMetaData(md);
@@ -146,21 +147,21 @@ public class CrazyManager {
                     //}
                 } else if (i.startsWith("cost:")) {
                     i = i.substring(5);
-
+                    
                     if (Methods.isDouble(i)) {
                         cost = Double.parseDouble(i);
                     }
                 } else if (i.startsWith("currency:")) {
                     i = i.substring(9);
                     Currency c = Currency.getCurrency(i);
-
+                    
                     if (Currency.isCurrency(i)) {
                         if (c != null) {
                             currency = Currency.getCurrency(i);
-
+                            
                             if (c == Currency.CUSTOM) {
                                 CustomCurrency cu = getCustomCurrency(i);
-
+                                
                                 if (cu != null) {
                                     custom = cu;
                                     command = cu.command();
@@ -170,21 +171,22 @@ public class CrazyManager {
                     }
                 } else if (i.startsWith("amount:")) {
                     i = i.substring(7);
-
+                    
                     try {
                         int amount = Integer.parseInt(i);
-
+                        
                         if (amount > 1) {
                             if (item != null) {
                                 item.setAmount(amount);
                             }
-
+                            
                             checkAmount = true;
                         }
-                    } catch (Exception ignored) {}
+                    } catch (Exception ignored) {
+                    }
                 }
             }
-
+            
             if (material != null && currency != null) {
                 if (isRegisteredMaterial(item)) {
                     duplicateItems.add("&cDuplicate Item: &a" + line + " &7: &cAlready Registered With: &a" + getRegisteredPlugin(item).getName() + " &7: &cTryed To Register With: &a" + RegisterType.EPICSELLCHEST.getName());
@@ -194,7 +196,7 @@ public class CrazyManager {
                 }
             }
         }
-
+        
         if (Support.SHOP_GUI_PLUS.isEnabled()) {
             for (SellableItem item : ShopGUIPlus.getSellableItems()) {
                 if (isRegisteredMaterial(item.getItem())) {
@@ -205,38 +207,38 @@ public class CrazyManager {
                 }
             }
         }
-
+        
         for (String name : config.getConfigurationSection("Settings.Enchantment-Cost").getKeys(false)) {
             Enchantment enchant = Enchantment.getByName(name);
-
+            
             if (enchant != null) {
                 HashMap<Integer, Integer> levels = new HashMap<>();
-
+                
                 for (String line : config.getStringList("Settings.Enchantment-Cost." + name)) {
                     int cost = 0;
                     int level = 0;
-
+                    
                     for (String i : line.split(", ")) {
                         i = i.toLowerCase();
-
+                        
                         if (i.startsWith("level:")) {
                             i = i.replaceAll("level:", "");
-
+                            
                             if (Methods.isInt(i)) {
                                 level = Integer.parseInt(i);
                             }
                         } else if (i.startsWith("cost:")) {
                             i = i.replaceAll("cost:", "");
-
+                            
                             if (Methods.isInt(i)) {
                                 cost = Integer.parseInt(i);
                             }
                         }
                     }
-
+                    
                     levels.put(level, cost);
                 }
-
+                
                 upgradeableEnchantments.add(new UpgradeableEnchantment(enchant, levels));
             }
         }
@@ -272,7 +274,7 @@ public class CrazyManager {
                 return custom;
             }
         }
-
+        
         return null;
     }
     
@@ -286,7 +288,7 @@ public class CrazyManager {
     
     public ArrayList<SellItem> getSellableItems(Inventory inv) {
         ArrayList<SellItem> items = new ArrayList<>();
-
+        
         for (ItemStack item : inv.getContents()) {
             if (item != null) {
                 if (canSellItem(item)) {
@@ -333,14 +335,14 @@ public class CrazyManager {
                             break;
                         }
                     }*/
-
+                    
                     if (!found) {
                         price = getBasePrice() * item.getAmount();
-
+                        
                         if (currency == Currency.CUSTOM) {
                             command = customCurrency.command();
                         }
-
+                        
                         if (item.hasItemMeta()) {
                             if (item.getItemMeta().hasEnchants()) {
                                 for (UpgradeableEnchantment enchantment : getUpgradeableEnchantment()) {
@@ -353,18 +355,18 @@ public class CrazyManager {
                             }
                         }
                     }
-
+                    
                     items.add(new SellItem(item, sellingAmount, sellingMinimum, price, currency, customCurrency, command));
                 }
             }
         }
-
+        
         return items;
     }
     
     public ArrayList<SellItem> getSellableItems(Inventory inv, ArrayList<ItemStack> selling) {
         ArrayList<SellItem> items = new ArrayList<>();
-
+        
         for (ItemStack item : inv.getContents()) {
             if (item != null) {
                 for (ItemStack sell : selling) {
@@ -415,14 +417,14 @@ public class CrazyManager {
                                             break;
                                         }
                                     }*/
-
+                                    
                                     if (!found) {
                                         price = getBasePrice() * item.getAmount();
-
+                                        
                                         if (currency == Currency.CUSTOM) {
                                             command = customCurrency.command();
                                         }
-
+                                        
                                         if (item.hasItemMeta()) {
                                             if (item.getItemMeta().hasEnchants()) {
                                                 for (UpgradeableEnchantment enchantment : getUpgradeableEnchantment()) {
@@ -435,7 +437,7 @@ public class CrazyManager {
                                             }
                                         }
                                     }
-
+                                    
                                     items.add(new SellItem(item, sellingAmount, sellingMinimum, price, currency, customCurrency, command));
                                 }
                             }
@@ -444,14 +446,14 @@ public class CrazyManager {
                 }
             }
         }
-
+        
         return items;
     }
     
     public void sellSellableItems(Player player, ArrayList<SellItem> items) {
         HashMap<Currency, Double> amounts = new HashMap<>();
         HashMap<Currency, String> commands = new HashMap<>();
-
+        
         for (SellItem item : items) {
             if (amounts.containsKey(item.getCurrency())) {
                 amounts.put(item.getCurrency(), (amounts.get(item.getCurrency()) + item.getPrice()));
@@ -460,7 +462,7 @@ public class CrazyManager {
                 commands.put(item.getCurrency(), item.getCommand());
             }
         }
-
+        
         for (Currency currency : amounts.keySet()) {
             CurrencyAPI.giveCurrency(player, currency, amounts.get(currency), commands.get(currency));
         }
@@ -468,19 +470,19 @@ public class CrazyManager {
     
     public double getFullCost(ArrayList<SellItem> items, Currency currency) {
         double cost = 0.0;
-
+        
         for (SellItem item : items) {
             if (item.getCurrency() == currency) {
                 cost += item.getPrice();
             }
         }
-
+        
         return cost;
     }
     
     public double getFullCost(ArrayList<SellItem> items, CustomCurrency currency) {
         double cost = 0.0;
-
+        
         for (SellItem item : items) {
             if (item.getCurrency() == Currency.CUSTOM) {
                 if (currency.name().equalsIgnoreCase(item.getCustomCurrency().name())) {
@@ -488,7 +490,7 @@ public class CrazyManager {
                 }
             }
         }
-
+        
         return cost;
     }
     
@@ -498,7 +500,7 @@ public class CrazyManager {
                 return false;
             }
         }
-
+        
         if (item.hasItemMeta()) {
             if (item.getItemMeta().hasEnchants()) {
                 for (Enchantment blocked : getBlackListEnchantments()) {
@@ -508,7 +510,7 @@ public class CrazyManager {
                 }
             }
         }
-
+        
         if (!Files.CONFIG.getFile().getBoolean("Settings.Allow-Damaged-Items")) {
             if (getDamageableItems().contains(item.getType())) {
                 if (item.getDurability() > 0) {
@@ -516,7 +518,7 @@ public class CrazyManager {
                 }
             }
         }
-
+        
         boolean pricesOnly = Files.CONFIG.getFile().getBoolean("Settings.Selling-Options.Price-Selling-Only");
         // boolean canSell = !pricesOnly;
 /*
@@ -536,7 +538,7 @@ public class CrazyManager {
             }
         }
  */
-
+        
         return false;
     }
     
@@ -573,19 +575,19 @@ public class CrazyManager {
         int maxBlocks = Files.CONFIG.getFile().getInt("Settings.Region-Options.Max-Block-Area");
         Location min = getMinimumPoint(pos1, pos2).toLocation(pos1.getWorld());
         Location max = getMaximumPoint(pos1, pos2).toLocation(pos1.getWorld());
-
+        
         for (int x = min.getBlockX(); x <= max.getBlockX(); x++) {
             for (int y = min.getBlockY(); y <= max.getBlockY(); y++) {
                 for (int z = min.getBlockZ(); z <= max.getBlockZ(); z++) {
                     blocks++;
-
+                    
                     if (blocks >= maxBlocks) {
                         return false;
                     }
                 }
             }
         }
-
+        
         return true;
     }
     
@@ -607,19 +609,19 @@ public class CrazyManager {
         boolean maxChestToggle = Files.CONFIG.getFile().getBoolean("Settings.Region-Options.Chest-Sell-Toggle");
         Location min = getMinimumPoint(pos1, pos2).toLocation(pos1.getWorld());
         Location max = getMaximumPoint(pos1, pos2).toLocation(pos1.getWorld());
-
+        
         for (int x = min.getBlockX(); x <= max.getBlockX(); x++) {
             for (int y = min.getBlockY(); y <= max.getBlockY(); y++) {
                 for (int z = min.getBlockZ(); z <= max.getBlockZ(); z++) {
                     Block block = min.getWorld().getBlockAt(new Location(min.getWorld(), x, y, z));
-
+                    
                     if (!block.getChunk().isLoaded()) {
                         block.getChunk().load();
                     }
-
+                    
                     if (block.getType() == Material.CHEST || block.getType() == Material.TRAPPED_CHEST) {
                         Chest chest = (Chest) block.getState();
-
+                        
                         if (!Methods.isInvEmpty(chest.getInventory())) {
                             if (getSellableItems(chest.getInventory()).size() > 0) {
                                 if (maxChestToggle) {
@@ -627,7 +629,7 @@ public class CrazyManager {
                                         break;
                                     }
                                 }
-
+                                
                                 chests.add(chest);
                             }
                         }
@@ -635,7 +637,7 @@ public class CrazyManager {
                 }
             }
         }
-
+        
         queryChests.put(player.getUniqueId(), chests);
     }
     
@@ -661,25 +663,25 @@ public class CrazyManager {
     
     public boolean isRegisteredMaterial(ItemBuilder itemBuilder) {
         //for (ItemBuilder item : registeredMaterials.keySet()) {
-            //if (item.getMaterial() == itemBuilder.getMaterial() &&
-            //item.getMetaData().equals(itemBuilder.getMetaData())) {
-            //    return true;
-            //}
+        //if (item.getMaterial() == itemBuilder.getMaterial() &&
+        //item.getMetaData().equals(itemBuilder.getMetaData())) {
+        //    return true;
         //}
-
+        //}
+        
         return false;
     }
     
     public boolean isRegisteredMaterial(ItemStack itemStack) {
         ItemBuilder item = ItemBuilder.convertItemStack(itemStack);
-
+        
         for (ItemBuilder itemBuilder : registeredMaterials.keySet()) {
             if (item.getMaterial() == itemBuilder.getMaterial() &&
             item.getMaterial().data.equals(itemBuilder.getMaterial().data)) {
                 return true;
             }
         }
-
+        
         return false;
     }
     
@@ -690,18 +692,18 @@ public class CrazyManager {
                 return registeredMaterials.get(item);
             }
         }
-
+        
         return null;
     }
     
     public RegisterType getRegisteredPlugin(ItemStack item) {
         //for (ItemBuilder itemBuilder : registeredMaterials.keySet()) {
-            //if (item.getType() == itemBuilder.getMaterial() &&
-            //item.getDurability() == itemBuilder.getMetaData()) {
-            //    return registeredMaterials.get(itemBuilder);
-            //}
+        //if (item.getType() == itemBuilder.getMaterial() &&
+        //item.getDurability() == itemBuilder.getMetaData()) {
+        //    return registeredMaterials.get(itemBuilder);
         //}
-
+        //}
+        
         return null;
     }
     
@@ -715,7 +717,7 @@ public class CrazyManager {
     
     private ArrayList<Material> getDamageableItems() {
         ArrayList<Material> materials = new ArrayList<>();
-
+        
         if (ServerProtocol.isNewer(ServerProtocol.v1_12_R1)) {
             materials.add(Material.matchMaterial("GOLDEN_HELMET"));
             materials.add(Material.matchMaterial("GOLDEN_CHESTPLATE"));
@@ -747,7 +749,7 @@ public class CrazyManager {
             materials.add(Material.matchMaterial("WOOD_HOE"));
             materials.add(Material.matchMaterial("GOLD_HOE"));
         }
-
+        
         materials.add(Material.DIAMOND_HELMET);
         materials.add(Material.DIAMOND_CHESTPLATE);
         materials.add(Material.DIAMOND_LEGGINGS);

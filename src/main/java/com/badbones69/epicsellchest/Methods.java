@@ -1,7 +1,7 @@
 package com.badbones69.epicsellchest;
 
-import com.badbones69.epicsellchest.multisupport.ServerProtocol;
 import com.badbones69.epicsellchest.api.FileManager.Files;
+import com.badbones69.epicsellchest.multisupport.ServerProtocol;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -10,6 +10,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+
 import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -22,14 +23,14 @@ public class Methods {
         if (ServerProtocol.isAtLeast(ServerProtocol.v1_15_R1)) {
             Matcher matcher = HEX_PATTERN.matcher(message);
             StringBuilder buffer = new StringBuilder();
-
+            
             while (matcher.find()) {
                 matcher.appendReplacement(buffer, net.md_5.bungee.api.ChatColor.of(matcher.group()).toString());
             }
-
+            
             return ChatColor.translateAlternateColorCodes('&', matcher.appendTail(buffer).toString());
         }
-
+        
         return ChatColor.translateAlternateColorCodes('&', message);
     }
     
@@ -43,7 +44,7 @@ public class Methods {
     
     public static ItemStack addGlowing(ItemStack item, boolean glowing) {
         ItemStack it = item.clone();
-
+        
         if (glowing) {
             try {
                 if (item.hasItemMeta()) {
@@ -51,7 +52,7 @@ public class Methods {
                         return item;
                     }
                 }
-
+                
                 item.addUnsafeEnchantment(Enchantment.LUCK, 1);
                 ItemMeta meta = item.getItemMeta();
                 meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
@@ -61,7 +62,7 @@ public class Methods {
                 return it;
             }
         }
-
+        
         return it;
     }
     
@@ -71,7 +72,7 @@ public class Methods {
         } catch (NumberFormatException nfe) {
             return false;
         }
-
+        
         return true;
     }
     
@@ -81,7 +82,7 @@ public class Methods {
         } catch (NumberFormatException nfe) {
             return false;
         }
-
+        
         return true;
     }
     
@@ -97,7 +98,7 @@ public class Methods {
                 }
             }
         }
-
+        
         return true;
     }
     
@@ -141,12 +142,12 @@ public class Methods {
         enchants.put("MENDING", "Mending");
         enchants.put("FROST_WALKER", "Frost_Walker");
         enchants.put("VANISHING_CURSE", "Curse_Of_Vanishing");
-
+        
         if (enchants.get(en.getName()) == null) {
             return "None Found";
         }
-
+        
         return enchants.get(en.getName());
     }
-
+    
 }

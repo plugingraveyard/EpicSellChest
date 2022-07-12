@@ -2,12 +2,12 @@ package com.badbones69.epicsellchest.controllers;
 
 import com.badbones69.epicsellchest.Methods;
 import com.badbones69.epicsellchest.api.CrazyManager;
-import com.badbones69.epicsellchest.api.enums.SellType;
-import com.badbones69.epicsellchest.api.events.SellChestEvent;
-import com.badbones69.epicsellchest.api.currency.Currency;
-import com.badbones69.epicsellchest.api.currency.CustomCurrency;
 import com.badbones69.epicsellchest.api.FileManager.Files;
 import com.badbones69.epicsellchest.api.ItemBuilder;
+import com.badbones69.epicsellchest.api.currency.Currency;
+import com.badbones69.epicsellchest.api.currency.CustomCurrency;
+import com.badbones69.epicsellchest.api.enums.SellType;
+import com.badbones69.epicsellchest.api.events.SellChestEvent;
 import com.badbones69.epicsellchest.api.objects.SellItem;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -17,6 +17,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
@@ -37,31 +38,31 @@ public class SellChestGUI implements Listener {
         Player player = (Player) e.getPlayer();
         UUID uuid = player.getUniqueId();
         FileConfiguration config = Files.CONFIG.getFile();
-
+        
         if (e.getView().getTitle().equalsIgnoreCase(Methods.color(config.getString("Settings.Sign-Options.Inventory-Name")))) {
             if (!Methods.isInvEmpty(inv)) {
                 if (!crazyManager.needsTwoFactorAuth(uuid)) {
                     ArrayList<SellItem> items = crazyManager.getSellableItems(inv);
-
+                    
                     if (items.size() > 0) {
                         SellChestEvent event = new SellChestEvent(player, items, SellType.GUI);
                         crazyManager.getPlugin().getServer().getPluginManager().callEvent(event);
-
+                        
                         if (!event.isCancelled()) {
                             HashMap<String, Double> placeholders = new HashMap<>();
-
+                            
                             for (Currency currency : Currency.values()) {
                                 placeholders.put("%" + currency.getName().toLowerCase() + "%", crazyManager.getFullCost(items, currency));
                                 placeholders.put("%" + currency.getName() + "%", crazyManager.getFullCost(items, currency));
                             }
-
+                            
                             for (CustomCurrency currency : crazyManager.getCustomCurrencies()) {
                                 placeholders.put("%" + currency.name().toLowerCase() + "%", crazyManager.getFullCost(items, currency));
                                 placeholders.put("%" + currency.name() + "%", crazyManager.getFullCost(items, currency));
                             }
-
+                            
                             crazyManager.sellSellableItems(player, items);
-
+                            
                             for (SellItem item : items) {
                                 if (item.usesSellingAmount()) {
                                     item.getItem().setAmount(item.getItem().getAmount() - (item.getSellingAmount() * item.getSellingMinimum()));
@@ -69,14 +70,14 @@ public class SellChestGUI implements Listener {
                                     inv.remove(item.getItem());
                                 }
                             }
-
+                            
                             crazyManager.removeTwoFactorAuth(uuid);
                             //player.sendMessage(Messages.SOLD_CHEST.getMessageDouble(placeholders));
                         }
                     } else {
                         //player.sendMessage(Messages.NO_SELLABLE_ITEMS.getMessage());
                     }
-
+                    
                     for (ItemStack item : inv.getContents()) {
                         if (item != null) {
                             if (Methods.isInvFull(player)) {
@@ -86,12 +87,12 @@ public class SellChestGUI implements Listener {
                             }
                         }
                     }
-
+                    
                     inv.clear();
                 } else {
                     ArrayList<SellItem> items = crazyManager.getSellableItems(inv);
                     sellables.put(uuid, items);
-
+                    
                     for (SellItem item : items) {
                         if (item.usesSellingAmount()) {
                             item.getItem().setAmount(item.getItem().getAmount() - (item.getSellingAmount() * item.getSellingMinimum()));
@@ -99,15 +100,15 @@ public class SellChestGUI implements Listener {
                             inv.remove(item.getItem());
                         }
                     }
-
+                    
                     ArrayList<ItemStack> others = new ArrayList<>();
-
+                    
                     for (ItemStack item : inv.getContents()) {
                         if (item != null) {
                             others.add(item);
                         }
                     }
-
+                    
                     nonsellables.put(uuid, others);
                     inv.clear();
                     openTwoFactorAuth(player);
@@ -116,31 +117,31 @@ public class SellChestGUI implements Listener {
         } else if (e.getView().getTitle().equalsIgnoreCase(Methods.color(Files.CONFIG.getFile().getString("Settings.Sign-Options.Two-Factor-Auth-Options.Inventory-Name")))) {
             if (sellables.containsKey(uuid) && nonsellables.containsKey(uuid)) {
                 ArrayList<SellItem> items = sellables.get(uuid);
-
+                
                 if (items.size() > 0) {
                     SellChestEvent event = new SellChestEvent(player, items, SellType.GUI);
                     crazyManager.getPlugin().getServer().getPluginManager().callEvent(event);
-
+                    
                     if (!event.isCancelled()) {
                         HashMap<String, Double> placeholders = new HashMap<>();
-
+                        
                         for (Currency currency : Currency.values()) {
                             placeholders.put("%" + currency.getName().toLowerCase() + "%", crazyManager.getFullCost(items, currency));
                             placeholders.put("%" + currency.getName() + "%", crazyManager.getFullCost(items, currency));
                         }
-
+                        
                         for (CustomCurrency currency : crazyManager.getCustomCurrencies()) {
                             placeholders.put("%" + currency.name().toLowerCase() + "%", crazyManager.getFullCost(items, currency));
                             placeholders.put("%" + currency.name() + "%", crazyManager.getFullCost(items, currency));
                         }
-
+                        
                         crazyManager.sellSellableItems(player, items);
                         //player.sendMessage(Messages.SOLD_CHEST.getMessageDouble(placeholders));
                     }
                 } else {
                     //player.sendMessage(Messages.NO_SELLABLE_ITEMS.getMessage());
                 }
-
+                
                 for (ItemStack item : nonsellables.get(uuid)) {
                     if (item != null) {
                         if (Methods.isInvFull(player)) {
@@ -150,7 +151,7 @@ public class SellChestGUI implements Listener {
                         }
                     }
                 }
-
+                
                 inv.clear();
                 sellables.remove(uuid);
                 nonsellables.remove(uuid);
@@ -163,41 +164,41 @@ public class SellChestGUI implements Listener {
         Player player = (Player) e.getWhoClicked();
         UUID uuid = player.getUniqueId();
         Inventory inv = e.getInventory();
-
+        
         if (e.getView().getTitle().equalsIgnoreCase(Methods.color(Files.CONFIG.getFile().getString("Settings.Sign-Options.Two-Factor-Auth-Options.Inventory-Name")))) {
             e.setCancelled(true);
-
+            
             if (sellables.containsKey(uuid) && nonsellables.containsKey(uuid)) {
                 ItemStack check = e.getCurrentItem();
-
+                
                 if (check != null) {
                     if (check.isSimilar(getAcceptItem())) {
                         ArrayList<SellItem> items = sellables.get(uuid);
-
+                        
                         if (items.size() > 0) {
                             SellChestEvent event = new SellChestEvent(player, items, SellType.GUI);
                             crazyManager.getPlugin().getServer().getPluginManager().callEvent(event);
-
+                            
                             if (!event.isCancelled()) {
                                 HashMap<String, Double> placeholders = new HashMap<>();
-
+                                
                                 for (Currency currency : Currency.values()) {
                                     placeholders.put("%" + currency.getName().toLowerCase() + "%", crazyManager.getFullCost(items, currency));
                                     placeholders.put("%" + currency.getName() + "%", crazyManager.getFullCost(items, currency));
                                 }
-
+                                
                                 for (CustomCurrency currency : crazyManager.getCustomCurrencies()) {
                                     placeholders.put("%" + currency.name().toLowerCase() + "%", crazyManager.getFullCost(items, currency));
                                     placeholders.put("%" + currency.name() + "%", crazyManager.getFullCost(items, currency));
                                 }
-
+                                
                                 crazyManager.sellSellableItems(player, items);
                                 //player.sendMessage(Messages.SOLD_CHEST.getMessageDouble(placeholders));
                             }
                         } else {
                             //player.sendMessage(Messages.NO_SELLABLE_ITEMS.getMessage());
                         }
-
+                        
                         for (ItemStack item : nonsellables.get(uuid)) {
                             if (item != null) {
                                 if (Methods.isInvFull(player)) {
@@ -207,7 +208,7 @@ public class SellChestGUI implements Listener {
                                 }
                             }
                         }
-
+                        
                         inv.clear();
                         sellables.remove(uuid);
                         nonsellables.remove(uuid);
@@ -222,7 +223,7 @@ public class SellChestGUI implements Listener {
                                 }
                             }
                         }
-
+                        
                         for (ItemStack item : nonsellables.get(uuid)) {
                             if (item != null) {
                                 if (Methods.isInvFull(player)) {
@@ -232,7 +233,7 @@ public class SellChestGUI implements Listener {
                                 }
                             }
                         }
-
+                        
                         inv.clear();
                         sellables.remove(uuid);
                         nonsellables.remove(uuid);
@@ -256,7 +257,7 @@ public class SellChestGUI implements Listener {
         inv.setItem(6, deny.clone());
         inv.setItem(7, deny.clone());
         inv.setItem(8, deny.clone());
-
+        
         player.openInventory(inv);
     }
     

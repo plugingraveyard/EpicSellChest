@@ -15,6 +15,7 @@ public enum Currency {
     
     /**
      * Get the name of the currency.
+     *
      * @return The name of the currency.
      */
     public String getName() {
@@ -23,6 +24,7 @@ public enum Currency {
     
     /**
      * Checks if it is a complete currency.
+     *
      * @param currency The currency name you are checking.
      * @return True if it is supported and false if not.
      */
@@ -32,18 +34,19 @@ public enum Currency {
                 return true;
             }
         }
-
+        
         for (CustomCurrency customCurrency : crazyManager.getCustomCurrencies()) {
             if (currency.equalsIgnoreCase(customCurrency.name())) {
                 return true;
             }
         }
-
+        
         return false;
     }
     
     /**
      * Get a currceny enum.
+     *
      * @param currency The currency you want.
      * @return The currency enum.
      */
@@ -53,13 +56,13 @@ public enum Currency {
                 return c;
             }
         }
-
+        
         for (CustomCurrency customCurrency : crazyManager.getCustomCurrencies()) {
             if (currency.equalsIgnoreCase(customCurrency.name())) {
                 return CUSTOM;
             }
         }
-
+        
         return null;
     }
     

@@ -14,7 +14,6 @@ public class SellItem {
     private final CustomCurrency custom;
     
     /**
-     *
      * @param item The item that is being sold.
      * @param sellingAmount The amount of times the minimum amount goes into the total amount.
      * @param sellingMinimum The minimum amount the itemstack has to have to be sold.

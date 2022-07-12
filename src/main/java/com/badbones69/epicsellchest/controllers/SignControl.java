@@ -21,7 +21,7 @@ public class SignControl implements Listener {
     public void onSignMake(SignChangeEvent e) {
         Player player = e.getPlayer();
         FileConfiguration config = Files.CONFIG.getFile();
-
+        
         if (e.getLine(0).equalsIgnoreCase(config.getString("Settings.Sign-Options.Sign-Maker"))) {
             if (player.hasPermission("epicsellchest.sign.make") || player.hasPermission("epicsellchest.admin")) {
                 e.setLine(0, Methods.color(config.getString("Settings.Sign-Options.Lines.1")));
@@ -39,9 +39,9 @@ public class SignControl implements Listener {
         Player player = e.getPlayer();
         Block block = e.getClickedBlock();
         FileConfiguration config = Files.CONFIG.getFile();
-
+        
         if (e.getAction() == Action.RIGHT_CLICK_BLOCK && block != null && block.getState() instanceof Sign sign) {
-
+            
             if (sign.getLine(0).equals(Methods.color(config.getString("Settings.Sign-Options.Lines.1")))
             && sign.getLine(1).equals(Methods.color(config.getString("Settings.Sign-Options.Lines.2")))
             && sign.getLine(2).equals(Methods.color(config.getString("Settings.Sign-Options.Lines.3")))

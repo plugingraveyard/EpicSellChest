@@ -10,4 +10,5 @@ public class SpartanSupport {
         API.cancelCheck(player, HackType.NoSwing, 40);
         API.cancelCheck(player, HackType.BlockReach, 40);
     }
+    
 }

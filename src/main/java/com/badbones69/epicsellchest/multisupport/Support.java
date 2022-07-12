@@ -6,7 +6,6 @@ import org.bukkit.plugin.Plugin;
 public enum Support {
     
     VAULT("Vault"),
-    NO_CHEAT_PLUS("NoCheatPlus"),
     SPARTAN("Spartan"),
     SHOP_GUI_PLUS("ShopGUIPlus");
     
