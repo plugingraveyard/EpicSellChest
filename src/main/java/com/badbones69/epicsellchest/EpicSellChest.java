@@ -7,12 +7,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class EpicSellChest extends JavaPlugin {
     
-    // private final HashMap<UUID, Location> pos1 = new HashMap<>();
-    
     public final FileManager fileManager = FileManager.getInstance();
     public final CrazyManager crazyManager = CrazyManager.getInstance();
-    
-    // private final HashMap<UUID, Location> pos2 = new HashMap<>();
     
     @Override
     public void onEnable() {
