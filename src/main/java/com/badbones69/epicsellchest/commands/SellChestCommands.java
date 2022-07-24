@@ -122,7 +122,7 @@ public class SellChestCommands {
                         sender.sendMessage(Messages.NO_PERMISSION.getMessage());
                     }
                     return true;
-                    //==== This is just for simple coverting for when needed ====//
+                    //==== This is just for simple converting for when needed ====//
                     //}else if(args[0].equalsIgnoreCase("convert")) {
                     //	FileConfiguration data = Files.DATA.getFile();
                     //	data.set("Item-Cost", null);
