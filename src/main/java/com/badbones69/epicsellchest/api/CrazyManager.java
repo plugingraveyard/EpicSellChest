@@ -85,9 +85,7 @@ public class CrazyManager {
         .setLore(config.getStringList("Settings.Chest-Selling-Item.Lore"))
         .setGlow(config.getBoolean("Settings.Chest-Selling-Item.Glowing"));
         
-        for (String currency : Objects.requireNonNull(config.getConfigurationSection("Settings.Custom-Currencies")).getKeys(false)) {
-            customCurrencies.add(new CustomCurrency(currency, config.getString("Settings.Custom-Currencies." + currency + ".Command")));
-        }
+        Objects.requireNonNull(config.getConfigurationSection("Settings.Custom-Currencies")).getKeys(false).stream().map(currency -> new CustomCurrency(currency, config.getString("Settings.Custom-Currencies." + currency + ".Command"))).forEach(customCurrencies :: add);
         
         baseCurrency = Currency.getCurrency(config.getString("Settings.Base-Currency"));
         
@@ -110,12 +108,7 @@ public class CrazyManager {
             }
         }
         
-        for (String name : config.getStringList("Settings.Black-List-Enchantments")) {
-            Enchantment enchant = Enchantment.getByName(name);
-            if (enchant != null) {
-                blackListEnchantments.add(enchant);
-            }
-        }
+        config.getStringList("Settings.Black-List-Enchantments").stream().map(Enchantment :: getByName).filter(Objects :: nonNull).forEach(blackListEnchantments :: add);
         
         for (String line : config.getStringList("Settings.Item-Cost")) {
             double cost = 0.0;
@@ -126,63 +119,56 @@ public class CrazyManager {
             Currency currency = null;
             CustomCurrency custom = null;
             
-            for (String i : line.split(", ")) {
-                i = i.toLowerCase();
-                if (i.startsWith("item:")) {
-                    i = i.substring(5);
-                    
-                    int md = 0;
-                    String id = i;
-                    
-                    if (i.contains(":")) {
-                        md = Integer.parseInt(i.split(":")[1]);
-                        id = i.split(":")[0];
+            for (String option : line.split(", ")) {
+                option = option.toLowerCase();
+                switch (option) {
+                    case "item:" -> {
+                        String itemString = option.substring(5);
+                        material = Material.matchMaterial(itemString);
+                        if (material != null) {
+                            item.setMaterial(itemString);
+                        } else {
+                            brokeItems.add("&cBroken Line: &a" + line + " &7: &cBroken ID: &a" + itemString);
+                        }
                     }
-                    
-                    material = Material.matchMaterial(id);
-                    //if (material != null) {
-                    //    item.setMaterial(material).setMetaData(md);
-                    //} else {
-                    //    brokeItems.add("&cBroken Line: &a" + line + " &7: &cBroken ID: &a" + i);
-                    //}
-                } else if (i.startsWith("cost:")) {
-                    i = i.substring(5);
-                    
-                    if (Methods.isDouble(i)) {
-                        cost = Double.parseDouble(i);
+                    case "cost:" -> {
+                        String costString = option.substring(5);
+                        if (Methods.isDouble(costString)) {
+                            cost = Double.parseDouble(costString);
+                        }
                     }
-                } else if (i.startsWith("currency:")) {
-                    i = i.substring(9);
-                    Currency c = Currency.getCurrency(i);
-                    
-                    if (Currency.isCurrency(i)) {
-                        if (c != null) {
-                            currency = Currency.getCurrency(i);
-                            
-                            if (c == Currency.CUSTOM) {
-                                CustomCurrency cu = getCustomCurrency(i);
+                    case "currency:" -> {
+                        String currencyString = option.substring(9);
+                        Currency c = Currency.getCurrency(currencyString);
+                        if (Currency.isCurrency(currencyString)) {
+                            if (c != null) {
+                                currency = Currency.getCurrency(currencyString);
                                 
-                                if (cu != null) {
-                                    custom = cu;
-                                    command = cu.command();
+                                if (c == Currency.CUSTOM) {
+                                    CustomCurrency cu = getCustomCurrency(currencyString);
+                                    
+                                    if (cu != null) {
+                                        custom = cu;
+                                        command = cu.command();
+                                    }
                                 }
                             }
                         }
                     }
-                } else if (i.startsWith("amount:")) {
-                    i = i.substring(7);
-                    
-                    try {
-                        int amount = Integer.parseInt(i);
-                        
-                        if (amount > 1) {
-                            if (item != null) {
-                                item.setAmount(amount);
-                            }
+                    case "amount:" -> {
+                        String amountString = option.substring(7);
+                        try {
+                            int amount = Integer.parseInt(amountString);
                             
-                            checkAmount = true;
+                            if (amount > 1) {
+                                if (item != null) {
+                                    item.setAmount(amount);
+                                }
+                                
+                                checkAmount = true;
+                            }
+                        } catch (Exception ignored) {
                         }
-                    } catch (Exception ignored) {
                     }
                 }
             }
@@ -269,13 +255,8 @@ public class CrazyManager {
     }
     
     public CustomCurrency getCustomCurrency(String currency) {
-        for (CustomCurrency custom : customCurrencies) {
-            if (custom.name().equalsIgnoreCase(currency)) {
-                return custom;
-            }
-        }
+        return customCurrencies.stream().filter(custom -> custom.name().equalsIgnoreCase(currency)).findFirst().orElse(null);
         
-        return null;
     }
     
     public ItemStack getSellingWand() {
@@ -290,61 +271,42 @@ public class CrazyManager {
         ArrayList<SellItem> items = new ArrayList<>();
         
         for (ItemStack item : inv.getContents()) {
-            if (item != null) {
-                if (canSellItem(item)) {
-                    double price = 0.0;
-                    int sellingMinimum = 0, sellingAmount = 0;
-                    String command = "";
-                    Currency currency = getBaseCurrency();
-                    CustomCurrency customCurrency = baseCustomCurrency;
-                    boolean found = false;
-
-                    /*for (SellableItem sellItem : getRegisteredSellableItems()) {
-                        if (sellItem.getItemBuilder().isSimilar(item)) {
-                            command = sellItem.getCommand();
-                            currency = sellItem.getCurrency();
-                            customCurrency = sellItem.getCustomCurrency();
-
-                            if (sellItem.usesCheckAmount()) {
-                                int amount = item.getAmount();
-                                sellingMinimum = sellItem.getCheckAmount();
-
-                                while (amount >= sellItem.getCheckAmount()) {
-                                    amount -= sellItem.getCheckAmount();
-                                    sellingAmount++;
-                                }
-
-                                price = sellItem.getPrice() * sellingAmount;
-                            } else {
-                                price = sellItem.getPrice() * item.getAmount();
+            if (item != null && canSellItem(item)) {
+                double price = 0.0;
+                int sellingMinimum = 0, sellingAmount = 0;
+                String command = "";
+                Currency currency = getBaseCurrency();
+                CustomCurrency customCurrency = baseCustomCurrency;
+                boolean found = false;
+                
+                for (SellableItem sellItem : getRegisteredSellableItems()) {
+                    if (sellItem.itemBuilder().build().isSimilar(item)) {
+                        command = sellItem.command();
+                        currency = sellItem.currency();
+                        customCurrency = sellItem.customCurrency();
+                        
+                        if (sellItem.checkAmount()) {
+                            int amount = item.getAmount();
+                            sellingMinimum = sellItem.getCheckAmount();
+                            
+                            while (amount >= sellItem.getCheckAmount()) {
+                                amount -= sellItem.getCheckAmount();
+                                sellingAmount++;
                             }
-
-                            if (item.hasItemMeta()) {
-                                if (item.getItemMeta().hasEnchants()) {
-                                    for (UpgradeableEnchantment enchantment : getUpgradeableEnchantment()) {
-                                        if (item.getItemMeta().hasEnchant(enchantment.getEnchantment())) {
-                                            if (enchantment.getLevels().containsKey(item.getItemMeta().getEnchantLevel(enchantment.getEnchantment()))) {
-                                                price += enchantment.getLevels().get(item.getItemMeta().getEnchantLevel(enchantment.getEnchantment())) * item.getAmount();
-                                            }
+                            
+                            price = sellItem.price() * sellingAmount;
+                            if (item.hasItemMeta() && item.getItemMeta().hasEnchants()) {
+                                for (UpgradeableEnchantment enchantment : getUpgradeableEnchantment()) {
+                                    if (item.getItemMeta().hasEnchant(enchantment.enchantment())) {
+                                        if (enchantment.levels().containsKey(item.getItemMeta().getEnchantLevel(enchantment.enchantment()))) {
+                                            price += enchantment.levels().get(item.getItemMeta().getEnchantLevel(enchantment.enchantment())) * item.getAmount();
                                         }
                                     }
                                 }
                             }
-
-                            found = true;
-                            break;
-                        }
-                    }*/
-                    
-                    if (!found) {
-                        price = getBasePrice() * item.getAmount();
-                        
-                        if (currency == Currency.CUSTOM) {
-                            command = customCurrency.command();
-                        }
-                        
-                        if (item.hasItemMeta()) {
-                            if (item.getItemMeta().hasEnchants()) {
+                        } else {
+                            price = sellItem.price() * item.getAmount();
+                            if (item.hasItemMeta() && item.getItemMeta().hasEnchants()) {
                                 for (UpgradeableEnchantment enchantment : getUpgradeableEnchantment()) {
                                     if (item.getItemMeta().hasEnchant(enchantment.enchantment())) {
                                         if (enchantment.levels().containsKey(item.getItemMeta().getEnchantLevel(enchantment.enchantment()))) {
@@ -354,10 +316,33 @@ public class CrazyManager {
                                 }
                             }
                         }
+                        
+                        found = true;
+                        break;
+                    }
+                }
+                
+                if (!found) {
+                    price = getBasePrice() * item.getAmount();
+                    
+                    if (currency == Currency.CUSTOM) {
+                        command = customCurrency.command();
                     }
                     
-                    items.add(new SellItem(item, sellingAmount, sellingMinimum, price, currency, customCurrency, command));
+                    if (item.hasItemMeta()) {
+                        if (item.getItemMeta().hasEnchants()) {
+                            for (UpgradeableEnchantment enchantment : getUpgradeableEnchantment()) {
+                                if (item.getItemMeta().hasEnchant(enchantment.enchantment())) {
+                                    if (enchantment.levels().containsKey(item.getItemMeta().getEnchantLevel(enchantment.enchantment()))) {
+                                        price += enchantment.levels().get(item.getItemMeta().getEnchantLevel(enchantment.enchantment())) * item.getAmount();
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
+                
+                items.add(new SellItem(item, sellingAmount, sellingMinimum, price, currency, customCurrency, command));
             }
         }
         
@@ -370,78 +355,64 @@ public class CrazyManager {
         for (ItemStack item : inv.getContents()) {
             if (item != null) {
                 for (ItemStack sell : selling) {
-                    if (sell != null) {
-                        if (item.getType() == sell.getType()) {
-                            if (item.getDurability() == sell.getDurability()) {
-                                if (canSellItem(item)) {
-                                    double price = 0.0;
-                                    int sellingMinimum = 0, sellingAmount = 0;
-                                    String command = "";
-                                    Currency currency = getBaseCurrency();
-                                    CustomCurrency customCurrency = getBaseCustomCurrency();
-                                    boolean found = false;
-
-                                    /*for (SellableItem sellItem : getRegisteredSellableItems()) {
-                                        if (sellItem.getItemBuilder().isSimilar(item)) {
-                                            command = sellItem.getCommand();
-                                            currency = sellItem.getCurrency();
-                                            customCurrency = sellItem.getCustomCurrency();
-
-                                            if (sellItem.usesCheckAmount()) {
-                                                int amount = item.getAmount();
-                                                sellingMinimum = sellItem.getCheckAmount();
-
-                                                while (amount >= sellItem.getCheckAmount()) {
-                                                    amount -= sellItem.getCheckAmount();
-                                                    sellingAmount++;
-                                                }
-
-                                                price = sellItem.getPrice() * sellingAmount;
-                                            } else {
-                                                price = sellItem.getPrice() * item.getAmount();
-                                            }
-
-                                            if (item.hasItemMeta()) {
-                                                if (item.getItemMeta().hasEnchants()) {
-                                                    for (UpgradeableEnchantment enchantment : getUpgradeableEnchantment()) {
-                                                        if (item.getItemMeta().hasEnchant(enchantment.getEnchantment())) {
-                                                            if (enchantment.getLevels().containsKey(item.getItemMeta().getEnchantLevel(enchantment.getEnchantment()))) {
-                                                                price += enchantment.getLevels().get(item.getItemMeta().getEnchantLevel(enchantment.getEnchantment())) * item.getAmount();
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }
-
-                                            found = true;
-                                            break;
-                                        }
-                                    }*/
+                    if (sell != null && item.getType() == sell.getType() && item.getDurability() == sell.getDurability() && canSellItem(item)) {
+                        double price = 0.0;
+                        int sellingMinimum = 0, sellingAmount = 0;
+                        String command = "";
+                        Currency currency = getBaseCurrency();
+                        CustomCurrency customCurrency = getBaseCustomCurrency();
+                        boolean found = false;
+                        
+                        for (SellableItem sellItem : getRegisteredSellableItems()) {
+                            if (sellItem.itemBuilder().build().isSimilar(item)) {
+                                command = sellItem.command();
+                                currency = sellItem.currency();
+                                customCurrency = sellItem.customCurrency();
+                                
+                                if (sellItem.checkAmount()) {
+                                    int amount = item.getAmount();
+                                    sellingMinimum = sellItem.getCheckAmount();
                                     
-                                    if (!found) {
-                                        price = getBasePrice() * item.getAmount();
-                                        
-                                        if (currency == Currency.CUSTOM) {
-                                            command = customCurrency.command();
-                                        }
-                                        
-                                        if (item.hasItemMeta()) {
-                                            if (item.getItemMeta().hasEnchants()) {
-                                                for (UpgradeableEnchantment enchantment : getUpgradeableEnchantment()) {
-                                                    if (item.getItemMeta().hasEnchant(enchantment.enchantment())) {
-                                                        if (enchantment.levels().containsKey(item.getItemMeta().getEnchantLevel(enchantment.enchantment()))) {
-                                                            price += enchantment.levels().get(item.getItemMeta().getEnchantLevel(enchantment.enchantment())) * item.getAmount();
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
+                                    while (amount >= sellItem.getCheckAmount()) {
+                                        amount -= sellItem.getCheckAmount();
+                                        sellingAmount++;
                                     }
                                     
-                                    items.add(new SellItem(item, sellingAmount, sellingMinimum, price, currency, customCurrency, command));
+                                    price = sellItem.price() * sellingAmount;
+                                } else {
+                                    price = sellItem.price() * item.getAmount();
+                                }
+                                
+                                if (item.hasItemMeta() && item.getItemMeta().hasEnchants()) {
+                                    for (UpgradeableEnchantment enchantment : getUpgradeableEnchantment()) {
+                                        if (item.getItemMeta().hasEnchant(enchantment.enchantment()) && enchantment.levels().containsKey(item.getItemMeta().getEnchantLevel(enchantment.enchantment()))) {
+                                            price += enchantment.levels().get(item.getItemMeta().getEnchantLevel(enchantment.enchantment())) * item.getAmount();
+                                        }
+                                    }
+                                }
+                                
+                                found = true;
+                                break;
+                            }
+                        }
+                        
+                        if (!found) {
+                            price = getBasePrice() * item.getAmount();
+                            
+                            if (currency == Currency.CUSTOM) {
+                                command = customCurrency.command();
+                            }
+                            
+                            if (item.hasItemMeta() && item.getItemMeta().hasEnchants()) {
+                                for (UpgradeableEnchantment enchantment : getUpgradeableEnchantment()) {
+                                    if (item.getItemMeta().hasEnchant(enchantment.enchantment()) && enchantment.levels().containsKey(item.getItemMeta().getEnchantLevel(enchantment.enchantment()))) {
+                                        price += enchantment.levels().get(item.getItemMeta().getEnchantLevel(enchantment.enchantment())) * item.getAmount();
+                                    }
                                 }
                             }
                         }
+                        
+                        items.add(new SellItem(item, sellingAmount, sellingMinimum, price, currency, customCurrency, command));
                     }
                 }
             }
@@ -455,25 +426,23 @@ public class CrazyManager {
         HashMap<Currency, String> commands = new HashMap<>();
         
         for (SellItem item : items) {
-            if (amounts.containsKey(item.getCurrency())) {
-                amounts.put(item.getCurrency(), (amounts.get(item.getCurrency()) + item.getPrice()));
+            if (amounts.containsKey(item.currency())) {
+                amounts.put(item.currency(), (amounts.get(item.currency()) + item.price()));
             } else {
-                amounts.put(item.getCurrency(), item.getPrice());
-                commands.put(item.getCurrency(), item.getCommand());
+                amounts.put(item.currency(), item.price());
+                commands.put(item.currency(), item.command());
             }
         }
         
-        for (Currency currency : amounts.keySet()) {
-            CurrencyAPI.giveCurrency(player, currency, amounts.get(currency), commands.get(currency));
-        }
+        amounts.keySet().forEach(currency -> CurrencyAPI.giveCurrency(player, currency, amounts.get(currency), commands.get(currency)));
     }
     
     public double getFullCost(ArrayList<SellItem> items, Currency currency) {
         double cost = 0.0;
         
         for (SellItem item : items) {
-            if (item.getCurrency() == currency) {
-                cost += item.getPrice();
+            if (item.currency() == currency) {
+                cost += item.price();
             }
         }
         
@@ -484,9 +453,9 @@ public class CrazyManager {
         double cost = 0.0;
         
         for (SellItem item : items) {
-            if (item.getCurrency() == Currency.CUSTOM) {
-                if (currency.name().equalsIgnoreCase(item.getCustomCurrency().name())) {
-                    cost += item.getPrice();
+            if (item.currency() == Currency.CUSTOM) {
+                if (currency.name().equalsIgnoreCase(item.customCurrency().name())) {
+                    cost += item.price();
                 }
             }
         }
@@ -520,26 +489,25 @@ public class CrazyManager {
         }
         
         boolean pricesOnly = Files.CONFIG.getFile().getBoolean("Settings.Selling-Options.Price-Selling-Only");
-        // boolean canSell = !pricesOnly;
-/*
+        boolean canSell = !pricesOnly;
+        
         for (SellableItem sellable : getRegisteredSellableItems()) {
-            if (sellable.getItemBuilder().isSimilar(item)) {
+            if (sellable.itemBuilder().build().isSimilar(item)) {
                 if (pricesOnly) {
                     canSell = true;
                 }
-
+                
                 if (canSell) {
-                    if (sellable.usesCheckAmount()) {
+                    if (sellable.checkAmount()) {
                         canSell = item.getAmount() >= sellable.getCheckAmount();
                     }
                 }
-
+                
                 break;
             }
         }
- */
         
-        return false;
+        return canSell;
     }
     
     public ArrayList<SellableItem> getRegisteredSellableItems() {
@@ -622,16 +590,14 @@ public class CrazyManager {
                     if (block.getType() == Material.CHEST || block.getType() == Material.TRAPPED_CHEST) {
                         Chest chest = (Chest) block.getState();
                         
-                        if (!Methods.isInvEmpty(chest.getInventory())) {
-                            if (getSellableItems(chest.getInventory()).size() > 0) {
-                                if (maxChestToggle) {
-                                    if (chests.size() >= maxChestSell) {
-                                        break;
-                                    }
+                        if (!Methods.isInvEmpty(chest.getInventory()) && getSellableItems(chest.getInventory()).size() > 0) {
+                            if (maxChestToggle) {
+                                if (chests.size() >= maxChestSell) {
+                                    break;
                                 }
-                                
-                                chests.add(chest);
                             }
+                            
+                            chests.add(chest);
                         }
                     }
                 }
@@ -662,49 +628,23 @@ public class CrazyManager {
     }
     
     public boolean isRegisteredMaterial(ItemBuilder itemBuilder) {
-        //for (ItemBuilder item : registeredMaterials.keySet()) {
-        //if (item.getMaterial() == itemBuilder.getMaterial() &&
-        //item.getMetaData().equals(itemBuilder.getMetaData())) {
-        //    return true;
-        //}
-        //}
-        
-        return false;
+        return registeredMaterials.keySet().stream().anyMatch(item -> item.getMaterial() == itemBuilder.getMaterial() && item.getDamage() == itemBuilder.getDamage());
     }
     
     public boolean isRegisteredMaterial(ItemStack itemStack) {
         ItemBuilder item = ItemBuilder.convertItemStack(itemStack);
         
-        for (ItemBuilder itemBuilder : registeredMaterials.keySet()) {
-            if (item.getMaterial() == itemBuilder.getMaterial() &&
-            item.getMaterial().data.equals(itemBuilder.getMaterial().data)) {
-                return true;
-            }
-        }
-        
-        return false;
+        return registeredMaterials.keySet().stream().anyMatch(itemBuilder -> item.getMaterial() == itemBuilder.getMaterial() && item.getMaterial().data.equals(itemBuilder.getMaterial().data));
     }
     
     public RegisterType getRegisteredPlugin(ItemBuilder itemBuilder) {
-        for (ItemBuilder item : registeredMaterials.keySet()) {
-            if (item.getMaterial() == itemBuilder.getMaterial() &&
-            item.getMaterial().data.equals(itemBuilder.getMaterial().data)) {
-                return registeredMaterials.get(item);
-            }
-        }
+        return registeredMaterials.keySet().stream().filter(item -> item.getMaterial() == itemBuilder.getMaterial() && item.getMaterial().data.equals(itemBuilder.getMaterial().data)).findFirst().map(registeredMaterials :: get).orElse(null);
         
-        return null;
     }
     
     public RegisterType getRegisteredPlugin(ItemStack item) {
-        //for (ItemBuilder itemBuilder : registeredMaterials.keySet()) {
-        //if (item.getType() == itemBuilder.getMaterial() &&
-        //item.getDurability() == itemBuilder.getMetaData()) {
-        //    return registeredMaterials.get(itemBuilder);
-        //}
-        //}
+        return registeredMaterials.keySet().stream().filter(itemBuilder -> item.getType() == itemBuilder.getMaterial() && item.getDurability() == itemBuilder.getDamage()).findFirst().map(registeredMaterials :: get).orElse(null);
         
-        return null;
     }
     
     private Vector getMinimumPoint(Location pos1, Location pos2) {

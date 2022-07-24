@@ -65,10 +65,10 @@ public class SellChestGUI implements Listener {
                             crazyManager.sellSellableItems(player, items);
                             
                             for (SellItem item : items) {
-                                if (item.usesSellingAmount()) {
-                                    item.getItem().setAmount(item.getItem().getAmount() - (item.getSellingAmount() * item.getSellingMinimum()));
+                                if (item.hasSellingAmount()) {
+                                    item.item().setAmount(item.item().getAmount() - (item.sellingAmount() * item.sellingMinimum()));
                                 } else {
-                                    inv.remove(item.getItem());
+                                    inv.remove(item.item());
                                 }
                             }
                             
@@ -95,10 +95,10 @@ public class SellChestGUI implements Listener {
                     sellables.put(uuid, items);
                     
                     for (SellItem item : items) {
-                        if (item.usesSellingAmount()) {
-                            item.getItem().setAmount(item.getItem().getAmount() - (item.getSellingAmount() * item.getSellingMinimum()));
+                        if (item.hasSellingAmount()) {
+                            item.item().setAmount(item.item().getAmount() - (item.sellingAmount() * item.sellingMinimum()));
                         } else {
-                            inv.remove(item.getItem());
+                            inv.remove(item.item());
                         }
                     }
                     
@@ -218,9 +218,9 @@ public class SellChestGUI implements Listener {
                         for (SellItem item : sellables.get(uuid)) {
                             if (item != null) {
                                 if (Methods.isInvFull(player)) {
-                                    player.getWorld().dropItemNaturally(player.getLocation(), item.getItem());
+                                    player.getWorld().dropItemNaturally(player.getLocation(), item.item());
                                 } else {
-                                    player.getInventory().addItem(item.getItem());
+                                    player.getInventory().addItem(item.item());
                                 }
                             }
                         }

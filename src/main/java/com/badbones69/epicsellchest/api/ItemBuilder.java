@@ -498,6 +498,13 @@ public class ItemBuilder implements Cloneable {
     }
     
     /**
+     * @return The damage value on the item.
+     */
+    public int getDamage() {
+        return damage;
+    }
+    
+    /**
      * @param itemName The name of the item.
      * @return The ItemBuilder with an updated name.
      */

@@ -3,6 +3,7 @@ package com.badbones69.epicsellchest.commands;
 import com.badbones69.epicsellchest.Methods;
 import com.badbones69.epicsellchest.api.CrazyManager;
 import com.badbones69.epicsellchest.api.FileManager;
+import com.badbones69.epicsellchest.api.FileManager.Files;
 import com.badbones69.epicsellchest.api.ItemBuilder;
 import com.badbones69.epicsellchest.api.currency.Currency;
 import com.badbones69.epicsellchest.api.currency.CustomCurrency;
@@ -18,6 +19,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -28,7 +30,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
 
-public class SellChestCommands {
+public class SellChestCommands implements CommandExecutor {
     
     private final HashMap<UUID, Location> pos1 = new HashMap<>();
     private final HashMap<UUID, Location> pos2 = new HashMap<>();
@@ -36,6 +38,7 @@ public class SellChestCommands {
     private CrazyManager crazyManager = CrazyManager.getInstance();
     private FileManager fileManager = FileManager.getInstance();
     
+    @Override
     public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
         if (commandLabel.equalsIgnoreCase("sellchest") || commandLabel.equalsIgnoreCase("sc")) {
             if (args.length == 0) {
@@ -74,10 +77,10 @@ public class SellChestCommands {
                                                 }
                                                 crazyManager.sellSellableItems(player, items);
                                                 for (SellItem item : items) {
-                                                    if (item.usesSellingAmount()) {
-                                                        item.getItem().setAmount(item.getItem().getAmount() - (item.getSellingAmount() * item.getSellingMinimum()));
+                                                    if (item.hasSellingAmount()) {
+                                                        item.item().setAmount(item.item().getAmount() - (item.sellingAmount() * item.sellingMinimum()));
                                                     } else {
-                                                        chest.getInventory().remove(item.getItem());
+                                                        chest.getInventory().remove(item.item());
                                                     }
                                                 }
                                                 player.sendMessage(Messages.SOLD_CHEST.getMessageDouble(placeholders));
@@ -115,7 +118,7 @@ public class SellChestCommands {
             } else {
                 if (args[0].equalsIgnoreCase("help")) {
                     if (sender.hasPermission("epicsellchest.help") || sender.hasPermission("epicsellchest.admin")) {
-                        for (String msg : FileManager.Files.MESSAGES.getFile().getStringList("Messages.Help")) {
+                        for (String msg : Files.MESSAGES.getFile().getStringList("Messages.Help")) {
                             sender.sendMessage(Methods.color(msg));
                         }
                     } else {
@@ -138,8 +141,8 @@ public class SellChestCommands {
                     //	return true;
                 } else if (args[0].equalsIgnoreCase("reload")) {
                     if (sender.hasPermission("epicsellchest.reload") || sender.hasPermission("epicsellchest.admin")) {
-                        FileManager.Files.CONFIG.reloadFile();
-                        FileManager.Files.MESSAGES.reloadFile();
+                        Files.CONFIG.reloadFile();
+                        Files.MESSAGES.reloadFile();
                         fileManager.setup(crazyManager.getPlugin());
                         crazyManager.load();
                         sender.sendMessage(Messages.RELOADED.getMessage());
@@ -283,7 +286,7 @@ public class SellChestCommands {
                                                         }
                                                         crazyManager.sellSellableItems(player, items);
                                                         for (SellItem item : items) {
-                                                            chest.getInventory().remove(item.getItem());
+                                                            chest.getInventory().remove(item.item());
                                                         }
                                                     }
                                                 }
@@ -370,7 +373,7 @@ public class SellChestCommands {
                                                                 }
                                                                 crazyManager.sellSellableItems(player, items);
                                                                 for (SellItem item : items) {
-                                                                    chest.getInventory().remove(item.getItem());
+                                                                    chest.getInventory().remove(item.item());
                                                                 }
                                                             }
                                                         }
@@ -473,7 +476,7 @@ public class SellChestCommands {
                                                     }
                                                     crazyManager.sellSellableItems(player, items);
                                                     for (SellItem item : items) {
-                                                        chest.getInventory().remove(item.getItem());
+                                                        chest.getInventory().remove(item.item());
                                                     }
                                                     player.sendMessage(Messages.SOLD_CHEST.getMessageDouble(placeholders));
                                                     return true;

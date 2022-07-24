@@ -2,6 +2,7 @@ package com.badbones69.epicsellchest;
 
 import com.badbones69.epicsellchest.api.CrazyManager;
 import com.badbones69.epicsellchest.api.FileManager;
+import com.badbones69.epicsellchest.commands.SellChestCommands;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -20,6 +21,8 @@ public class EpicSellChest extends JavaPlugin {
         crazyManager.load();
         
         PluginManager pluginManager = getServer().getPluginManager();
+        
+        getCommand("sellchest").setExecutor(new SellChestCommands());
     }
     
     @Override

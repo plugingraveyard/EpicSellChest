@@ -53,7 +53,6 @@ public class WandControl implements Listener {
                             
                             if (!event.isCancelled()) {
                                 HashMap<String, Double> placeholders = new HashMap<>();
-                                
                                 for (Currency currency : Currency.values()) {
                                     placeholders.put("%" + currency.getName().toLowerCase() + "%", crazyManager.getFullCost(items, currency));
                                     placeholders.put("%" + currency.getName() + "%", crazyManager.getFullCost(items, currency));
@@ -66,10 +65,10 @@ public class WandControl implements Listener {
                                 
                                 crazyManager.sellSellableItems(player, items);
                                 for (SellItem item : items) {
-                                    if (item.usesSellingAmount()) {
-                                        item.getItem().setAmount(item.getItem().getAmount() - (item.getSellingAmount() * item.getSellingMinimum()));
+                                    if (item.hasSellingAmount()) {
+                                        item.item().setAmount(item.item().getAmount() - (item.sellingAmount() * item.sellingMinimum()));
                                     } else {
-                                        chest.getInventory().remove(item.getItem());
+                                        chest.getInventory().remove(item.item());
                                     }
                                 }
                                 player.sendMessage(Messages.SOLD_CHEST.getMessageDouble(placeholders));
