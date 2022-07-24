@@ -1,13 +1,46 @@
 package com.badbones69.epicsellchest.commands;
 
-public class OldCommands {
-    /*
+import com.badbones69.epicsellchest.Methods;
+import com.badbones69.epicsellchest.api.CrazyManager;
+import com.badbones69.epicsellchest.api.FileManager;
+import com.badbones69.epicsellchest.api.ItemBuilder;
+import com.badbones69.epicsellchest.api.currency.Currency;
+import com.badbones69.epicsellchest.api.currency.CustomCurrency;
+import com.badbones69.epicsellchest.api.enums.Messages;
+import com.badbones69.epicsellchest.api.enums.SellType;
+import com.badbones69.epicsellchest.api.events.SellChestEvent;
+import com.badbones69.epicsellchest.api.objects.SellItem;
+import com.badbones69.epicsellchest.multisupport.Support;
+import com.badbones69.epicsellchest.multisupport.anticheats.SpartanSupport;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.block.Chest;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.UUID;
+
+public class SellChestCommands {
+    
+    private final HashMap<UUID, Location> pos1 = new HashMap<>();
+    private final HashMap<UUID, Location> pos2 = new HashMap<>();
+    
+    private CrazyManager crazyManager = CrazyManager.getInstance();
+    private FileManager fileManager = FileManager.getInstance();
+    
     public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
         if (commandLabel.equalsIgnoreCase("sellchest") || commandLabel.equalsIgnoreCase("sc")) {
             if (args.length == 0) {
                 if (sender.hasPermission("epicsellchest.single") || sender.hasPermission("epicsellchest.admin")) {
-                    if (sender instanceof Player) {
-                        Player player = (Player) sender;
+                    if (sender instanceof Player player) {
                         UUID uuid = player.getUniqueId();
                         //Gets the block they are looking at.
                         Block block = player.getTargetBlock(null, 5);
@@ -23,23 +56,23 @@ public class OldCommands {
                             if (!check.isCancelled()) {
                                 Chest chest = (Chest) block.getState();
                                 if (!Methods.isInvEmpty(chest.getInventory())) {
-                                    if (!sc.needsTwoFactorAuth(uuid)) {
-                                        sc.removeTwoFactorAuth(uuid);
-                                        ArrayList<SellItem> items = sc.getSellableItems(chest.getInventory());
+                                    if (!crazyManager.needsTwoFactorAuth(uuid)) {
+                                        crazyManager.removeTwoFactorAuth(uuid);
+                                        ArrayList<SellItem> items = crazyManager.getSellableItems(chest.getInventory());
                                         if (items.size() > 0) {
                                             SellChestEvent event = new SellChestEvent(player, items, SellType.SINGLE);
                                             Bukkit.getPluginManager().callEvent(event);
                                             if (!event.isCancelled()) {
                                                 HashMap<String, Double> placeholders = new HashMap<>();
                                                 for (Currency currency : Currency.values()) {
-                                                    placeholders.put("%" + currency.getName().toLowerCase() + "%", sc.getFullCost(items, currency));
-                                                    placeholders.put("%" + currency.getName() + "%", sc.getFullCost(items, currency));
+                                                    placeholders.put("%" + currency.getName().toLowerCase() + "%", crazyManager.getFullCost(items, currency));
+                                                    placeholders.put("%" + currency.getName() + "%", crazyManager.getFullCost(items, currency));
                                                 }
-                                                for (CustomCurrency currency : sc.getCustomCurrencies()) {
-                                                    placeholders.put("%" + currency.getName().toLowerCase() + "%", sc.getFullCost(items, currency));
-                                                    placeholders.put("%" + currency.getName() + "%", sc.getFullCost(items, currency));
+                                                for (CustomCurrency currency : crazyManager.getCustomCurrencies()) {
+                                                    placeholders.put("%" + currency.name().toLowerCase() + "%", crazyManager.getFullCost(items, currency));
+                                                    placeholders.put("%" + currency.name() + "%", crazyManager.getFullCost(items, currency));
                                                 }
-                                                sc.sellSellableItems(player, items);
+                                                crazyManager.sellSellableItems(player, items);
                                                 for (SellItem item : items) {
                                                     if (item.usesSellingAmount()) {
                                                         item.getItem().setAmount(item.getItem().getAmount() - (item.getSellingAmount() * item.getSellingMinimum()));
@@ -55,7 +88,7 @@ public class OldCommands {
                                             return true;
                                         }
                                     } else {
-                                        sc.addTwoFactorAuth(uuid);
+                                        crazyManager.addTwoFactorAuth(uuid);
                                         player.sendMessage(Messages.TWO_FACTOR_AUTH.getMessage());
                                         return true;
                                     }
@@ -105,10 +138,10 @@ public class OldCommands {
                     //	return true;
                 } else if (args[0].equalsIgnoreCase("reload")) {
                     if (sender.hasPermission("epicsellchest.reload") || sender.hasPermission("epicsellchest.admin")) {
-                        FileManager.Files.CONFIG.relaodFile();
-                        FileManager.Files.MESSAGES.relaodFile();
-                        fileManager.setup(this);
-                        sc.loadEpicSellChest();
+                        FileManager.Files.CONFIG.reloadFile();
+                        FileManager.Files.MESSAGES.reloadFile();
+                        fileManager.setup(crazyManager.getPlugin());
+                        crazyManager.load();
                         sender.sendMessage(Messages.RELOADED.getMessage());
                     } else {
                         sender.sendMessage(Messages.NO_PERMISSION.getMessage());
@@ -116,17 +149,17 @@ public class OldCommands {
                     return true;
                 } else if (args[0].equalsIgnoreCase("debug")) {
                     if (sender.hasPermission("epicsellchest.debug") || sender.hasPermission("epicsellchest.admin")) {
-                        if (!sc.getBrokeItems().isEmpty()) {
+                        if (!crazyManager.getBrokeItems().isEmpty()) {
                             sender.sendMessage(Methods.prefix("&7List of all broken items:"));
-                            for (String item : sc.getBrokeItems()) {
+                            for (String item : crazyManager.getBrokeItems()) {
                                 sender.sendMessage(Methods.color(item));
                             }
                         } else {
                             sender.sendMessage(Methods.prefix("&aYour Config.yml contains no broken items."));
                         }
-                        if (!sc.getDuplicateItems().isEmpty()) {
+                        if (!crazyManager.getDuplicateItems().isEmpty()) {
                             sender.sendMessage(Methods.prefix("&7List of all duplicate items:"));
-                            for (String item : sc.getDuplicateItems()) {
+                            for (String item : crazyManager.getDuplicateItems()) {
                                 sender.sendMessage(Methods.color(item));
                             }
                             if (Support.SHOP_GUI_PLUS.isEnabled()) {
@@ -172,7 +205,7 @@ public class OldCommands {
                         } else {
                             player = (Player) sender;
                         }
-                        player.getInventory().addItem(sc.getChestSellingItem(amount));
+                        player.getInventory().addItem(crazyManager.getChestSellingItem(amount));
                         player.updateInventory();
                         HashMap<String, String> placeholders = new HashMap<>();
                         placeholders.put("%player%", player.getName());
@@ -185,7 +218,7 @@ public class OldCommands {
                 } else if (args[0].equalsIgnoreCase("gui")) {
                     if (sender.hasPermission("epicsellchest.gui") || sender.hasPermission("epicsellchest.admin")) {
                         if (sender instanceof Player) {
-                            sc.openSellChestGUI((Player) sender);
+                            crazyManager.openSellChestGUI((Player) sender);
                         } else {
                             sender.sendMessage(Messages.PLAYER_ONLY.getMessage());
                         }
@@ -197,21 +230,18 @@ public class OldCommands {
                     if (sender.hasPermission("epicsellchest.chunk") || sender.hasPermission("epicsellchest.admin")) {
                         final Player player = (Player) sender;
                         final UUID uuid = player.getUniqueId();
-                        if (!sc.needsTwoFactorAuth(uuid)) {
-                            sc.removeTwoFactorAuth(uuid);
+                        if (!crazyManager.needsTwoFactorAuth(uuid)) {
+                            crazyManager.removeTwoFactorAuth(uuid);
                             Location p1 = player.getLocation().getChunk().getBlock(0, 0, 0).getLocation();
                             Location p2 = player.getLocation().getChunk().getBlock(15, 255, 15).getLocation();
-                            sc.queryChests(player, p1, p2);
+                            crazyManager.queryChests(player, p1, p2);
                             player.sendMessage(Messages.LOADING_CHUNK_CHESTS.getMessage());
                             new BukkitRunnable() {
                                 @Override
                                 public void run() {
-                                    ArrayList<Chest> chests = sc.getChestQuery(player.getUniqueId());
+                                    ArrayList<Chest> chests = crazyManager.getChestQuery(player.getUniqueId());
                                     if (chests != null) {
                                         if (!chests.isEmpty()) {
-                                            if (Support.NO_CHEAT_PLUS.isEnabled()) {
-                                                NoCheatPlusSupport.exemptPlayer(player);
-                                            }
                                             if (Support.SPARTAN.isEnabled()) {
                                                 SpartanSupport.cancelBlockChecker(player);
                                             }
@@ -226,40 +256,37 @@ public class OldCommands {
                                                         for (int i = 1; i < args.length; i++) {
                                                             selling.add(new ItemBuilder().setMaterial(args[i]).build());
                                                         }
-                                                        items = sc.getSellableItems(chest.getInventory(), selling);
+                                                        items = crazyManager.getSellableItems(chest.getInventory(), selling);
                                                     } else {
-                                                        items = sc.getSellableItems(chest.getInventory());
+                                                        items = crazyManager.getSellableItems(chest.getInventory());
                                                     }
                                                     SellChestEvent event = new SellChestEvent(player, items, SellType.CHUNK);
                                                     Bukkit.getPluginManager().callEvent(event);
                                                     if (!event.isCancelled()) {
                                                         for (Currency currency : Currency.values()) {
                                                             if (placeholders.containsKey("%" + currency.getName().toLowerCase() + "%") || placeholders.containsKey("%" + currency.getName() + "%")) {
-                                                                placeholders.put("%" + currency.getName().toLowerCase() + "%", placeholders.get("%" + currency.getName().toLowerCase() + "%") + sc.getFullCost(items, currency));
-                                                                placeholders.put("%" + currency.getName() + "%", placeholders.get("%" + currency.getName() + "%") + sc.getFullCost(items, currency));
+                                                                placeholders.put("%" + currency.getName().toLowerCase() + "%", placeholders.get("%" + currency.getName().toLowerCase() + "%") + crazyManager.getFullCost(items, currency));
+                                                                placeholders.put("%" + currency.getName() + "%", placeholders.get("%" + currency.getName() + "%") + crazyManager.getFullCost(items, currency));
                                                             } else {
-                                                                placeholders.put("%" + currency.getName().toLowerCase() + "%", sc.getFullCost(items, currency));
-                                                                placeholders.put("%" + currency.getName() + "%", sc.getFullCost(items, currency));
+                                                                placeholders.put("%" + currency.getName().toLowerCase() + "%", crazyManager.getFullCost(items, currency));
+                                                                placeholders.put("%" + currency.getName() + "%", crazyManager.getFullCost(items, currency));
                                                             }
                                                         }
-                                                        for (CustomCurrency currency : sc.getCustomCurrencies()) {
-                                                            if (placeholders.containsKey("%" + currency.getName().toLowerCase() + "%") || placeholders.containsKey("%" + currency.getName() + "%")) {
-                                                                placeholders.put("%" + currency.getName().toLowerCase() + "%", placeholders.get("%" + currency.getName().toLowerCase() + "%") + sc.getFullCost(items, currency));
-                                                                placeholders.put("%" + currency.getName() + "%", placeholders.get("%" + currency.getName() + "%") + sc.getFullCost(items, currency));
+                                                        for (CustomCurrency currency : crazyManager.getCustomCurrencies()) {
+                                                            if (placeholders.containsKey("%" + currency.name().toLowerCase() + "%") || placeholders.containsKey("%" + currency.name() + "%")) {
+                                                                placeholders.put("%" + currency.name().toLowerCase() + "%", placeholders.get("%" + currency.name().toLowerCase() + "%") + crazyManager.getFullCost(items, currency));
+                                                                placeholders.put("%" + currency.name() + "%", placeholders.get("%" + currency.name() + "%") + crazyManager.getFullCost(items, currency));
                                                             } else {
-                                                                placeholders.put("%" + currency.getName().toLowerCase() + "%", sc.getFullCost(items, currency));
-                                                                placeholders.put("%" + currency.getName() + "%", sc.getFullCost(items, currency));
+                                                                placeholders.put("%" + currency.name().toLowerCase() + "%", crazyManager.getFullCost(items, currency));
+                                                                placeholders.put("%" + currency.name() + "%", crazyManager.getFullCost(items, currency));
                                                             }
                                                         }
-                                                        sc.sellSellableItems(player, items);
+                                                        crazyManager.sellSellableItems(player, items);
                                                         for (SellItem item : items) {
                                                             chest.getInventory().remove(item.getItem());
                                                         }
                                                     }
                                                 }
-                                            }
-                                            if (Support.NO_CHEAT_PLUS.isEnabled()) {
-                                                NoCheatPlusSupport.unexemptPlayer(player);
                                             }
                                             if (placeholders.size() == 0) {
                                                 player.sendMessage(Messages.NO_CHESTS_IN_CHUNK.getMessage());
@@ -269,15 +296,15 @@ public class OldCommands {
                                         } else {
                                             player.sendMessage(Messages.NO_CHESTS_IN_CHUNK.getMessage());
                                         }
-                                        sc.removeChestQuery(player.getUniqueId());
+                                        crazyManager.removeChestQuery(player.getUniqueId());
                                         cancel();
                                     } else {
                                         player.sendMessage(Messages.STILL_LOADING_CHESTS.getMessage());
                                     }
                                 }
-                            }.runTaskTimer(this, 3, 5);
+                            }.runTaskTimer(crazyManager.getPlugin(), 3, 5);
                         } else {
-                            sc.addTwoFactorAuth(uuid);
+                            crazyManager.addTwoFactorAuth(uuid);
                             player.sendMessage(Messages.TWO_FACTOR_AUTH.getMessage());
                             return true;
                         }
@@ -291,20 +318,17 @@ public class OldCommands {
                         Player player = (Player) sender;
                         UUID uuid = player.getUniqueId();
                         if (pos1.containsKey(uuid) && pos2.containsKey(uuid)) {
-                            if (sc.isRadiusAcceptable(pos1.get(uuid), pos2.get(uuid))) {
-                                if (!sc.needsTwoFactorAuth(uuid)) {
-                                    sc.removeTwoFactorAuth(uuid);
-                                    sc.queryChests(player, pos1.get(uuid), pos2.get(uuid));
+                            if (crazyManager.isRadiusAcceptable(pos1.get(uuid), pos2.get(uuid))) {
+                                if (!crazyManager.needsTwoFactorAuth(uuid)) {
+                                    crazyManager.removeTwoFactorAuth(uuid);
+                                    crazyManager.queryChests(player, pos1.get(uuid), pos2.get(uuid));
                                     player.sendMessage(Messages.LOADING_REGION_CHESTS.getMessage());
                                     new BukkitRunnable() {
                                         @Override
                                         public void run() {
-                                            ArrayList<Chest> chests = sc.getChestQuery(player.getUniqueId());
+                                            ArrayList<Chest> chests = crazyManager.getChestQuery(player.getUniqueId());
                                             if (chests != null) {
                                                 if (!chests.isEmpty()) {
-                                                    if (Support.NO_CHEAT_PLUS.isEnabled()) {
-                                                        NoCheatPlusSupport.exemptPlayer(player);
-                                                    }
                                                     if (Support.SPARTAN.isEnabled()) {
                                                         SpartanSupport.cancelBlockChecker(player);
                                                     }
@@ -319,40 +343,37 @@ public class OldCommands {
                                                                 for (int i = 1; i < args.length; i++) {
                                                                     selling.add(new ItemBuilder().setMaterial(args[i]).build());
                                                                 }
-                                                                items = sc.getSellableItems(chest.getInventory(), selling);
+                                                                items = crazyManager.getSellableItems(chest.getInventory(), selling);
                                                             } else {
-                                                                items = sc.getSellableItems(chest.getInventory());
+                                                                items = crazyManager.getSellableItems(chest.getInventory());
                                                             }
                                                             SellChestEvent event = new SellChestEvent(player, items, SellType.REGION);
                                                             Bukkit.getPluginManager().callEvent(event);
                                                             if (!event.isCancelled()) {
                                                                 for (Currency currency : Currency.values()) {
                                                                     if (placeholders.containsKey("%" + currency.getName().toLowerCase() + "%") || placeholders.containsKey("%" + currency.getName() + "%")) {
-                                                                        placeholders.put("%" + currency.getName().toLowerCase() + "%", placeholders.get("%" + currency.getName().toLowerCase() + "%") + sc.getFullCost(items, currency));
-                                                                        placeholders.put("%" + currency.getName() + "%", placeholders.get("%" + currency.getName() + "%") + sc.getFullCost(items, currency));
+                                                                        placeholders.put("%" + currency.getName().toLowerCase() + "%", placeholders.get("%" + currency.getName().toLowerCase() + "%") + crazyManager.getFullCost(items, currency));
+                                                                        placeholders.put("%" + currency.getName() + "%", placeholders.get("%" + currency.getName() + "%") + crazyManager.getFullCost(items, currency));
                                                                     } else {
-                                                                        placeholders.put("%" + currency.getName().toLowerCase() + "%", sc.getFullCost(items, currency));
-                                                                        placeholders.put("%" + currency.getName() + "%", sc.getFullCost(items, currency));
+                                                                        placeholders.put("%" + currency.getName().toLowerCase() + "%", crazyManager.getFullCost(items, currency));
+                                                                        placeholders.put("%" + currency.getName() + "%", crazyManager.getFullCost(items, currency));
                                                                     }
                                                                 }
-                                                                for (CustomCurrency currency : sc.getCustomCurrencies()) {
-                                                                    if (placeholders.containsKey("%" + currency.getName().toLowerCase() + "%") || placeholders.containsKey("%" + currency.getName() + "%")) {
-                                                                        placeholders.put("%" + currency.getName().toLowerCase() + "%", placeholders.get("%" + currency.getName().toLowerCase() + "%") + sc.getFullCost(items, currency));
-                                                                        placeholders.put("%" + currency.getName() + "%", placeholders.get("%" + currency.getName() + "%") + sc.getFullCost(items, currency));
+                                                                for (CustomCurrency currency : crazyManager.getCustomCurrencies()) {
+                                                                    if (placeholders.containsKey("%" + currency.name().toLowerCase() + "%") || placeholders.containsKey("%" + currency.name() + "%")) {
+                                                                        placeholders.put("%" + currency.name().toLowerCase() + "%", placeholders.get("%" + currency.name().toLowerCase() + "%") + crazyManager.getFullCost(items, currency));
+                                                                        placeholders.put("%" + currency.name() + "%", placeholders.get("%" + currency.name() + "%") + crazyManager.getFullCost(items, currency));
                                                                     } else {
-                                                                        placeholders.put("%" + currency.getName().toLowerCase() + "%", sc.getFullCost(items, currency));
-                                                                        placeholders.put("%" + currency.getName() + "%", sc.getFullCost(items, currency));
+                                                                        placeholders.put("%" + currency.name().toLowerCase() + "%", crazyManager.getFullCost(items, currency));
+                                                                        placeholders.put("%" + currency.name() + "%", crazyManager.getFullCost(items, currency));
                                                                     }
                                                                 }
-                                                                sc.sellSellableItems(player, items);
+                                                                crazyManager.sellSellableItems(player, items);
                                                                 for (SellItem item : items) {
                                                                     chest.getInventory().remove(item.getItem());
                                                                 }
                                                             }
                                                         }
-                                                    }
-                                                    if (Support.NO_CHEAT_PLUS.isEnabled()) {
-                                                        NoCheatPlusSupport.unexemptPlayer(player);
                                                     }
                                                     if (placeholders.size() == 0) {
                                                         player.sendMessage(Messages.NO_CHESTS_IN_CHUNK.getMessage());
@@ -362,15 +383,15 @@ public class OldCommands {
                                                 } else {
                                                     player.sendMessage(Messages.NO_CHESTS_IN_REGION.getMessage());
                                                 }
-                                                sc.removeChestQuery(player.getUniqueId());
+                                                crazyManager.removeChestQuery(player.getUniqueId());
                                                 cancel();
                                             } else {
                                                 player.sendMessage(Messages.STILL_LOADING_CHESTS.getMessage());
                                             }
                                         }
-                                    }.runTaskTimer(this, 3, 5);
+                                    }.runTaskTimer(crazyManager.getPlugin(), 3, 5);
                                 } else {
-                                    sc.addTwoFactorAuth(uuid);
+                                    crazyManager.addTwoFactorAuth(uuid);
                                     player.sendMessage(Messages.TWO_FACTOR_AUTH.getMessage());
                                     return true;
                                 }
@@ -388,8 +409,7 @@ public class OldCommands {
                     return true;
                 } else if (args[0].equalsIgnoreCase("pos1") || args[0].equalsIgnoreCase("p1")) {
                     if (sender.hasPermission("epicsellchest.region") || sender.hasPermission("epicsellchest.admin")) {
-                        if (sender instanceof Player) {
-                            Player player = (Player) sender;
+                        if (sender instanceof Player player) {
                             pos1.put(player.getUniqueId(), player.getLocation());
                             player.sendMessage(Messages.POSITION_1.getMessage());
                         } else {
@@ -402,8 +422,7 @@ public class OldCommands {
                     }
                 } else if (args[0].equalsIgnoreCase("pos2") || args[0].equalsIgnoreCase("p2")) {
                     if (sender.hasPermission("epicsellchest.region") || sender.hasPermission("epicsellchest.admin")) {
-                        if (sender instanceof Player) {
-                            Player player = (Player) sender;
+                        if (sender instanceof Player player) {
                             pos2.put(player.getUniqueId(), player.getLocation());
                             player.sendMessage(Messages.POSITION_2.getMessage());
                         } else {
@@ -416,8 +435,7 @@ public class OldCommands {
                     }
                 } else {
                     if (sender.hasPermission("epicsellchest.single") || sender.hasPermission("epicsellchest.admin")) {
-                        if (sender instanceof Player) {
-                            Player player = (Player) sender;
+                        if (sender instanceof Player player) {
                             UUID uuid = player.getUniqueId();
                             //Gets the block they are looking at.
                             Block block = player.getTargetBlock(null, 5);
@@ -433,27 +451,27 @@ public class OldCommands {
                                 if (!check.isCancelled()) {
                                     Chest chest = (Chest) block.getState();
                                     if (!Methods.isInvEmpty(chest.getInventory())) {
-                                        if (!sc.needsTwoFactorAuth(uuid)) {
-                                            sc.removeTwoFactorAuth(uuid);
+                                        if (!crazyManager.needsTwoFactorAuth(uuid)) {
+                                            crazyManager.removeTwoFactorAuth(uuid);
                                             ArrayList<ItemStack> selling = new ArrayList<>();
                                             for (String arg : args) {
                                                 selling.add(new ItemBuilder().setMaterial(arg).build());
                                             }
-                                            ArrayList<SellItem> items = sc.getSellableItems(chest.getInventory(), selling);
+                                            ArrayList<SellItem> items = crazyManager.getSellableItems(chest.getInventory(), selling);
                                             if (items.size() > 0) {
                                                 SellChestEvent event = new SellChestEvent(player, items, SellType.SINGLE);
                                                 Bukkit.getPluginManager().callEvent(event);
                                                 if (!event.isCancelled()) {
                                                     HashMap<String, Double> placeholders = new HashMap<>();
                                                     for (Currency currency : Currency.values()) {
-                                                        placeholders.put("%" + currency.getName().toLowerCase() + "%", sc.getFullCost(items, currency));
-                                                        placeholders.put("%" + currency.getName() + "%", sc.getFullCost(items, currency));
+                                                        placeholders.put("%" + currency.getName().toLowerCase() + "%", crazyManager.getFullCost(items, currency));
+                                                        placeholders.put("%" + currency.getName() + "%", crazyManager.getFullCost(items, currency));
                                                     }
-                                                    for (CustomCurrency currency : sc.getCustomCurrencies()) {
-                                                        placeholders.put("%" + currency.getName().toLowerCase() + "%", sc.getFullCost(items, currency));
-                                                        placeholders.put("%" + currency.getName() + "%", sc.getFullCost(items, currency));
+                                                    for (CustomCurrency currency : crazyManager.getCustomCurrencies()) {
+                                                        placeholders.put("%" + currency.name().toLowerCase() + "%", crazyManager.getFullCost(items, currency));
+                                                        placeholders.put("%" + currency.name() + "%", crazyManager.getFullCost(items, currency));
                                                     }
-                                                    sc.sellSellableItems(player, items);
+                                                    crazyManager.sellSellableItems(player, items);
                                                     for (SellItem item : items) {
                                                         chest.getInventory().remove(item.getItem());
                                                     }
@@ -465,7 +483,7 @@ public class OldCommands {
                                                 return true;
                                             }
                                         } else {
-                                            sc.addTwoFactorAuth(uuid);
+                                            crazyManager.addTwoFactorAuth(uuid);
                                             player.sendMessage(Messages.TWO_FACTOR_AUTH.getMessage());
                                             return true;
                                         }
@@ -494,5 +512,5 @@ public class OldCommands {
         }
         return false;
     }
-     */
+    
 }
