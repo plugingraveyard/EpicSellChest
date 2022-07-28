@@ -1,5 +1,5 @@
-name: Vouchers
-main: "${group}.Vouchers"
+name: EpicSellChest
+main: "${group}.EpicSellChest"
 version: ${version}
 api-version: 1.13
 description: ${description}
