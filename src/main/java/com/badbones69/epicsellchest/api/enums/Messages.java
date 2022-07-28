@@ -1,7 +1,6 @@
 package com.badbones69.epicsellchest.api.enums;
 
 import com.badbones69.epicsellchest.Methods;
-import com.badbones69.epicsellchest.api.FileManager;
 import com.badbones69.epicsellchest.api.FileManager.Files;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -78,7 +77,7 @@ public enum Messages {
     }
     
     public static void addMissingMessages() {
-        FileConfiguration messages = FileManager.Files.MESSAGES.getFile();
+        FileConfiguration messages = Files.MESSAGES.getFile();
         boolean saveFile = false;
         for (Messages message : values()) {
             if (!messages.contains("Messages." + message.getPath())) {
@@ -92,7 +91,7 @@ public enum Messages {
         }
         
         if (saveFile) {
-            FileManager.Files.MESSAGES.saveFile();
+            Files.MESSAGES.saveFile();
         }
     }
     
@@ -194,12 +193,12 @@ public enum Messages {
     }
     
     private boolean exists() {
-        return FileManager.Files.MESSAGES.getFile().contains("Messages." + path);
+        return Files.MESSAGES.getFile().contains("Messages." + path);
     }
     
     private boolean isList() {
-        if (FileManager.Files.MESSAGES.getFile().contains("Messages." + path)) {
-            return !FileManager.Files.MESSAGES.getFile().getStringList("Messages." + path).isEmpty();
+        if (Files.MESSAGES.getFile().contains("Messages." + path)) {
+            return !Files.MESSAGES.getFile().getStringList("Messages." + path).isEmpty();
         } else {
             return defaultMessage == null;
         }
