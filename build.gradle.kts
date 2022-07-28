@@ -36,10 +36,16 @@ repositories {
     // Vault API
     maven("https://jitpack.io/")
 
+    // Triumph Team
+    maven("https://repo.triumphteam.dev/snapshots/")
+
     mavenCentral()
 }
 
 dependencies {
+
+    // Command API
+    implementation("dev.triumphteam:triumph-cmd-bukkit:2.0.0-SNAPSHOT")
 
     // Anti Cheats.
     compileOnly("me.vagdedes:SpartanAPI:9.1")
@@ -58,7 +64,8 @@ tasks {
 
         listOf(
             "de.tr7zw",
-            "org.bstats"
+            "org.bstats",
+            "dev.triumphteam.cmd"
         ).forEach {
             relocate(it, "${rootProject.group}.plugin.lib.$it")
         }

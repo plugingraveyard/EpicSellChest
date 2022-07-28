@@ -33,6 +33,12 @@ public enum Messages {
     TWO_FACTOR_AUTH("Two-Factor-Auth", "&7Please type the command again to confirm the sell."),
     WAND_GIVE("Wand-Give", "&7You have just given &6%player% %amount% &7Epic Sell Wand(s)."),
     WAND_TWO_FACTOR_AUTH("Wand-Two-Factor-Auth", "&7Please click the block again to confirm the sell."),
+    INTERNAL_ERROR("Internal-Error", "&cAn internal error has occurred. Please check the console for the full error."),
+    NOT_ENOUGH_ARGS("Not-Enough-Args", "&cYou did not supply enough arguments."),
+    TOO_MANY_ARGS("Too-Many-Args", "&cYou put more arguments then I can handle."),
+    UNKNOWN_COMMAND("Unknown-Command", "&cThis command is not known."),
+    MUST_BE_A_PLAYER("Must-Be-A-Player", "&cYou must be a player to use this command."),
+    MUST_BE_A_CONSOLE_SENDER("Must-Be-A-Console-Sender", "&cYou must be using console to use this command."),
     HELP("Help",
     Arrays.asList(
     "&6/sc &7- Sells the chest you are currently looking at or standing on.",
