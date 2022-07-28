@@ -50,16 +50,16 @@ public class SellChestGUI implements Listener {
                         crazyManager.getPlugin().getServer().getPluginManager().callEvent(event);
                         
                         if (!event.isCancelled()) {
-                            HashMap<String, Double> placeholders = new HashMap<>();
+                            HashMap<String, String> placeholders = new HashMap<>();
                             
                             for (Currency currency : Currency.values()) {
-                                placeholders.put("%" + currency.getName().toLowerCase() + "%", crazyManager.getFullCost(items, currency));
-                                placeholders.put("%" + currency.getName() + "%", crazyManager.getFullCost(items, currency));
+                                placeholders.put("%" + currency.getName().toLowerCase() + "%", crazyManager.getFullCost(items, currency) + "");
+                                placeholders.put("%" + currency.getName() + "%", crazyManager.getFullCost(items, currency) + "");
                             }
                             
                             for (CustomCurrency currency : crazyManager.getCustomCurrencies()) {
-                                placeholders.put("%" + currency.name().toLowerCase() + "%", crazyManager.getFullCost(items, currency));
-                                placeholders.put("%" + currency.name() + "%", crazyManager.getFullCost(items, currency));
+                                placeholders.put("%" + currency.name().toLowerCase() + "%", crazyManager.getFullCost(items, currency) + "");
+                                placeholders.put("%" + currency.name() + "%", crazyManager.getFullCost(items, currency) + "");
                             }
                             
                             crazyManager.sellSellableItems(player, items);
@@ -73,7 +73,7 @@ public class SellChestGUI implements Listener {
                             }
                             
                             crazyManager.removeTwoFactorAuth(uuid);
-                            player.sendMessage(Messages.SOLD_CHEST.getMessageDouble(placeholders));
+                            player.sendMessage(Messages.SOLD_CHEST.getMessage(placeholders));
                         }
                     } else {
                         player.sendMessage(Messages.NO_SELLABLE_ITEMS.getMessage());
@@ -124,20 +124,20 @@ public class SellChestGUI implements Listener {
                     crazyManager.getPlugin().getServer().getPluginManager().callEvent(event);
                     
                     if (!event.isCancelled()) {
-                        HashMap<String, Double> placeholders = new HashMap<>();
+                        HashMap<String, String> placeholders = new HashMap<>();
                         
                         for (Currency currency : Currency.values()) {
-                            placeholders.put("%" + currency.getName().toLowerCase() + "%", crazyManager.getFullCost(items, currency));
-                            placeholders.put("%" + currency.getName() + "%", crazyManager.getFullCost(items, currency));
+                            placeholders.put("%" + currency.getName().toLowerCase() + "%", crazyManager.getFullCost(items, currency) + "");
+                            placeholders.put("%" + currency.getName() + "%", crazyManager.getFullCost(items, currency) + "");
                         }
                         
                         for (CustomCurrency currency : crazyManager.getCustomCurrencies()) {
-                            placeholders.put("%" + currency.name().toLowerCase() + "%", crazyManager.getFullCost(items, currency));
-                            placeholders.put("%" + currency.name() + "%", crazyManager.getFullCost(items, currency));
+                            placeholders.put("%" + currency.name().toLowerCase() + "%", crazyManager.getFullCost(items, currency) + "");
+                            placeholders.put("%" + currency.name() + "%", crazyManager.getFullCost(items, currency) + "");
                         }
                         
                         crazyManager.sellSellableItems(player, items);
-                        player.sendMessage(Messages.SOLD_CHEST.getMessageDouble(placeholders));
+                        player.sendMessage(Messages.SOLD_CHEST.getMessage(placeholders));
                     }
                 } else {
                     player.sendMessage(Messages.NO_SELLABLE_ITEMS.getMessage());
@@ -181,20 +181,20 @@ public class SellChestGUI implements Listener {
                             crazyManager.getPlugin().getServer().getPluginManager().callEvent(event);
                             
                             if (!event.isCancelled()) {
-                                HashMap<String, Double> placeholders = new HashMap<>();
+                                HashMap<String, String> placeholders = new HashMap<>();
                                 
                                 for (Currency currency : Currency.values()) {
-                                    placeholders.put("%" + currency.getName().toLowerCase() + "%", crazyManager.getFullCost(items, currency));
-                                    placeholders.put("%" + currency.getName() + "%", crazyManager.getFullCost(items, currency));
+                                    placeholders.put("%" + currency.getName().toLowerCase() + "%", crazyManager.getFullCost(items, currency) + "");
+                                    placeholders.put("%" + currency.getName() + "%", crazyManager.getFullCost(items, currency) + "");
                                 }
                                 
                                 for (CustomCurrency currency : crazyManager.getCustomCurrencies()) {
-                                    placeholders.put("%" + currency.name().toLowerCase() + "%", crazyManager.getFullCost(items, currency));
-                                    placeholders.put("%" + currency.name() + "%", crazyManager.getFullCost(items, currency));
+                                    placeholders.put("%" + currency.name().toLowerCase() + "%", crazyManager.getFullCost(items, currency) + "");
+                                    placeholders.put("%" + currency.name() + "%", crazyManager.getFullCost(items, currency) + "");
                                 }
                                 
                                 crazyManager.sellSellableItems(player, items);
-                                player.sendMessage(Messages.SOLD_CHEST.getMessageDouble(placeholders));
+                                player.sendMessage(Messages.SOLD_CHEST.getMessage(placeholders));
                             }
                         } else {
                             player.sendMessage(Messages.NO_SELLABLE_ITEMS.getMessage());

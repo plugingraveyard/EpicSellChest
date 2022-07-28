@@ -66,14 +66,14 @@ public class SellChestCommands implements CommandExecutor {
                                             SellChestEvent event = new SellChestEvent(player, items, SellType.SINGLE);
                                             Bukkit.getPluginManager().callEvent(event);
                                             if (!event.isCancelled()) {
-                                                HashMap<String, Double> placeholders = new HashMap<>();
+                                                HashMap<String, String> placeholders = new HashMap<>();
                                                 for (Currency currency : Currency.values()) {
-                                                    placeholders.put("%" + currency.getName().toLowerCase() + "%", crazyManager.getFullCost(items, currency));
-                                                    placeholders.put("%" + currency.getName() + "%", crazyManager.getFullCost(items, currency));
+                                                    placeholders.put("%" + currency.getName().toLowerCase() + "%", crazyManager.getFullCost(items, currency) + "");
+                                                    placeholders.put("%" + currency.getName() + "%", crazyManager.getFullCost(items, currency) + "");
                                                 }
                                                 for (CustomCurrency currency : crazyManager.getCustomCurrencies()) {
-                                                    placeholders.put("%" + currency.name().toLowerCase() + "%", crazyManager.getFullCost(items, currency));
-                                                    placeholders.put("%" + currency.name() + "%", crazyManager.getFullCost(items, currency));
+                                                    placeholders.put("%" + currency.name().toLowerCase() + "%", crazyManager.getFullCost(items, currency) + "");
+                                                    placeholders.put("%" + currency.name() + "%", crazyManager.getFullCost(items, currency) + "");
                                                 }
                                                 crazyManager.sellSellableItems(player, items);
                                                 for (SellItem item : items) {
@@ -83,7 +83,7 @@ public class SellChestCommands implements CommandExecutor {
                                                         chest.getInventory().remove(item.item());
                                                     }
                                                 }
-                                                player.sendMessage(Messages.SOLD_CHEST.getMessageDouble(placeholders));
+                                                player.sendMessage(Messages.SOLD_CHEST.getMessage(placeholders));
                                                 return true;
                                             }
                                         } else {
@@ -248,7 +248,7 @@ public class SellChestCommands implements CommandExecutor {
                                             if (Support.SPARTAN.isEnabled()) {
                                                 SpartanSupport.cancelBlockChecker(player);
                                             }
-                                            HashMap<String, Double> placeholders = new HashMap<>();
+                                            HashMap<String, String> placeholders = new HashMap<>();
                                             for (Chest chest : chests) {
                                                 BlockBreakEvent check = new BlockBreakEvent(chest.getBlock(), player);
                                                 Bukkit.getPluginManager().callEvent(check);
@@ -271,8 +271,8 @@ public class SellChestCommands implements CommandExecutor {
                                                                 placeholders.put("%" + currency.getName().toLowerCase() + "%", placeholders.get("%" + currency.getName().toLowerCase() + "%") + crazyManager.getFullCost(items, currency));
                                                                 placeholders.put("%" + currency.getName() + "%", placeholders.get("%" + currency.getName() + "%") + crazyManager.getFullCost(items, currency));
                                                             } else {
-                                                                placeholders.put("%" + currency.getName().toLowerCase() + "%", crazyManager.getFullCost(items, currency));
-                                                                placeholders.put("%" + currency.getName() + "%", crazyManager.getFullCost(items, currency));
+                                                                placeholders.put("%" + currency.getName().toLowerCase() + "%", crazyManager.getFullCost(items, currency) + "");
+                                                                placeholders.put("%" + currency.getName() + "%", crazyManager.getFullCost(items, currency) + "");
                                                             }
                                                         }
                                                         for (CustomCurrency currency : crazyManager.getCustomCurrencies()) {
@@ -280,8 +280,8 @@ public class SellChestCommands implements CommandExecutor {
                                                                 placeholders.put("%" + currency.name().toLowerCase() + "%", placeholders.get("%" + currency.name().toLowerCase() + "%") + crazyManager.getFullCost(items, currency));
                                                                 placeholders.put("%" + currency.name() + "%", placeholders.get("%" + currency.name() + "%") + crazyManager.getFullCost(items, currency));
                                                             } else {
-                                                                placeholders.put("%" + currency.name().toLowerCase() + "%", crazyManager.getFullCost(items, currency));
-                                                                placeholders.put("%" + currency.name() + "%", crazyManager.getFullCost(items, currency));
+                                                                placeholders.put("%" + currency.name().toLowerCase() + "%", crazyManager.getFullCost(items, currency) + "");
+                                                                placeholders.put("%" + currency.name() + "%", crazyManager.getFullCost(items, currency) + "");
                                                             }
                                                         }
                                                         crazyManager.sellSellableItems(player, items);
@@ -294,7 +294,7 @@ public class SellChestCommands implements CommandExecutor {
                                             if (placeholders.size() == 0) {
                                                 player.sendMessage(Messages.NO_CHESTS_IN_CHUNK.getMessage());
                                             } else {
-                                                player.sendMessage(Messages.SOLD_CHUNK_CHESTS.getMessageDouble(placeholders));
+                                                player.sendMessage(Messages.SOLD_CHUNK_CHESTS.getMessage(placeholders));
                                             }
                                         } else {
                                             player.sendMessage(Messages.NO_CHESTS_IN_CHUNK.getMessage());
@@ -335,7 +335,7 @@ public class SellChestCommands implements CommandExecutor {
                                                     if (Support.SPARTAN.isEnabled()) {
                                                         SpartanSupport.cancelBlockChecker(player);
                                                     }
-                                                    HashMap<String, Double> placeholders = new HashMap<>();
+                                                    HashMap<String, String> placeholders = new HashMap<>();
                                                     for (Chest chest : chests) {
                                                         BlockBreakEvent check = new BlockBreakEvent(chest.getBlock(), player);
                                                         Bukkit.getPluginManager().callEvent(check);
@@ -358,8 +358,8 @@ public class SellChestCommands implements CommandExecutor {
                                                                         placeholders.put("%" + currency.getName().toLowerCase() + "%", placeholders.get("%" + currency.getName().toLowerCase() + "%") + crazyManager.getFullCost(items, currency));
                                                                         placeholders.put("%" + currency.getName() + "%", placeholders.get("%" + currency.getName() + "%") + crazyManager.getFullCost(items, currency));
                                                                     } else {
-                                                                        placeholders.put("%" + currency.getName().toLowerCase() + "%", crazyManager.getFullCost(items, currency));
-                                                                        placeholders.put("%" + currency.getName() + "%", crazyManager.getFullCost(items, currency));
+                                                                        placeholders.put("%" + currency.getName().toLowerCase() + "%", crazyManager.getFullCost(items, currency) + "");
+                                                                        placeholders.put("%" + currency.getName() + "%", crazyManager.getFullCost(items, currency) + "");
                                                                     }
                                                                 }
                                                                 for (CustomCurrency currency : crazyManager.getCustomCurrencies()) {
@@ -367,8 +367,8 @@ public class SellChestCommands implements CommandExecutor {
                                                                         placeholders.put("%" + currency.name().toLowerCase() + "%", placeholders.get("%" + currency.name().toLowerCase() + "%") + crazyManager.getFullCost(items, currency));
                                                                         placeholders.put("%" + currency.name() + "%", placeholders.get("%" + currency.name() + "%") + crazyManager.getFullCost(items, currency));
                                                                     } else {
-                                                                        placeholders.put("%" + currency.name().toLowerCase() + "%", crazyManager.getFullCost(items, currency));
-                                                                        placeholders.put("%" + currency.name() + "%", crazyManager.getFullCost(items, currency));
+                                                                        placeholders.put("%" + currency.name().toLowerCase() + "%", crazyManager.getFullCost(items, currency) + "");
+                                                                        placeholders.put("%" + currency.name() + "%", crazyManager.getFullCost(items, currency) + "");
                                                                     }
                                                                 }
                                                                 crazyManager.sellSellableItems(player, items);
@@ -381,7 +381,7 @@ public class SellChestCommands implements CommandExecutor {
                                                     if (placeholders.size() == 0) {
                                                         player.sendMessage(Messages.NO_CHESTS_IN_CHUNK.getMessage());
                                                     } else {
-                                                        player.sendMessage(Messages.SOLD_CHUNK_CHESTS.getMessageDouble(placeholders));
+                                                        player.sendMessage(Messages.SOLD_CHUNK_CHESTS.getMessage(placeholders));
                                                     }
                                                 } else {
                                                     player.sendMessage(Messages.NO_CHESTS_IN_REGION.getMessage());
@@ -465,20 +465,20 @@ public class SellChestCommands implements CommandExecutor {
                                                 SellChestEvent event = new SellChestEvent(player, items, SellType.SINGLE);
                                                 Bukkit.getPluginManager().callEvent(event);
                                                 if (!event.isCancelled()) {
-                                                    HashMap<String, Double> placeholders = new HashMap<>();
+                                                    HashMap<String, String> placeholders = new HashMap<>();
                                                     for (Currency currency : Currency.values()) {
-                                                        placeholders.put("%" + currency.getName().toLowerCase() + "%", crazyManager.getFullCost(items, currency));
-                                                        placeholders.put("%" + currency.getName() + "%", crazyManager.getFullCost(items, currency));
+                                                        placeholders.put("%" + currency.getName().toLowerCase() + "%", crazyManager.getFullCost(items, currency) + "");
+                                                        placeholders.put("%" + currency.getName() + "%", crazyManager.getFullCost(items, currency) + "");
                                                     }
                                                     for (CustomCurrency currency : crazyManager.getCustomCurrencies()) {
-                                                        placeholders.put("%" + currency.name().toLowerCase() + "%", crazyManager.getFullCost(items, currency));
-                                                        placeholders.put("%" + currency.name() + "%", crazyManager.getFullCost(items, currency));
+                                                        placeholders.put("%" + currency.name().toLowerCase() + "%", crazyManager.getFullCost(items, currency) + "");
+                                                        placeholders.put("%" + currency.name() + "%", crazyManager.getFullCost(items, currency) + "");
                                                     }
                                                     crazyManager.sellSellableItems(player, items);
                                                     for (SellItem item : items) {
                                                         chest.getInventory().remove(item.item());
                                                     }
-                                                    player.sendMessage(Messages.SOLD_CHEST.getMessageDouble(placeholders));
+                                                    player.sendMessage(Messages.SOLD_CHEST.getMessage(placeholders));
                                                     return true;
                                                 }
                                             } else {
