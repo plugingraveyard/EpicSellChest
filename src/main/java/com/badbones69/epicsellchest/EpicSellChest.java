@@ -4,6 +4,7 @@ import com.badbones69.epicsellchest.api.CrazyManager;
 import com.badbones69.epicsellchest.api.FileManager;
 import com.badbones69.epicsellchest.api.enums.Messages;
 import com.badbones69.epicsellchest.commands.SellChestCmdNew;
+import com.badbones69.epicsellchest.commands.WandCommand;
 import dev.triumphteam.cmd.bukkit.BukkitCommandManager;
 import dev.triumphteam.cmd.bukkit.message.BukkitMessageKey;
 import dev.triumphteam.cmd.core.message.MessageKey;
@@ -46,6 +47,7 @@ public class EpicSellChest extends JavaPlugin {
         commandManager.registerMessage(BukkitMessageKey.PLAYER_ONLY, (sender, context) -> sender.sendMessage(Messages.MUST_BE_A_PLAYER.getMessage()));
         commandManager.registerMessage(BukkitMessageKey.CONSOLE_ONLY, (sender, context) -> sender.sendMessage(Messages.MUST_BE_A_CONSOLE_SENDER.getMessage()));
         commandManager.registerCommand(new SellChestCmdNew());
+        commandManager.registerCommand(new WandCommand());
     }
     
 }

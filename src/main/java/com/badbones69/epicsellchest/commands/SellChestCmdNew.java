@@ -267,23 +267,6 @@ public class SellChestCmdNew extends BaseCommand {
         }
     }
     
-    //Adding commands to new API
-    
-    @SubCommand(value = "wand", alias = {"w"})
-    @Permission("epicsellchest.wand")
-    public void wandCommand(CommandSender sender, int amount, @ArgName("player") Player target) {
-        if (target == null) {
-            sender.sendMessage(Messages.PLAYER_ONLY.getMessage());
-            return;
-        }
-        target.getInventory().addItem(crazyManager.getChestSellingItem(amount));
-        target.updateInventory();
-        HashMap<String, String> placeholders = new HashMap<>();
-        placeholders.put("%player%", target.getName());
-        placeholders.put("%amount%", amount + "");
-        sender.sendMessage(Messages.WAND_GIVE.getMessage(placeholders));
-    }
-    
     @SubCommand(value = "gui")
     @Permission("epicsellchest.gui")
     public void guiCommand(CommandSender sender) {
