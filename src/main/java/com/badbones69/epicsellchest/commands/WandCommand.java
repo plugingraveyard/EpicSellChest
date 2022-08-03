@@ -12,6 +12,7 @@ import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 
+@SubCommand(value = "wand", alias = {"w"})
 public class WandCommand extends SellChestCmdNew {
     
     private final CrazyManager crazyManager = CrazyManager.getInstance();
@@ -31,12 +32,11 @@ public class WandCommand extends SellChestCmdNew {
 
         // TODO() New message for being given a wand.
     }
-    
-    @SubCommand(value = "wand", alias = {"w"})
-    @Permission("epicsellchest.wand")
+
     // Using "CommandSender sender" allows it to run in console.
     // Should already check if Player target is null.
     // Check above comment, so you don't have to check if sender is instanceof Player.
+    @Permission("epicsellchest.wand")
     public void wandCommandOthers(CommandSender sender, int amount, @ArgName("player") Player target) {
         //if (target == null && !(sender instanceof Player)) {
         //    sender.sendMessage(Messages.PLAYER_ONLY.getMessage());

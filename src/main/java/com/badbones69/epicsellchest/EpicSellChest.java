@@ -46,8 +46,8 @@ public class EpicSellChest extends JavaPlugin {
         commandManager.registerMessage(BukkitMessageKey.NO_PERMISSION, (sender, context) -> sender.sendMessage(Messages.NO_PERMISSION.getMessage()));
         commandManager.registerMessage(BukkitMessageKey.PLAYER_ONLY, (sender, context) -> sender.sendMessage(Messages.MUST_BE_A_PLAYER.getMessage()));
         commandManager.registerMessage(BukkitMessageKey.CONSOLE_ONLY, (sender, context) -> sender.sendMessage(Messages.MUST_BE_A_CONSOLE_SENDER.getMessage()));
+
         commandManager.registerCommand(new SellChestCmdNew());
         commandManager.registerCommand(new WandCommand());
     }
-    
 }
